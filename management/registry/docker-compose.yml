@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+ app:
+   image: registry:2
+   environment:
+     REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.cert 
+     REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+   volumes:
+     - ~/registry/certs:/certs   
+   ports:
+     - 8300:5000
+   networks:
+     - imixs-cloud-net
+   deploy:
+     placement:
+       constraints:
+         - node.role == manager
+networks:
+   imixs-cloud-net:
+     driver: overlay

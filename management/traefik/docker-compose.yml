@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+   proxy:
+     image: traefik:v1.4.4
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+   ports:
+     - 80:80
+     - 8100:8080
+   networks:
+     - imxis-proxy-net
+   deploy:
+     placement:
+       constraints:
+         - node.role == manager
+networks:
+   imixs-proxy-net:
+     driver: overlay

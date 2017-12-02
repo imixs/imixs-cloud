@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+ app:
+   image: swarmpit/swarmpit:1.2
+   environment:
+     SWARMPIT_DB: http://db:5984
+   volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+   ports:
+     - 8200:8080
+   networks:
+     - imixs-cloud-net
+   deploy:
+     placement:
+       constraints:
+         - node.role == manager
+ db:
+   image: klaemo/couchdb:2.0.0
+   volumes:
+     - db-data:/opt/couchdb/data
+   networks:
+     - net
+
+networks:
+   imixs-cloud-net:
+     driver: overlay
+
+volumes:
+   db-data:
+     driver: local
