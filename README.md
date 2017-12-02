@@ -1,16 +1,16 @@
-# The Imixs-Docker-Cloud
+# The Imixs-Cloud
 
-Imixs-Docker-Cloud is a conceptual infrastructure project, describing a way to create a Docker based server environment for business applications.
+_Imixs-Cloud_ is a conceptual infrastructure project, describing a way to create a server environment for business applications.
 One of the main objectives of this project is to focus on **simplicity** and **transparency**. 
 
-Imixs-Docker-Cloud is developed as part of the Open Source project [Imixs-Workflow](http://www.imixs.org) and continuous under development. 
+_Imixs-Cloud_ is developed as part of the Open Source project [Imixs-Workflow](http://www.imixs.org) and continuous under development. 
 
 The general idea is to setup a lightweight [docker](https://www.docker.com/) based infrastructure with [docker swarm](https://docs.docker.com/engine/swarm/). Within this infrastructure business applications like [Imixs-Office-Workflow](http://www.office-workflow.de) can be deployed in a fast and easy way. 
 
 ## Rules
 The main objectives of this project can be itemized under the following rules:
 
- 1. _A Imixs-Docker-Cloud can be setup easily and run on commodity hardware._
+ 1. _A Imixs-Cloud can be setup easily and run on commodity hardware._
  2. _All services and infrastructure components are running on docker swarm._
  3. _The docker command line interface (CLI) is used to setup and manage nodes and services._ 
  4. _Docker UI Front-End components are used to monitor the infrastructure._
@@ -21,7 +21,7 @@ The main objectives of this project can be itemized under the following rules:
  
 ## Basic Architecture
 
-The basic architecture of the Imixs-Docker-Cloud consists of the following components:
+The basic architecture of the _Imixs-Cloud_ consists of the following components:
 
  * A Docker-Swarm Cluster running on virtual or hardware nodes. 
  * A Management node providing a registry and a proxy server.
@@ -32,7 +32,7 @@ The basic architecture of the Imixs-Docker-Cloud consists of the following compo
  
 ## Nodes
 
-A Imixs-Docker-Cloud consists of at least twoo nodes. One node is the  management node, the other is the worker node serving our applications. The management node is visible via the internet. Worker nodes are only visible internally in the swarm. The infrastructure can be scaled by adding new worker nodes. 
+A _Imixs-Cloud_ consists of at least twoo nodes. One node is the  management node, the other is the worker node serving our applications. The management node is visible via the internet. Worker nodes are only visible internally in the swarm. The infrastructure can be scaled by adding new worker nodes. 
 
 
 <img src="imixs-cloud-01.png" />
@@ -60,10 +60,10 @@ Each directory typically holds a docker-compose.yml file to startup the correspo
 [Docker-Swarm](https://docs.docker.com/engine/swarm/) is used to run a cluster of docker hosts serving business applications in docker-containers.
 Each node in the swarm has at least installed Docker.
 
-Read the following sections to setup a Imixs-Docker-Cloud
+Read the following sections to setup a _Imixs-Cloud_
 
- * [How to setup Imixs-Docker-Cloud](SETUP.md) - basic setup information.
- * [How to secure Imixs-Docker-Cloud](SETUP.md) - advanced setup and security information.
+ * [How to setup Imixs-Cloud](SETUP.md) - basic setup information.
+ * [How to secure Imixs-Cloud](SETUP.md) - advanced setup and security information.
 
 
 
@@ -72,7 +72,7 @@ Read the following sections to setup a Imixs-Docker-Cloud
   
 # Contribute
 
-Imixs-Docker-Cloud is open source and are sincerely invited to participate in it. 
+_Imixs-Cloud_ is open source and are sincerely invited to participate in it. 
 If you want to contribute to this project please [report any issues here](https://github.com/imixs/imixs-docker/issues). 
 All source are available on [Github](https://github.com/imixs/imixs-docker).
 

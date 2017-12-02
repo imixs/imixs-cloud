@@ -1,6 +1,6 @@
-# How to setup the Imixs-Docker-Cloud
+# How to setup the Imixs-Cloud
 
-The following section describes the setup procedure of Imixs-Docker-Cloud with [Docker-Swarm](https://docs.docker.com/engine/swarm/) into a productive environment. 
+The following section describes the setup procedure of _Imixs-Cloud_ with [Docker-Swarm](https://docs.docker.com/engine/swarm/) into a productive environment. 
 
 Read the following tutorial for general information about how to setup a Docker-Swarm:
 
@@ -9,7 +9,7 @@ Read the following tutorial for general information about how to setup a Docker-
 
 ## Hardware Nodes
 
-A Imixs-Docker-Cloud consists of a minimum of two nodes - a management-node and one worker-node. All nodes are defined by unique fixed IP-adresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must be able to access the manager at the IP address.
+A _Imixs-Cloud_ consists of a minimum of two nodes - a management-node and one worker-node. All nodes are defined by unique fixed IP-adresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must be able to access the manager at the IP address.
 
 ### Open networks, protocols and ports
 
@@ -62,7 +62,7 @@ To verify the nodes in a swarm run:
 
 
 ### The Swarm UI – swarmpit.io
-Imixs-Docker-Cloud uses [swarmpit.io](http://swarmpit.io) as a lightweight Docker Swarm management UI. 
+_Imixs-Cloud_ uses [swarmpit.io](http://swarmpit.io) as a lightweight Docker Swarm management UI. 
 swarmpit.io is started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'swarmpit/'
 
 To start the service on the manager node:
@@ -83,11 +83,11 @@ The default userid is ‘admin’ with the password ‘admin’.
 
 ## The Private Docker-Registry
 
-Docker images are available on docker registries. Public docker images are basically available on Docker Hub. Imixs-Docker-Cloud  uses a private docker registry.
+Docker images are available on docker registries. Public docker images are basically available on Docker Hub. _Imixs-Cloud_  uses a private docker registry.
 The registry is used to push locally build docker images so that the cloud infrastructure can pull and start those services without the need to build the images from a Docker file.
 
 ## Create a Self Signed Certificate
-The private registry in the Imixs-Docker-Cloud is secured with a TLS (Transport Layer Security). This guaranties that only authorized clients can push or pull an image from the registry.  To secure the registry, a self signed certificate for the manager-node is needed. 
+The private registry in the _Imixs-Cloud_ is secured with a TLS (Transport Layer Security). This guaranties that only authorized clients can push or pull an image from the registry.  To secure the registry, a self signed certificate for the manager-node is needed. 
 
 To create the certificate a DNS host name for the manager-node:
 
@@ -174,7 +174,7 @@ The private registry can also be added into swarmpit -  “Registry -> NEW REGIS
 
 The HTTP reverse proxy is used to hide services from the internet. In addition the proxy also acts as a load balancer to be used if applications need to be scaled over several nodes.
 
-In Imixs-Docker-Cloud [traefik.io](traefik.io) is used as the service for a reverse proxy. 
+In _Imixs-Cloud_ [traefik.io](traefik.io) is used as the service for a reverse proxy. 
 The service uses a separate overlay network to scann for services. A service which should be available through the proxy need to be run in the network 'imixs-proxy-net'. 
 
 Traefik is configured by a docker-compose.yml file and a traefik.toml file  located in the folder 'traefik/'
