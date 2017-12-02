@@ -3,9 +3,10 @@
 _Imixs-Cloud_ is a conceptual infrastructure project, describing a way to create a server environment for business applications.
 One of the main objectives of this project is to focus on **simplicity** and **transparency**. 
 
+The general idea is to setup a lightweight [docker](https://www.docker.com/) based infrastructure with [docker swarm](https://docs.docker.com/engine/swarm/). Within this infrastructure business applications like [Imixs-Office-Workflow](http://www.office-workflow.de) can be deployed in a fast and easy way. 
+
 _Imixs-Cloud_ is developed as part of the Open Source project [Imixs-Workflow](http://www.imixs.org) and continuous under development. 
 
-The general idea is to setup a lightweight [docker](https://www.docker.com/) based infrastructure with [docker swarm](https://docs.docker.com/engine/swarm/). Within this infrastructure business applications like [Imixs-Office-Workflow](http://www.office-workflow.de) can be deployed in a fast and easy way. 
 
 ## Rules
 The main objectives of this project can be itemized under the following rules:
