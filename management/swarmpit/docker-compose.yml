@@ -20,7 +20,7 @@ services:
    volumes:
      - db-data:/opt/couchdb/data
    networks:
-     - net
+     - imixs-cloud-net
 
 networks:
    imixs-cloud-net:

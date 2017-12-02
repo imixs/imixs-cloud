@@ -7,9 +7,31 @@ Read the following tutorial for general information about how to setup a Docker-
 * [Docker-Swarm tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/)
 * [Lightweight Docker Swarm Environment by Ralph Soika](http://ralph.soika.com/lightweight-docker-swarm-environment/)
 
-## Hardware Nodes
+## Nodes
 
-A _Imixs-Cloud_ consists of a minimum of two nodes - a management-node and one worker-node. All nodes are defined by unique fixed IP-adresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must be able to access the manager at the IP address.
+A _Imixs-Cloud_ consists of a minimum of two nodes - a management-node and one worker-node. A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must have docker installed and be able to access the manager at the IP address.
+
+### Install Docker
+
+To install docker on a node follow the [official installation guide for Docker CE](https://docs.docker.com/engine/installation/linux/docker-ce/debian/).
+If you have unix user to run the docker cli, you have to add the user to the group 'docker'
+
+	adduser username docker
+	
+### Directories
+
+The management node has the following directory structure located in the manager home directory to setup and run the Imixs-Workflow-Cloud and its services. 
+
+	/-
+	 |- management/
+	 |   - registry/
+	 |   - swarmpit/
+	 |   - traefik/
+	 |- apps/
+
+The /management/ directory holds the service configuration for the management services running on the management node only. 
+The /apps/ directory contains service setups to start applications running on the worker nodes.
+	
 
 ### Open networks, protocols and ports
 
@@ -67,7 +89,7 @@ swarmpit.io is started as a service on the manager node. The configuration is de
 
 To start the service on the manager node:
 
-	$ docker stack deploy -c swarmpit/docker-compose.yml swarmpit
+	$ docker stack deploy -c management/swarmpit/docker-compose.yml swarmpit
 
 Note: It can take some minutes until swarmpit is started.
 
