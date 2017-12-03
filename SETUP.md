@@ -75,6 +75,10 @@ This command init the swarm and returns a pre-configured docker swarm join comma
 	
 The IP address given here is the IP from the manager-node.
 
+To get the join token later run the following command on the manager node:
+
+	$ docker swarm join-token worker 
+
 To verify the nodes in a swarm run:
 
 	$ docker node ls
@@ -203,7 +207,7 @@ Traefik is configured by a docker-compose.yml file and a traefik.toml file  loca
 
 To start the service on the manager node:
 
-	$ docker stack deploy -c traefik/docker-compose.yml imixs-proxy
+	$ docker stack deploy -c management/traefik/docker-compose.yml imixs-proxy
     
     
 After traefik is stared you can access the web UI via port 8100
