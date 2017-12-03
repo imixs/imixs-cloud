@@ -92,11 +92,9 @@ defaultEntryPoints = ["http"]
 #
 address = ":8080"
 
-
-# Web admin dummy user (do not use for production!)
-[web.auth.basic]
-usersFile = "/etc/traefik/.htpasswd"
-
+# To enable basic auth generate user credentials with htpasswd
+# [web.auth.basic]
+# users = ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
 
 
 
@@ -109,7 +107,6 @@ usersFile = "/etc/traefik/.htpasswd"
 [docker]
 watch = true
 swarmmode = true
-watch = true
 # Docker server endpoint. Can be a tcp or a unix socket endpoint.
 #
 # Required
@@ -123,7 +120,7 @@ watch = true
 # Optional
 # Default: ""
 #
-domain = "docker.localhost"
+domain = "your-domain.com"
 
 # Expose containers by default in traefik
 #

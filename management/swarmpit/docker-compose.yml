@@ -9,8 +9,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
    ports:
      - 8200:8080
-   networks:
-     - imixs-cloud-net
    deploy:
      placement:
        constraints:
@@ -19,13 +17,12 @@ services:
    image: klaemo/couchdb:2.0.0
    volumes:
      - db-data:/opt/couchdb/data
-   networks:
-     - imixs-cloud-net
 
 networks:
-   imixs-cloud-net:
-     driver: overlay
+   default:
+    external:
+      name:  imixs-cloud-net
 
 volumes:
    db-data:
-     driver: local
+      driver: local

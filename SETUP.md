@@ -105,6 +105,7 @@ http://manager-node.com:8200
 
 The default userid is ‘admin’ with the password ‘admin’.
 
+** Note: ** If you change the network configuration you need to remove and already existing swarmpit service and its volume!
 
 
 ## The Private Docker-Registry
@@ -203,16 +204,28 @@ The HTTP reverse proxy is used to hide services from the internet. In addition t
 In _Imixs-Cloud_ [traefik.io](traefik.io) is used as the service for a reverse proxy. 
 The service uses a separate overlay network to scann for services. A service which should be available through the proxy need to be run in the network 'imixs-proxy-net'. 
 
-Traefik is configured by a docker-compose.yml file and a traefik.toml file  located in the folder 'traefik/'
+Traefik is configured by a docker-compose.yml file and a traefik.toml file  located in the folder 'management/traefik/'
 
 To start the service on the manager node:
 
-	$ docker stack deploy -c management/traefik/docker-compose.yml imixs-proxy
+	$ docker stack deploy -c management/traefik/docker-compose.yml proxy
     
     
 After traefik is stared you can access the web UI via port 8100
 
-	http://manager-nodec.om:8100
+	http://manager-node.com:8100
 
 <img src="imixs-cloud-03.png" />
 
+**Note: **The Traefik configuraiton is done in the traefik.toml file. You can set the logLevel to "DEBUG" if something goes wrong. 
+
+To test the proxy you can start the whoami service:
+
+	docker service create \
+	    --name whoami1 \
+	    --label traefik.port=80 \
+	    --network imixs-proxy-net \
+	    --label traefik.frontend.rule=Host:whoami.mydomain.com\
+	    emilevauge/whoami
+ 
+ 
