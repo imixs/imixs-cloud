@@ -1,6 +1,6 @@
 # How to secure Imixs-Docker-Cloud
 
-The following section describes the security concepts of Imixs-Docker-Cloud
+The following section describes additional security concepts of Imixs-Cloud
 
 ## Traefik
 
@@ -15,9 +15,9 @@ Generate a password with the htpasswd command for the user admin
 	Re-type new password: 
 	admin:$apr1$tm23...................9uz570
 
-** 2. Update the traefik.toml file**
+**2. Update the traefik.toml file**
 
-Copy the result into the traefik.toml file in the section
+Copy the result into the traefik.toml file into the section _[web.auth.basic]_
 
 	...
 	[web.auth.basic]
