@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+ app:
+   image: emilevauge/whoami
+   
+   deploy:
+     labels:
+      traefik.port: "80"
+      traefik.frontend.rule: "Host:whoami.your-domain.com"
+      traefik.traefik.docker.network: "imixs-proxy-net"
+   
+networks:
+   default:
+    external:
+      name:  imixs-proxy-net      

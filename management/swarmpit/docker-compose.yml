@@ -17,6 +17,10 @@ services:
    image: klaemo/couchdb:2.0.0
    volumes:
      - db-data:/opt/couchdb/data
+   deploy:
+     placement:
+       constraints:
+         - node.role == manager
 
 networks:
    default:

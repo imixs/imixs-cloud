@@ -4,8 +4,9 @@ The following section describes the setup procedure of _Imixs-Cloud_ with [Docke
 
 Read the following tutorial for general information about how to setup a Docker-Swarm:
 
-* [Docker-Swarm tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/)
-* [Lightweight Docker Swarm Environment by Ralph Soika](http://ralph.soika.com/lightweight-docker-swarm-environment/)
+* [Official Docker-Swarm Tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/)
+* [Lightweight Docker Swarm Environment - by Ralph Soika](http://ralph.soika.com/lightweight-docker-swarm-environment/)
+* [How to Run Docker-Swarm on VM Servers - by Ralph Soika](http://ralph.soika.com/how-to-run-docker-swarm-on-a-vm-servers/)
 
 ## Nodes
 
@@ -41,18 +42,7 @@ The following ports must be available on each node.
  - TCP and UDP port 7946 for communication among nodes
  - UDP port 4789 for overlay network traffic
  
-The nodes communicate via two different overlay networks:
-
- * imixs-cloud-network - used for the swarm 
- * imixs-proxy-network - used by the reverse proxy
- 
-To create the overlay networks on the manager-node run:
-
-	$ docker network create --driver=overlay imixs-cloud-net
-	$ docker network create --driver=overlay imixs-proxy-net
-
-The following ports are published to be accessable from the internet:
-
+The following ports will be later published to be accessable from the internet:
 
  * 80 - The Reverse proxy endpoint 
  * 8100 - The reverse proxy server UI traefik
@@ -71,13 +61,24 @@ To setup docker swarm on the management-node run the following command:
 
 This command init the swarm and returns a pre-configured docker swarm join command for to be executed on any worker-node to joint the swarm. For example: 
 
-	$ docker swarm join --token SWMTKN-1-5acc79cslx83455zcobgkbfxth4t3133ts8s7a1vxap1vwud9-04n5qiicw4qopj3zk32jm5qay 192.168.99.100:2377
+	$ docker swarm join --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx 192.168.99.100:2377
 	
-The IP address given here is the IP from the manager-node.
 
+The IP address given here is the IP from the manager-node.
 To get the join token later run the following command on the manager node:
 
 	$ docker swarm join-token worker 
+
+Working with VMs, the worker-node has typically a private IPv4 address. As a result the swarm may not run correctly, specially in relation with overlay networks. To solve those problems the public IPv4 address of the worker-node need to be added with the option  _–advertise-addr_ when joining the swarm.
+
+
+	docker swarm join \
+	 --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx \
+	 --advertise-addr [worker-ip-address]\
+	 [manager-ip-address]:2377
+
+Where [worker-ip-address] is the public IPv4 address of the worker-node joining the swarm.
+
 
 To verify the nodes in a swarm run:
 
@@ -86,7 +87,23 @@ To verify the nodes in a swarm run:
 	niskvdwg4k4k1otrrnpzvgbdn * 	manager1	Ready 		Active 		Leader
 	c54zgxn45bvogr78qp5q2vq2c 	worker1		Ready 		Active 
 
+To inspect a node in detail to see if the correct IP is given, run:
 
+	docker node inspect worker1
+
+### Create Overlay Networks
+
+The nodes in the Imixs-Cloud  communicate via two different overlay networks:
+
+ * imixs-cloud-network - used for the swarm 
+ * imixs-proxy-network - used by the reverse proxy
+ 
+To create the overlay networks on the manager-node run:
+
+	$ docker network create --driver=overlay imixs-cloud-net
+	$ docker network create --driver=overlay imixs-proxy-net
+
+ 
 ### The Swarm UI – swarmpit.io
 _Imixs-Cloud_ uses [swarmpit.io](http://swarmpit.io) as a lightweight Docker Swarm management UI. 
 swarmpit.io is started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'swarmpit/'
@@ -113,17 +130,18 @@ The default userid is ‘admin’ with the password ‘admin’.
 Docker images are available on docker registries. Public docker images are basically available on Docker Hub. _Imixs-Cloud_  uses a private docker registry.
 The registry is used to push locally build docker images so that the cloud infrastructure can pull and start those services without the need to build the images from a Docker file.
 
-## Create a Self Signed Certificate
+### Create a Self Signed Certificate
 The private registry in the _Imixs-Cloud_ is secured with a TLS (Transport Layer Security). This guaranties that only authorized clients can push or pull an image from the registry.  To secure the registry, a self signed certificate for the manager-node is needed. 
 
-To create the certificate a DNS host name for the manager-node:
+To create the certificate a DNS host name for the manager-node is needed. The following example registers the DNS name '_manager-node.com_'. The keys are stored in the directory _registry/_:
 
 
-	$ mkdir ./registry && cd ./registry
+	$ mkdir mkdir -p ./management/registry/certs && cd ./management/registry/certs
 	$ openssl req -newkey rsa:4096 -nodes -sha256 \
 	            -keyout domain.key -x509 -days 356 \
-	            -out domain.cert
-	            Generating a 4096 bit RSA private key
+	            -out domain.cert 
+	            
+	Generating a 4096 bit RSA private key
 	................................................++
 	writing new private key to 'registry_certs/domain.key'
 	-----
@@ -142,31 +160,18 @@ To create the certificate a DNS host name for the manager-node:
 	Common Name (e.g. server FQDN or YOUR name) []:manager-node.com
 	Email Address []:
 
-In this examplea x509 certificate and a private RSA key is created with the DNS name (‘Common Name’) _manager-node.com_.
-openssl creates two files:
+In this example a x509 certificate and a private RSA key is created with the DNS name (‘Common Name’) _manager-node.com_.
+openssl creates two files in the folder 'management/registry/certs/':
 
 * domain.cert – this file can be handled to the client using the private registry
 * domain.key – this is the private key which is necessary to run the private registry with TLS
 
-These files need to be copied into the folder ‘registry/certs/’:
-
-	$ mkdir -p ./registry/certs
-	$ cp domain.* ./registry/certs/
-
-
 The configuration of the registry service is defined by docker-compose.yml located in the folder 'registry/'
+Create a docker-compose.yml file. (See /registry/docker-compose.yml). 
 
-To start the service on the manager node:
+No the registry-service can be started with :
 
-	$ docker stack deploy -c swarmpit/docker-compose.yml swarmpit
-	
-	
-Create a docker-compose.yml file. See /registry/docker-compose.yml. 
-
-The service can be started with :
-
-
-	$ docker stack deploy -c registry/docker-compose.yml imixs-registry
+	$ docker stack deploy -c management/registry/docker-compose.yml imixs-registry
 	
 The registry will be available under port 8300 of the manager-node.
 
@@ -175,7 +180,7 @@ You can check the registry API via the Rest API:
 	https://manager-node.com:8300/v2/
 
 ### How to grant a Client
-To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of local client and the docer service must be restart once:
+To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of local client and the docker service must be restart once:
 
 
 	$ mkdir -p /etc/docker/certs.d/manager-node.como:8300
@@ -194,6 +199,7 @@ To push a local image from a client into the registry the image must be taged fi
 	9f8566ee5135: Pushed 
 	1.2: digest: sha256:2ec2c601c936c904aba991a8a2f0961b2382e6c0483fbec1997896e7422030ab size: 1366
 
+### Add the registry into swarmpit
 
 The private registry can also be added into swarmpit -  “Registry -> NEW REGISTRY“. Add the URL “https://manager-node-com:8300/”
 
@@ -221,11 +227,13 @@ After traefik is stared you can access the web UI via port 8100
 
 To test the proxy you can start the whoami service:
 
+	
 	docker service create \
 	    --name whoami1 \
-	    --label traefik.port=80 \
 	    --network imixs-proxy-net \
-	    --label traefik.frontend.rule=Host:whoami.mydomain.com\
+	    --label traefik.port=80 \
+	    --label traefik.frontend.rule=Host:whoami.imixs.com \
+	    --label traefik.docker.network=imixs-proxy-net \
 	    emilevauge/whoami
- 
+	
  
