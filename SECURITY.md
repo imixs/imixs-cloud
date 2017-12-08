@@ -1,4 +1,4 @@
-# How to secure Imixs-Docker-Cloud
+# How to secure Imixs-Cloud
 
 The following section describes additional security concepts of Imixs-Cloud
 
