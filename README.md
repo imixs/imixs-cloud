@@ -64,7 +64,7 @@ Each node in the swarm has at least installed Docker.
 Read the following sections to setup a _Imixs-Cloud_
 
  * [How to setup Imixs-Cloud](SETUP.md) - basic setup information.
- * [How to secure Imixs-Cloud](SETUP.md) - advanced setup and security information.
+ * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
 
 
 
