@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  traefik:
+  app:
      image: traefik:v1.4.4
      volumes:
        - /var/run/docker.sock:/var/run/docker.sock
