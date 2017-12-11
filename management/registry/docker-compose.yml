@@ -1,19 +1,20 @@
 version: '3'
 
 services:
- app:
-   image: registry:2
-   environment:
-     REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.cert 
-     REGISTRY_HTTP_TLS_KEY: /certs/domain.key
-   volumes:
-     - $PWD/management/registry/certs:/certs   
-   ports:
-     - 8300:5000
-   deploy:
-     placement:
-       constraints:
-         - node.role == manager
+  app:
+    image: registry:2
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.cert 
+      REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+    volumes:
+      - $PWD/management/registry/data:/var/lib/registry
+      - $PWD/management/registry/certs:/certs:ro
+    ports:
+      - 8300:5000
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 networks:
    default:
     external:

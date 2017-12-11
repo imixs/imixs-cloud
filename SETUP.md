@@ -130,6 +130,10 @@ The default userid is ‘admin’ with the password ‘admin’.
 Docker images are available on docker registries. Public docker images are basically available on Docker Hub. _Imixs-Cloud_  uses a private docker registry.
 The registry is used to push locally build docker images so that the cloud infrastructure can pull and start those services without the need to build the images from a Docker file.
 
+The imixs-cloud registry stores its data into the folder _"management/registry/data"_ as a bind directory on the manager-node. So it is important to create this directory first:
+
+	$ mkdir mkdir -p ./management/registry/data 
+
 ### Create a Self Signed Certificate
 The private registry in the _Imixs-Cloud_ is secured with a TLS (Transport Layer Security). This guaranties that only authorized clients can push or pull an image from the registry.  To secure the registry, a self signed certificate for the manager-node is needed. 
 
@@ -171,7 +175,7 @@ Create a docker-compose.yml file. (See /registry/docker-compose.yml).
 
 No the registry-service can be started with :
 
-	$ docker stack deploy -c management/registry/docker-compose.yml imixs-registry
+	$ docker stack deploy -c management/registry/docker-compose.yml registry
 	
 The registry will be available under port 8300 of the manager-node.
 
@@ -187,17 +191,22 @@ To grant your local client to be allowed to push/pull images from the new privat
 	$ cp domain.cert /etc/docker/certs.d/manager-node.com:8300/ca.crt
 	$ service docker restart
 
-To push a local image from a client into the registry the image must be taged first:
+To push a local image from a client into the registry the image must be tagged first:
 
-	$ docker tag swarmpit/swarmpit:1.2 manager-node.com:8300/swarmpit/swarmpit:1.2
-	$ docker push manager-node.com:8300/swarmpit/swarmpit:1.2
-	The push refers to a repository [manager-node.com:8300/swarmpit/swarmpit]
-	6afcf119ad8f: Pushed 
-	830626953b30: Pushed 
-	a1e7033f082e: Pushed 
-	78075328e0da: Pushed 
-	9f8566ee5135: Pushed 
-	1.2: digest: sha256:2ec2c601c936c904aba991a8a2f0961b2382e6c0483fbec1997896e7422030ab size: 1366
+	$ docker tag emilevauge/whoami manager-node.com:8300/emilevauge/whoami
+	$ docker push manager-node.com:8300/emilevauge/whoami
+	The push refers to a repository [manager-node.com:8300/emilevauge/whoami]
+	7384fdb82758: Pushed 
+	latest: digest: sha256:f716da0c5896906613b2da5f465c75efd07b1e0e430c2b702c656f4ce2602f69 size: 528
+
+
+### Authentication
+
+If you already have defined a HTTPs Basic authentication layer as described in the section [How to secure Imixs-Cloud](SETUP.md), you need to first login to your docker registry:
+
+	 $ docker login -u admin https://manager-node.com:8300
+
+After the successful login, you can push the image.
 
 ### Add the registry into swarmpit
 
