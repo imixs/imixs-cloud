@@ -185,9 +185,12 @@ You can check the registry API via the Rest API:
 To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of local client and the docker service must be restart once:
 
 
-	$ mkdir -p /etc/docker/certs.d/manager-node.como:8300
+	$ mkdir -p /etc/docker/certs.d/manager-node.com:8300
 	$ cp domain.cert /etc/docker/certs.d/manager-node.com:8300/ca.crt
 	$ service docker restart
+
+**Note:** This is also true for the master-node itself. 
+
 
 To push a local image from a client into the registry the image must be tagged first:
 
@@ -205,6 +208,8 @@ If you already have defined a HTTPs Basic authentication layer as described in t
 	 $ docker login -u admin https://manager-node.com:8300
 
 After the successful login, you can push the image.
+
+**Note:** This is also true for the master-node itself if a service need to pull a image from the private registry. 
 
 ### Add the registry into swarmpit
 
