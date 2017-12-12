@@ -130,9 +130,7 @@ The default userid is ‘admin’ with the password ‘admin’.
 Docker images are available on docker registries. Public docker images are basically available on Docker Hub. _Imixs-Cloud_  uses a private docker registry.
 The registry is used to push locally build docker images so that the cloud infrastructure can pull and start those services without the need to build the images from a Docker file.
 
-The imixs-cloud registry stores its data into the folder _"management/registry/data"_ as a bind directory on the manager-node. So it is important to create this directory first:
-
-	$ mkdir mkdir -p ./management/registry/data 
+The imixs-cloud registry stores its data into a [data volume](https://docs.docker.com/engine/admin/volumes/), so the registry data is stored within a directory on the Docker host. 
 
 ### Create a Self Signed Certificate
 The private registry in the _Imixs-Cloud_ is secured with a TLS (Transport Layer Security). This guaranties that only authorized clients can push or pull an image from the registry.  To secure the registry, a self signed certificate for the manager-node is needed. 
