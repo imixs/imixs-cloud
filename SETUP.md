@@ -10,7 +10,12 @@ Read the following tutorial for general information about how to setup a Docker-
 
 ## Nodes
 
-A _Imixs-Cloud_ consists of a minimum of two nodes - a management-node and one worker-node. A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must have docker installed and be able to access the manager at the IP address.
+A _Imixs-Cloud_ consists of a minimum of two nodes.
+
+* The management node is the swarm manager and provides a private registry and a reverse proxy service.
+* The worker nodes are serving the applications. 
+
+A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must have docker installed and be able to access the manager at the IP address.
 
 ### Install Docker
 
