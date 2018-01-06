@@ -72,18 +72,56 @@ Read the following sections to setup a _Imixs-Cloud_
  * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
 
 
-# How to manage service
+# How to manage services
 
-After you have setup the Imixs-Cloud environment, you can add applications into the /apps/ directory. Each application consists at least of a docker-compose.yml file. 
+After you have setup the Imixs-Cloud environment you can deploy and start your docker containers. 
+In Docker-Swarm, containers are started as services within a so called 'stack'. A _stack_ is described by a docker-compose.yml file. Each service of a stack can comunitcate with eachother in the same stack. A docker-compose file looks like this:
 
-To deploy an application into the Imixs-Cloud run:
+	version: '3'
+	
+	services:
+	  app:
+	    image: registry.imixs.com:8300/imixs/imixs-office-workflow:3.1.2-SNAPSHOT
+	    environment:
+	    ....
+	    networks:
+	      - frontend
+	      - backend  
+	....
+	  db:
+	    image: postgres:9.6.1
+	    environment:
+		....
+	    volumes: 
+	      - dbdata:/var/lib/postgresql/data
+	    networks:
+	      - backend
+	.....
+	volumes:
+	  dbdata:
+	....
+	networks:
+	  frontend:
+	    external:
+	      name: imixs-proxy-net 
+	  backend: 
+
+
+### Networks
+In this example there a tree services all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](SETUP.md) to learn how the proxy network is working. 
+
+### docker deploy stack
+You can define new applications into the /apps/ directory. Each application has its own sub-folder and consists at least of one docker-compose.yml file. 
+
+To deploy and run your application into the Imixs-Cloud, you run the _docker stack deploy_ command:
 
 	$ docker stack deploy -c apps/MY-APP/docker-compose.yml MY-APP 
 
-This command also restarts an already existing stack.
+### Updating a Stack
+If you need to change some configuration or add a new services to a stack, you can restart the already existing stack with the same command. Docker-Swarm will automatically redeploy all affected services. 
 
-### Starting services form the private registry
 
+### Running Services form the Private Registry
 If your stack contains images hosted on the private registry, you need to specify the registry name and port number to enable docker-swarm to download the image.  See the following example:
 
 
