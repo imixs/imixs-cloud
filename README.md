@@ -72,6 +72,28 @@ Read the following sections to setup a _Imixs-Cloud_
  * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
 
 
+# How to manage service
+
+After you have setup the Imixs-Cloud environment, you can add applications into the /apps/ directory. Each application consists at least of a docker-compose.yml file. 
+
+To deploy an application into the Imixs-Cloud run:
+
+	$ docker stack deploy -c apps/MY-APP/docker-compose.yml MY-APP 
+
+This command also restarts an already existing stack.
+
+### Starting services form the private registry
+
+If your stack contains images hosted on the private registry, you need to specify the registry name and port number to enable docker-swarm to download the image.  See the following example:
+
+
+	version: '3'
+	
+	services:
+	  app:
+	    image: my-registry.com:8300/imixs/imixs-office-workflow:3.1.2-SNAPSHOT
+	....
+
 
 
 
