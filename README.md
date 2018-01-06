@@ -48,11 +48,13 @@ Only the management node should be visible via the internet. Worker nodes are on
 The management node has the following directory structure located in the manager home directory to setup and run the Imixs-Workflow-Cloud and its services. 
 
 	/-
-	 |- management/
-	 |   - registry/
-	 |   - swarmpit/
-	 |   - traefik/
-	 |- apps/
+	 |+ management/
+	    |- registry/
+	    |- swarmpit/
+	    |- traefik/
+	 |+ apps/
+	    |+ MY-APP/
+	       |  docker-compose.yml
 
 The /management/ directory holds the service configuration for the management services running on the management node only. 
 The /apps/ directory contains service setups to start applications running on the worker nodes.
@@ -72,7 +74,7 @@ Read the following sections to setup a _Imixs-Cloud_
  * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
 
 
-# How to manage services
+# How to Manage Services
 
 After you have setup the Imixs-Cloud environment you can deploy and start your docker containers. 
 In Docker-Swarm, containers are started as services within a so called 'stack'. A _stack_ is described by a docker-compose.yml file. Each service of a stack can comunitcate with eachother in the same stack. A docker-compose file looks like this:
@@ -108,7 +110,7 @@ In Docker-Swarm, containers are started as services within a so called 'stack'. 
 
 
 ### Networks
-In this example there a tree services all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](SETUP.md) to learn how the proxy network is working. 
+In this example there a three services all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](SETUP.md) to learn how the proxy network is working. 
 
 ### docker deploy stack
 You can define new applications into the /apps/ directory. Each application has its own sub-folder and consists at least of one docker-compose.yml file. 
