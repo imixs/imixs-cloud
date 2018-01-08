@@ -117,7 +117,7 @@ You can define new applications into the /apps/ directory. Each application has 
 
 To deploy and run your application into the Imixs-Cloud, you run the _docker stack deploy_ command:
 
-	$ docker stack deploy -c apps/MY-APP/docker-compose.yml MY-APP 
+	docker stack deploy -c apps/MY-APP/docker-compose.yml MY-APP 
 
 ### Updating a Stack
 If you need to change some configuration or add a new services to a stack, you can restart the already existing stack with the same command. Docker-Swarm will automatically redeploy all affected services. 

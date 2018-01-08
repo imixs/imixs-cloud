@@ -8,4 +8,4 @@ The docker-compose.yml file can be used to start this service in the imixs-cloud
 
 To start the service run:
 
-	$ docker stack deploy -c apps/whoami/docker-compose.yml whoami
+	docker stack deploy -c apps/whoami/docker-compose.yml whoami

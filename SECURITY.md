@@ -10,7 +10,7 @@ The traefik web frontend (8080) is accessabel to anonymous per default. To secur
 
 Generate a password with the htpasswd command for the user admin
 
-	$ htpasswd -n admin
+	htpasswd -n admin
 	New password: 
 	Re-type new password: 
 	admin:$apr1$tm23...................9uz570
@@ -42,15 +42,15 @@ you can follow these steps:
 
 Generate a folder _management/registry/_ to store htpasswd file
 
-	$ mkdir -p ./management/registry/auth			   
+	mkdir -p ./management/registry/auth			   
 
 Create a password file for a user (e.g. admin) 
 
-	$ htpasswd -cB htpasswd admin
+	htpasswd -cB htpasswd admin
 
 To add additional users run	
 	
-	$ htpasswd -B htpasswd user1
+	htpasswd -B htpasswd user1
 
 Now copy file or content into ./management/registry/auth
 	
@@ -75,3 +75,91 @@ Add the following environment entries:
 **3. Redeploy the registry**
 
 Finally you can redeploy the registry service from the swarmpit UI.	
+
+
+
+# Using Docker Swarm Secrets
+
+[Docker-Swarm Secrets](https://docs.docker.com/engine/swarm/secrets/) can be used in docker swarm to provide sensitive data in a secret way. For example if you want to avoid that a password is stored in an environment variable, a docker secret can be a solution.
+
+To create for example a password you can run:
+
+	echo "my secret..."| docker secret create my_password -
+
+This password is than available in the internal Docker Swarm Raft log. 	
+Now you can use the secret instead of an environment variable in a docker-compose.yml file. See the following example for a Postgres Database server:
+
+
+	version: '3.1'
+	services:
+	  db:
+	    image: postgres:9.6.1
+	    environment:
+	       POSTGRES_PASSWORD_FILE: "/run/secrets/my_password"
+	       ....
+	  secrets:
+	    - my_password
+	...
+	secrets:
+	  my_password:
+	     external: true
+	...
+
+
+The environment variable POSTGRES\_PASSWORD\_FILE points to the location where the password is stored inside the container. The directory /run/secrets/ is the place where docker stores the secrets. 
+The new option 'secrets:' inside the service description injects the password into the file "/run/secrets/my_password" of the running container. 
+With the 'secrets' declaration, the secret 'my_password' is mapped into the stack. 
+
+Now the docker-compose.yml file is no longer showing the password which is also hidden from docker commands like a _docker inspect_.
+
+**Note:** You need to set the version of the docker-compose.yml file to '3.1' or higher if you want to use Docker Secrets!
+
+
+## How to access Docker Swarm Secrets from a script
+
+With the following example script the password can be read by a bash script running inside a container. 
+The function 'file_env()' is form the [official postgres docker image](https://github.com/docker-library/postgres/tree/master/9.6) and automatically maps a envirnment variable with the prefix '\_FILE' to the corresponding secret:
+
+	#!/bin/bash
+	....
+	......
+	# usage: file_env VAR [DEFAULT]
+	#    ie: file_env 'XYZ_DB_PASSWORD' 'example'
+	# (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
+	#  "$XYZ_DB_PASSWORD" from a file, especially for Docker's secrets feature)
+	file_env() {
+		local var="$1"
+		local fileVar="${var}_FILE"
+		local def="${2:-}"
+		if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
+			echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
+			exit 1
+		fi
+		local val="$def"
+		if [ "${!var:-}" ]; then
+			val="${!var}"
+		elif [ "${!fileVar:-}" ]; then
+			val="$(< "${!fileVar}")"
+		fi
+		export "$var"="$val"
+		unset "$fileVar"
+	}
+	....
+	......
+	# Now we map the environment variable POSTGRES_PASSWORD_FILE to the corresponding docker secret.....
+	file_env 'POSTGRES_PASSWORD'
+    # now the variable POSTGRES_PASSWORD is set to 'my secret...'
+    ....
+    ......
+
+The script declares the function 'file\_env()' which is a helper method to extract the secret form the given file location. The convention here is that the environment variable is ending to '\_FILE', which is a best practice using Docker Swarm Secrets. 
+The prefix '\_FILE' is the indicator for the function 'file\_env()'  to read the secret from the file stored in /run/secrets/. The function 'file\_env()' is also supporting the environment variable without the \_FILE prefix, so that both variants are possible. This can be useful during development where you typically not dealing with a Docker Swarm.  
+	
+
+## Why You Should Use Swarm Secrets Instead of Environment Variables
+
+A secret stored in the docker-compose.yml as a normal environment variable is visible inside that file, which should also be checked into a version control where others can see the values in that file, and it will be also visible in commands like a _docker inspect_ on your containers. 
+A docker secret conversely will encrypt the secret on disk on the managers, only store it in memory on the workers that need the secret (the file visible in the containers is a _tmpfs_ that is stored in ram), and it is not visible in the docker inspect output.
+The key part here is that you are keeping your secret outside of your version control system.  Therefore, it's feasible to prevent the secret from being read by an attacker that breaches an application inside a container, which would be less trivial with an environment variable.
+
+

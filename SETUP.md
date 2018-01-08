@@ -59,20 +59,20 @@ The following ports will be later published to be accessable from the internet:
 
 To setup docker swarm on the management-node run the following command:
 
-	$ docker swarm init --advertise-addr [manager-ip-address]
+	docker swarm init --advertise-addr [manager-ip-address]
 	
 'manager-ip-address' is the fixed ip address of the manger node to be used by worker nodes. (Typically the main address of the manager-node)
 
 
 This command init the swarm and returns a pre-configured docker swarm join command for to be executed on any worker-node to joint the swarm. For example: 
 
-	$ docker swarm join --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx 192.168.99.100:2377
+	docker swarm join --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx 192.168.99.100:2377
 	
 
 The IP address given here is the IP from the manager-node.
 To get the join token later run the following command on the manager node:
 
-	$ docker swarm join-token worker 
+	docker swarm join-token worker 
 
 Working with VMs, the worker-node has typically a private IPv4 address. As a result the swarm may not run correctly, specially in relation with overlay networks. To solve those problems the public IPv4 address of the worker-node need to be added with the option  _–advertise-addr_ when joining the swarm.
 
@@ -87,7 +87,7 @@ Where [worker-ip-address] is the public IPv4 address of the worker-node joining 
 
 To verify the nodes in a swarm run:
 
-	$ docker node ls
+	docker node ls
 	ID				HOSTNAME 	STATUS 		AVAILABILITY 	MANAGER STATUS
 	niskvdwg4k4k1otrrnpzvgbdn * 	manager1	Ready 		Active 		Leader
 	c54zgxn45bvogr78qp5q2vq2c 	worker1		Ready 		Active 
@@ -105,8 +105,8 @@ The nodes in the Imixs-Cloud  communicate via two different overlay networks:
  
 To create the overlay networks on the manager-node run:
 
-	$ docker network create --driver=overlay imixs-cloud-net
-	$ docker network create --driver=overlay imixs-proxy-net
+	docker network create --driver=overlay imixs-cloud-net
+	docker network create --driver=overlay imixs-proxy-net
 
  
 ### The Swarm UI – swarmpit.io
@@ -115,7 +115,7 @@ swarmpit.io is started as a service on the manager node. The configuration is de
 
 To start the service on the manager node:
 
-	$ docker stack deploy -c management/swarmpit/docker-compose.yml swarmpit
+	docker stack deploy -c management/swarmpit/docker-compose.yml swarmpit
 
 Note: It can take some minutes until swarmpit is started.
 
@@ -143,8 +143,8 @@ The private registry in the _Imixs-Cloud_ is secured with a TLS (Transport Layer
 To create the certificate a DNS host name for the manager-node is needed. The following example registers the DNS name '_manager-node.com_'. The keys are stored in the directory _registry/_:
 
 
-	$ mkdir mkdir -p ./management/registry/certs && cd ./management/registry/certs
-	$ openssl req -newkey rsa:4096 -nodes -sha256 \
+	mkdir mkdir -p ./management/registry/certs && cd ./management/registry/certs
+	openssl req -newkey rsa:4096 -nodes -sha256 \
 	            -keyout domain.key -x509 -days 356 \
 	            -out domain.cert 
 	            
@@ -178,7 +178,7 @@ Create a docker-compose.yml file. (See /registry/docker-compose.yml).
 
 No the registry-service can be started with :
 
-	$ docker stack deploy -c management/registry/docker-compose.yml registry
+	docker stack deploy -c management/registry/docker-compose.yml registry
 	
 The registry will be available under port 8300 of the manager-node.
 
@@ -190,17 +190,17 @@ You can check the registry API via the Rest API:
 To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of local client and the docker service must be restart once:
 
 
-	$ mkdir -p /etc/docker/certs.d/manager-node.com:8300
-	$ cp domain.cert /etc/docker/certs.d/manager-node.com:8300/ca.crt
-	$ service docker restart
+	mkdir -p /etc/docker/certs.d/manager-node.com:8300
+	cp domain.cert /etc/docker/certs.d/manager-node.com:8300/ca.crt
+	service docker restart
 
 **Note:** This is also true for the master-node itself. 
 
 
 To push a local image from a client into the registry the image must be tagged first:
 
-	$ docker tag emilevauge/whoami manager-node.com:8300/emilevauge/whoami
-	$ docker push manager-node.com:8300/emilevauge/whoami
+	docker tag emilevauge/whoami manager-node.com:8300/emilevauge/whoami
+	docker push manager-node.com:8300/emilevauge/whoami
 	The push refers to a repository [manager-node.com:8300/emilevauge/whoami]
 	7384fdb82758: Pushed 
 	latest: digest: sha256:f716da0c5896906613b2da5f465c75efd07b1e0e430c2b702c656f4ce2602f69 size: 528
@@ -210,7 +210,7 @@ To push a local image from a client into the registry the image must be tagged f
 
 If you already have defined a HTTPs Basic authentication layer as described in the section [How to secure Imixs-Cloud](SETUP.md), you need to first login to your docker registry:
 
-	 $ docker login -u admin https://manager-node.com:8300
+	 docker login -u admin https://manager-node.com:8300
 
 After the successful login, you can push the image.
 
@@ -231,7 +231,7 @@ Traefik is configured by a docker-compose.yml file and a traefik.toml file  loca
 
 To start the service on the manager node:
 
-	$ docker stack deploy -c management/traefik/docker-compose.yml proxy
+	docker stack deploy -c management/traefik/docker-compose.yml proxy
     
     
 After traefik is stared you can access the web UI via port 8100
@@ -252,5 +252,8 @@ To test the proxy you can start the whoami service:
 	    --label traefik.frontend.rule=Host:whoami.imixs.com \
 	    --label traefik.docker.network=imixs-proxy-net \
 	    emilevauge/whoami
-	
+
+or if you have created a docker-compose file:
+
+	docker stack deploy -c apps/whoami/docker-compose.yml whoami
  
