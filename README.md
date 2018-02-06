@@ -72,7 +72,7 @@ Read the following sections to setup a _Imixs-Cloud_ environment:
 
  * [How to setup Imixs-Cloud](SETUP.md) - basic setup information.
  * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
- * [The Private Registry](REGESTRY.md) - how to work with a private registry.
+ * [The Private Registry](REGISTRY.md) - how to work with a private registry.
 
 
 # How to Manage Services
