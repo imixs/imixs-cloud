@@ -45,7 +45,7 @@ Only the management node should be visible via the internet. Worker nodes are on
  
 ### Directories 
  
-The management node has the following directory structure located in the manager home directory to setup and run the Imixs-Workflow-Cloud and its services. 
+The management node has the following directory structure located in the manager home directory to setup and run the Imixs-Cloud and its services. 
 
 	/-
 	 |+ management/
@@ -58,9 +58,9 @@ The management node has the following directory structure located in the manager
 
 The /management/ directory holds the service configuration for the management services running on the management node only. 
 The /apps/ directory contains service setups to start applications running on the worker nodes.
+Each sub-directory typically holds a docker-compose.yml file to startup the corresponding service and optional additional configuration files. 
 
-You can checkout this structure form the git repo or create the folders by your self. 
-Each directory typically holds a docker-compose.yml file to startup the corresponding service and optional additional configuration files.   
+You can checkout this structure from the git repo or create the folders by your self. 
  
  
 # How to Setup
@@ -68,10 +68,11 @@ Each directory typically holds a docker-compose.yml file to startup the correspo
 [Docker-Swarm](https://docs.docker.com/engine/swarm/) is used to run a cluster of docker hosts serving business applications in docker-containers.
 Each node in the swarm has at least installed Docker.
 
-Read the following sections to setup a _Imixs-Cloud_
+Read the following sections to setup a _Imixs-Cloud_ environment:
 
  * [How to setup Imixs-Cloud](SETUP.md) - basic setup information.
  * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
+ * [The Private Registry](REGESTRY.md) - how to work with a private registry.
 
 
 # How to Manage Services
@@ -79,7 +80,7 @@ Read the following sections to setup a _Imixs-Cloud_
 After you have setup the Imixs-Cloud environment you can deploy and start your docker containers. 
 In Docker-Swarm, containers are started as services within a so called 'stack'. A _stack_ is described by a docker-compose.yml file. Each service of a stack can comunitcate with eachother in the same stack. A docker-compose file looks like this:
 
-	version: '3'
+	version: '3.1'
 	
 	services:
 	  app:
@@ -110,12 +111,16 @@ In Docker-Swarm, containers are started as services within a so called 'stack'. 
 
 
 ### Networks
-In this example there a three services all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](SETUP.md) to learn how the proxy network is working. 
+In this example there a three services, all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](SETUP.md) to learn how the proxy network is working. 
 
 ### docker deploy stack
-You can define new applications into the /apps/ directory. Each application has its own sub-folder and consists at least of one docker-compose.yml file. 
+You can define new custom applications in the /apps/ directory. Each application has its own sub-folder and consists at least of one docker-compose.yml file. 
 
-To deploy and run your application into the Imixs-Cloud, you run the _docker stack deploy_ command:
+	 |+ apps/
+	    |+ MY-APP/
+	       |  docker-compose.yml
+
+To deploy and run a custom application within the Imixs-Cloud, you run the _docker stack deploy_ command:
 
 	docker stack deploy -c apps/MY-APP/docker-compose.yml MY-APP 
 
@@ -133,8 +138,6 @@ If your stack contains images hosted on the private registry, you need to specif
 	  app:
 	    image: my-registry.com:8300/imixs/imixs-office-workflow:3.1.2-SNAPSHOT
 	....
-
-
 
 
   

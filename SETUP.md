@@ -187,7 +187,7 @@ You can check the registry API via the Rest API:
 	https://manager-node.com:8300/v2/
 
 ### How to grant a Client
-To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of local client and the docker service must be restart once:
+To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of the local client and the docker service must be restart once:
 
 
 	mkdir -p /etc/docker/certs.d/manager-node.com:8300
