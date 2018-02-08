@@ -70,9 +70,10 @@ Each node in the swarm has at least installed Docker.
 
 Read the following sections to setup a _Imixs-Cloud_ environment:
 
- * [How to setup Imixs-Cloud](SETUP.md) - basic setup information.
- * [How to secure Imixs-Cloud](SECURITY.md) - advanced setup and security information.
- * [The Private Registry](REGISTRY.md) - how to work with a private registry.
+ * [How to setup Imixs-Cloud](doc/SETUP.md) - basic setup information.
+ * [How to secure Imixs-Cloud](doc/SECURITY.md) - advanced setup and security information.
+ * [The Private Registry](doc/REGISTRY.md) - how to work with a private registry.
+ * [Stateful Services](doc/STATEFUL.md) - how to deploy stateful services. 
 
 
 # How to Manage Services
