@@ -2,15 +2,15 @@
 
 The following section gives an example how to use a private Git repository to version the configuration of an imixs-cloud environment. 
 
-One concept of Imixs-Cloud is a fast and easy setup of a docker-swarm environment. All concepts of Imixs-Cloud are based on clearly structured files based configuration. For that reason it is easy to nearby to manage the configuration with the help of a version control system like Git.
+One concept of Imixs-Cloud is a fast and easy setup of a docker-swarm environment. All concepts of Imixs-Cloud are based on clearly structured files based configuration. For that reason it is nearby to manage the configuration with the help of a version control system like Git.
 Git can be used to load an existing setup on a blank manager node or push changes made on the server side back into the code repository. As the configuration files are telling a lot about the environment - also sensible information - the code repository should be private. The next section explains how to setup a git repository. 
 
 
 ## Init a Private Git Repositroy
 
-A private Git repository can be setup on GitHub or 
+A private Git repository can be setup on GitHub or on a private server. 
 
-The entire [Pro Git book](https://git-scm.com/book/en/v2), written by Scott Chacon and Ben Straub and published by Apress, is available [online](https://git-scm.com/book/en/v2). This book also includes information how to setup a private Git repository. Projects like [GitBucket](https://github.com/gitbucket/gitbucket) can help to setup a repository with a web interface and a lot of additional features.  We will not explain how to setup a private repository and assume that you already have a private repository. 
+Information about Git can be found in the book [Pro Git book](https://git-scm.com/book/en/v2), written by Scott Chacon and Ben Straub and published by Apress, which is available [online](https://git-scm.com/book/en/v2). This book also includes information how to setup a private Git repository. Projects like [GitBucket](https://github.com/gitbucket/gitbucket) can help to setup a repository with a web interface and a lot of additional features.  We will not explain how to setup a Git private repository here and we assume that you already have a private repository running. 
 
 
 
@@ -26,7 +26,7 @@ Assuming that you have created the recommended file structure for your imixs-clo
 
 ### Push an existing repository from the command line
 
-With the following example the local git repositry holding the imixs-cloud configuration can be push the existing local repository into a private remote repository:
+With the following example the local git repositry, holding the imixs-cloud configuration, can be pushed into a private remote repository:
  
 	$ git remote add origin http://my-private-git.com/my-cloud.git
 	$ git push -u origin master
@@ -39,7 +39,7 @@ In this example a http connection is used so git will ask for username and passw
 ## Installing Git on the Manager Server Node
 
 Next you should install git on the manager node of your docker swarm environment.
-If you want to install the basic Git tools on Linux via a binary installer, you can generally do so through the basic package-management tool that comes with your distribution. 
+If you want to install the Git on Linux via a binary installer, you can generally do so through the basic package-management tool that comes with your distribution. 
 
 If you’re on a Debian-based distribution, try apt-get:
 
