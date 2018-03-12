@@ -47,9 +47,9 @@ If you’re on a Debian-based distribution, try apt-get:
 
 
 
-## Pull the Configuration 
+## Clone the Environment Configuration 
 
-After you have installed git on the server, you can now pull the configuration from your private remote repository: 
+After you have installed git on the server, you can now clone the configuration from your private remote repository: 
 
 
 	$ git clone http://my-private-git.com/my-cloud.git
@@ -67,6 +67,20 @@ The configuration will then be found in the project directory:
 
 	~/my-cloud
 	
-	
-	
+
+## Pull the Configuration 	
+
+After the git repo is setup you can pull changes with
+
+	$ cd my-cloud
+	$ git pull
+
+
+## Push changes 	
+
+After you mande changes you can push the changes back into the remote repository
+
+	$ cd my-cloud
+	$ git push origin master
+
  
