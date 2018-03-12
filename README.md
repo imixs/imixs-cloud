@@ -73,6 +73,7 @@ Read the following sections to setup a _Imixs-Cloud_ environment:
  * [How to setup Imixs-Cloud](doc/SETUP.md) - basic setup information.
  * [How to secure Imixs-Cloud](doc/SECURITY.md) - advanced setup and security information.
  * [The Private Registry](doc/REGISTRY.md) - how to work with a private registry.
+ * [Version Control](doc/VERSIONCONTROL.md) - how to setup a Git repo
  * [Stateful Services](doc/STATEFUL.md) - how to deploy stateful services. 
 
 
