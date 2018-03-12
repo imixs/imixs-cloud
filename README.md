@@ -41,7 +41,7 @@ A _Imixs-Cloud_ consists of at least two nodes.
 Only the management node should be visible via the internet. Worker nodes are only visible internally in the swarm. The infrastructure can be scaled by adding new worker nodes. 
 
 
-<img src="imixs-cloud-01.png" />
+<img src="doc/imixs-cloud-01.png" />
  
 ### Directories 
  
