@@ -26,7 +26,7 @@ Assuming that you have created the recommended file structure for your imixs-clo
 
 ### Push an existing repository from the command line
 
-With the following example the local git repositry, holding the imixs-cloud configuration, can be pushed into a private remote repository:
+With the following example the local git repository, holding the imixs-cloud configuration, can be pushed into a private remote repository:
  
 	$ git remote add origin http://my-private-git.com/my-cloud.git
 	$ git push -u origin master
@@ -78,9 +78,11 @@ After the git repo is setup you can pull changes with
 
 ## Push changes 	
 
-After you mande changes you can push the changes back into the remote repository
+After you made changes you can commit and push the changes back into the remote repository
 
 	$ cd my-cloud
+	$ git add some-file
+	$ git commit -m "some update"
 	$ git push origin master
 
  
