@@ -77,6 +77,12 @@ Add the following environment entries:
 Finally you can redeploy the registry service from the swarmpit UI.	
 
 
+### Deploy Stack from Private Registry.
+
+If you start a stack form your private registry which is secured via basic authentication you need to run:
+
+	$ deploy -c docker-compose.yml MYTAG --with-registry-auth
+
 
 # Using Docker Swarm Secrets
 
