@@ -86,7 +86,7 @@ In Docker-Swarm, containers are started as services within a so called 'stack'. 
 	
 	services:
 	  app:
-	    image: registry.imixs.com:8300/imixs/imixs-office-workflow:3.1.2-SNAPSHOT
+	    image: my-registry.com:8300/apps/my-app:1.0.0
 	    environment:
 	    ....
 	    networks:
@@ -138,7 +138,7 @@ If your stack contains images hosted on the private registry, you need to specif
 	
 	services:
 	  app:
-	    image: my-registry.com:8300/imixs/imixs-office-workflow:3.1.2-SNAPSHOT
+	    image: my-registry.com:8300/app/my-app:1.0.0
 	....
 
 
