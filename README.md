@@ -1,11 +1,11 @@
 # The Imixs-Cloud
 
-_Imixs-Cloud_ is a conceptual infrastructure project, describing a way to create a server environment for business applications.
-One of the main objectives of this project is to focus on **simplicity** and **transparency**. 
+_Imixs-Cloud_ is a conceptual infrastructure project, describing a lightweight [docker](https://www.docker.com/) based server environment for business applications.
+The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
 
-The general idea is to setup a lightweight [docker](https://www.docker.com/) based infrastructure with [docker swarm](https://docs.docker.com/engine/swarm/). Within this infrastructure business applications like [Imixs-Office-Workflow](http://www.office-workflow.de) can be deployed in a fast and easy way. 
 
-_Imixs-Cloud_ is developed as part of the Open Source project [Imixs-Workflow](http://www.imixs.org) and continuous under development. 
+_Imixs-Cloud_ runs on [docker swarm](https://docs.docker.com/engine/swarm/) to **build**, **run** and **maintain** business services.
+The project is open source and part of the Open Source project [Imixs-Workflow](http://www.imixs.org). This project is continuous under development and we sincerely invite you to participate in it.
 
 
 ## Rules
@@ -25,10 +25,11 @@ The main objectives of this project can be itemized under the following rules:
 The basic architecture of the _Imixs-Cloud_ consists of the following components:
 
  * A Docker-Swarm Cluster running on virtual or hardware nodes. 
- * A Management node providing a registry and a proxy server.
- * One ore many worker nodes to run the services. 
+ * One management node, providing central services.
+ * One or many worker nodes to run the services. 
  * A central Reverse-Proxy service to dispatch requests (listening on port 80) to applications.
  * A management UI running on the management node.
+ * A private registry to store custom docker images.
  
  
 ### Nodes
@@ -43,9 +44,10 @@ Only the management node should be visible via the internet. Worker nodes are on
 
 <img src="doc/imixs-cloud-01.png" />
  
-### Directories 
+### The Configuration Directory 
  
-The management node has the following directory structure located in the manager home directory to setup and run the Imixs-Cloud and its services. 
+The management node holds the configuration for all services in a central directory which can be synchronized with a code repository like Git.
+The configuration directory is used to setup and run the Imixs-Cloud and its services. The directory can be located in a project directory and is structured like in the following example:
 
 	/-
 	 |+ management/
@@ -56,12 +58,13 @@ The management node has the following directory structure located in the manager
 	    |+ MY-APP/
 	       |  docker-compose.yml
 
-The /management/ directory holds the service configuration for the management services running on the management node only. 
-The /apps/ directory contains service setups to start applications running on the worker nodes.
-Each sub-directory typically holds a docker-compose.yml file to startup the corresponding service and optional additional configuration files. 
+The /management/ subfolder holds the configuration for all management services running on the management node only. 
+The /apps/ directory contains service setups to start applications running typically on the worker nodes.
+Each sub-directory holds at least one docker-compose.yml file to startup the corresponding service and optional additional configuration files. 
 
-You can checkout this structure from the git repo or create the folders by your self. 
+You can checkout this structure from [GitHub](https://github.com/imixs/imixs-cloud) or you can create the folders manually. 
  
+	$ git clone https://github.com/imixs/imixs-cloud.git
  
 # How to Setup
 
@@ -70,9 +73,9 @@ Each node in the swarm has at least installed Docker.
 
 Read the following sections to setup a _Imixs-Cloud_ environment:
 
- * [How to setup Imixs-Cloud](doc/SETUP.md) - basic setup information.
+ * [How to setup Imixs-Cloud](doc/SETUP.md) - basic setup information for a docker-swarm.
  * [How to secure Imixs-Cloud](doc/SECURITY.md) - advanced setup and security information.
- * [The Private Registry](doc/REGISTRY.md) - how to work with a private registry.
+ * [The Private Registry](doc/REGISTRY.md) - how to setup and work with a private registry.
  * [Version Control](doc/VERSIONCONTROL.md) - how to setup a Git repo
  * [Stateful Services](doc/STATEFUL.md) - how to deploy stateful services. 
 
