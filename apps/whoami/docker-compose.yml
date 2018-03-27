@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 
 services:
  app:
@@ -8,7 +8,7 @@ services:
      labels:
       traefik.port: "80"
       traefik.frontend.rule: "Host:whoami.your-domain.com"
-      traefik.traefik.docker.network: "imixs-proxy-net"
+      traefik.docker.network: "imixs-proxy-net"
    
 networks:
    default:

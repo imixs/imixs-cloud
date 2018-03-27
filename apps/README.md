@@ -35,8 +35,9 @@ The labels for traefik configure the reverse proxy server traefik:
 
 * traefik.port - is the port number exposed by the container to be used by traefik to forward requests
 * traefik.frontend.rule - this is the virtual host name (dns)
-* traefik.traefik.docker.network - must be the same overlay network traefik is running in (usually:  imixs-proxy-net)
+* traefik.docker.network - must be the same overlay network traefik is running in (usually:  imixs-proxy-net)
 
+** Important: **The label _traefik.docker.network_ is important here and must be set to 'imixs-proxy-net' which is our frontend network. Otherwise, if the container is linked to several networks (e.g. a backend network for a database and a frontend network for the reverse proxy), traefik will randomly pick one (depending on how docker is returning them). This will result in a situation where traefik is not finding the correct route to the backend service and will end up with a 'Gateway Timeout' message. 
 
 ## Registry Authentication
 

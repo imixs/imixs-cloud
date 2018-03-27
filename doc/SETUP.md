@@ -153,7 +153,6 @@ After traefik is stared you can access the web UI via port 8100
 **Note: **The Traefik configuraiton is done in the traefik.toml file. You can set the logLevel to "DEBUG" if something goes wrong. 
 
 To test the proxy you can start the whoami service:
-
 	
 	docker service create \
 	    --name whoami1 \
@@ -163,7 +162,28 @@ To test the proxy you can start the whoami service:
 	    --label traefik.docker.network=imixs-proxy-net \
 	    emilevauge/whoami
 
-or if you have created a docker-compose file:
+
+It is recommended to create a docker-compose file instead of running the container configuration manually. Look at the following example of the corresponding docker-compose.yml file:
+
+	version: '3.1'	
+	services:
+	 app:
+	   image: emilevauge/whoami	   
+	   deploy:
+	     labels:
+	      traefik.port: "80"
+	      traefik.frontend.rule: "Host:whoami.your-domain.com"
+	      traefik.docker.network: "imixs-proxy-net"	   
+	networks:
+	   default:
+	    external:
+	      name:  imixs-proxy-net  
+
+
+To start the service as a stack: 
 
 	docker stack deploy -c apps/whoami/docker-compose.yml whoami
- 
+
+	
+### Traefik Docker Network	
+The label _traefik.docker.network_ is important here. If a container is linked to several networks (e.g. a backend network for a database and a frontend network for the reverse proxy), be sure to set the proper network name for the traefik.docker.network (in our case 'imixs-proxy-net') otherwise traefik will randomly pick one (depending on how docker is returning them). This will result in a situation where traefik is not finding the correct route to the backend service and will end up with a 'Gateway Timeout' message. 
