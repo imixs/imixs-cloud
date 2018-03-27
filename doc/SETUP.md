@@ -185,5 +185,9 @@ To start the service as a stack:
 	docker stack deploy -c apps/whoami/docker-compose.yml whoami
 
 	
-### Traefik Docker Network	
-The label _traefik.docker.network_ is important here. If a container is linked to several networks (e.g. a backend network for a database and a frontend network for the reverse proxy), be sure to set the proper network name for the traefik.docker.network (in our case 'imixs-proxy-net') otherwise traefik will randomly pick one (depending on how docker is returning them). This will result in a situation where traefik is not finding the correct route to the backend service and will end up with a 'Gateway Timeout' message. 
+### The Traefik Docker Network	
+The label following label is important here:
+
+	traefik.docker.network: "imixs-proxy-net"
+
+If a container is linked to several networks (e.g. a backend network for a database and a frontend network for the reverse proxy), be sure to set the proper network name for the traefik.docker.network (in our case 'imixs-proxy-net') otherwise traefik will randomly pick one (depending on how docker is returning them). This will result in a situation where traefik doesn't find the correct route to the backend service and will end up with a 'Gateway Timeout' message. 
