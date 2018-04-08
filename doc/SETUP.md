@@ -5,8 +5,8 @@ The following section describes the setup procedure of _Imixs-Cloud_ with [Docke
 Read the following tutorial for general information about how to setup a Docker-Swarm:
 
 * [Official Docker-Swarm Tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/)
-* [Lightweight Docker Swarm Environment - by Ralph Soika](http://ralph.soika.com/lightweight-docker-swarm-environment/)
-* [How to Run Docker-Swarm on VM Servers - by Ralph Soika](http://ralph.soika.com/how-to-run-docker-swarm-on-a-vm-servers/)
+* [Lightweight Docker Swarm Environment - by Ralph Soika](http://ralph.blog.imixs.com/lightweight-docker-swarm-environment/)
+* [How to Run Docker-Swarm on VM Servers - by Ralph Soika](http://ralph.blog.imixs.com/how-to-run-docker-swarm-on-a-vm-servers/)
 
 ## Nodes
 
