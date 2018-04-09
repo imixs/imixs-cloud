@@ -76,6 +76,7 @@ Read the following sections to setup a _Imixs-Cloud_ environment:
  * [How to setup Imixs-Cloud](doc/SETUP.md) - basic setup information for a docker-swarm.
  * [The Private Registry](doc/REGISTRY.md) - how to setup and work with a private registry.
  * [How to secure Imixs-Cloud](doc/SECURITY.md) - advanced setup and security information.
+ * [HTTPS support](doc/HTTPS_ENCRYPTION.md) - how to setup HTTPS encryption. 
  * [Version Control](doc/VERSIONCONTROL.md) - how to setup a Git repo
  * [Stateful Services](doc/STATEFUL.md) - how to deploy stateful services. 
 

@@ -134,8 +134,8 @@ The default userid is ‘admin’ with the password ‘admin’.
 
 The HTTP reverse proxy is used to hide services from the internet. In addition the proxy also acts as a load balancer to be used if applications need to be scaled over several nodes.
 
-In _Imixs-Cloud_ [traefik.io](traefik.io) is used as the service for a reverse proxy. 
-The service uses a separate overlay network to scann for services. A service which should be available through the proxy need to be run in the network 'imixs-proxy-net'. 
+In _Imixs-Cloud_ [traefik.io](http://traefik.io) is used as the service for a reverse proxy. 
+The service uses a separate overlay network to scan for services. A service which should be available through the proxy need to be run in the network 'imixs-proxy-net'. 
 
 Traefik is configured by a docker-compose.yml file and a traefik.toml file  located in the folder 'management/traefik/'
 
