@@ -89,7 +89,9 @@ The Automated Certificate Management Environment (acme) configuration can be add
 
 
 
+## Verifiying Certificates
 
+You can get a list of certificates issued for your registered domain by [searching on crt.sh](https://crt.sh/), which uses the public [Certificate Transparency](https://www.certificate-transparency.org/) logs.
 
 
 
