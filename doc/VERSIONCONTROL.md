@@ -90,7 +90,7 @@ After you made changes you can commit and push the changes back into the remote 
 
 In case you have tested some configuration locally on the manager node you can easily reset your changes to the latest version in your git repo: 
 
-	git checkout .
+	$ git checkout .
 	
 This works if you have not yet added any changes to the index. 
  
