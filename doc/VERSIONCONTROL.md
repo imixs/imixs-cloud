@@ -76,7 +76,7 @@ After the git repo is setup you can pull changes with
 	$ git pull
 
 
-## Push changes 	
+## Push Changes 	
 
 After you made changes you can commit and push the changes back into the remote repository
 
@@ -85,4 +85,12 @@ After you made changes you can commit and push the changes back into the remote 
 	$ git commit -m "some update"
 	$ git push origin master
 
+
+## Reset Changes 
+
+In case you have tested some configuration locally on the manager node you can easily reset your changes to the latest version in your git repo: 
+
+	git checkout .
+	
+This works if you have not yet added any changes to the index. 
  
