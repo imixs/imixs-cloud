@@ -117,7 +117,7 @@ In Docker-Swarm, containers are started as services within a so called 'stack'. 
 
 
 ### Networks
-In this example there a three services, all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](SETUP.md) to learn how the proxy network is working. 
+In this example there a three services, all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](doc/SETUP.md) to learn how the proxy network is working. 
 
 ### docker deploy stack
 You can define new custom applications in the /apps/ directory. Each application has its own sub-folder and consists at least of one docker-compose.yml file. 
