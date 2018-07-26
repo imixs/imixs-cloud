@@ -67,9 +67,12 @@ To setup docker swarm on the management-node run the following command:
 This command init the swarm and returns a pre-configured docker swarm join command for to be executed on any worker-node to joint the swarm. For example: 
 
 	docker swarm join --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx 192.168.99.100:2377
-	
 
 The IP address given here is the IP from the manager-node.
+	
+### Join the swarm node 
+
+To join the swarm node from a worker node you can run the command _docker swarm join_ followed by the swarm token. 
 To get the join token later run the following command on the manager node:
 
 	docker swarm join-token worker 
