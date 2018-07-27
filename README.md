@@ -4,20 +4,21 @@ _Imixs-Cloud_ is a conceptual infrastructure project, describing a lightweight [
 The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
 
 
-_Imixs-Cloud_ runs on [docker swarm](https://docs.docker.com/engine/swarm/) to **build**, **run** and **maintain** business services.
+_Imixs-Cloud_ runs on a [docker swarm](https://docs.docker.com/engine/swarm/)
+consisting of multiple Docker hosts acting as managers and workers. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized enterprises.
 The project is open source and part of the Open Source project [Imixs-Workflow](http://www.imixs.org). This project is continuous under development and we sincerely invite you to participate in it.
 
 
-## Rules
-The main objectives of this project can be itemized under the following rules:
+## The Main Objectives
+The main objectives of the _Imixs-Cloud_ project can be itemized under the following rules:
 
- 1. _A Imixs-Cloud can be setup easily and run on commodity hardware._
- 2. _All services and infrastructure components are running on docker swarm._
- 3. _The docker command line interface (CLI) is used to setup and manage nodes and services._ 
- 4. _Docker UI Front-End components are used to monitor the infrastructure._
- 5. _Business applications are deployed to a central Docker-Registry and started as services._
- 6. _All services are isolated and accessible only through a central proxy server._
- 7. _Scalabillity and configuration is managed by docker-compose._
+ 1. _A new environment can be setup easily and run on commodity hardware._
+ 2. _The docker command line interface (CLI) is the main interface to setup and manage the environment._ 
+ 3. _Scalabillity and configuration is managed by the core concepts of docker-swarm and docker-compose._
+ 4. _Docker Images can be deployed to a central Docker-Registry which is part of the environment._
+ 5. _All services are isolated and accessible through a central reverse proxy server._
+ 6. _The environment configuration can be managed by a private code repository like Git._
+ 7. _Docker UI Front-End services are used to monitor the infrastructure._
  
  
 ## Basic Architecture
@@ -27,7 +28,7 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
  * A Docker-Swarm Cluster running on virtual or hardware nodes. 
  * One management node, providing central services.
  * One or many worker nodes to run the services. 
- * A central Reverse-Proxy service to dispatch requests (listening on port 80) to applications.
+ * A central Reverse-Proxy service to dispatch requests (listening on port 80).
  * A management UI running on the management node.
  * A private registry to store custom docker images.
  
@@ -37,9 +38,9 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
 A _Imixs-Cloud_ consists of at least two nodes. 
 
 * The management node is the swarm manager and provides a private registry and a reverse proxy service.
-* The worker nodes are serving the applications. 
+* The worker nodes are serving the business applications. 
 
-Only the management node should be visible via the internet. Worker nodes are only visible internally in the swarm. The infrastructure can be scaled by adding new worker nodes. 
+Only the management node should be visible via the internet. Worker nodes are only visible internally by the swarm. The infrastructure can be easily scaled by adding new worker nodes. 
 
 
 <img src="doc/imixs-cloud-01.png" />
@@ -58,9 +59,9 @@ The configuration directory is used to setup and run the Imixs-Cloud and its ser
 	    |+ MY-APP/
 	       |  docker-compose.yml
 
-The /management/ subfolder holds the configuration for all management services running on the management node only. 
-The /apps/ directory contains service setups to start applications running typically on the worker nodes.
-Each sub-directory holds at least one docker-compose.yml file to startup the corresponding service and optional additional configuration files. 
+The **/management/** subfolder holds the configuration for all management services running on the management node only. This confiugration is maintained within this project and can be customized for individual needs. 
+
+The **/apps/** directory is the place where the custom business services are configured. Each sub-directory holds at least one docker-compose.yml file to startup the corresponding service and optional additional configuration files. 
 
 You can checkout this structure from [GitHub](https://github.com/imixs/imixs-cloud) or you can create the folders manually. 
  
@@ -83,7 +84,7 @@ Read the following sections to setup a _Imixs-Cloud_ environment:
 
 # How to Manage Services
 
-After you have setup the Imixs-Cloud environment you can deploy and start your docker containers. 
+After you have setup the Imixs-Cloud environment you can deploy and start your custom business services. 
 In Docker-Swarm, containers are started as services within a so called 'stack'. A _stack_ is described by a docker-compose.yml file. Each service of a stack can comunitcate with eachother in the same stack. A docker-compose file looks like this:
 
 	version: '3.1'
@@ -117,7 +118,7 @@ In Docker-Swarm, containers are started as services within a so called 'stack'. 
 
 
 ### Networks
-In this example there a three services, all bound to a internal overlay network called 'backend'. Only the service 'imixs/imixs-office-workflow' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](doc/SETUP.md) to learn how the proxy network is working. 
+In this example there a three services, all bound to a internal overlay network called 'backend'. Only the service 'apps/my-app' is connected in addition to the external proxy network, so that only this application is visible outside of the stack. Read the [Imixs-Cloud setup guide](doc/SETUP.md) to learn how the proxy network is working. 
 
 ### docker deploy stack
 You can define new custom applications in the /apps/ directory. Each application has its own sub-folder and consists at least of one docker-compose.yml file. 
@@ -145,11 +146,15 @@ If your stack contains images hosted on the private registry, you need to specif
 	    image: my-registry.com:8300/app/my-app:1.0.0
 	....
 
+To start the stack run the docker command with the option _--with-registry-auth_. 
 
+	docker stack deploy -c apps/MY-APP/docker-compose.yml MY-APP --with-registry-auth
+ 
+This will force the docker service to authenticate against the registry. 
   
 # Contribute
 
-_Imixs-Cloud_ is open source and are sincerely invited to participate in it. 
+_Imixs-Cloud_ is open source and your are sincerely invited to participate in it. 
 If you want to contribute to this project please [report any issues here](https://github.com/imixs/imixs-cloud/issues). 
 All source are available on [Github](https://github.com/imixs/imixs-cloud).
 
