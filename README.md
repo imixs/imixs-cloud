@@ -6,7 +6,7 @@ The main objectives of this project are **simplicity**, **transparency** and **o
 
 _Imixs-Cloud_ runs on a [docker swarm](https://docs.docker.com/engine/swarm/)
 consisting of multiple Docker hosts acting as managers and workers. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized enterprises.
-The project is open source and part of the Open Source project [Imixs-Workflow](http://www.imixs.org). This project is continuous under development and we sincerely invite you to participate in it.
+The project is open source and continuous under development. We sincerely invite you to participate in it!
 
 
 ## The Main Objectives
@@ -59,11 +59,11 @@ The configuration directory is used to setup and run the Imixs-Cloud and its ser
 	    |+ MY-APP/
 	       |  docker-compose.yml
 
-The **/management/** subfolder holds the configuration for all management services running on the management node only. This confiugration is maintained within this project and can be customized for individual needs. 
+The **/management/** subfolder holds the configuration for all management services running on the management node only. This configuration is maintained by this project and can be customized for individual needs. 
 
-The **/apps/** directory is the place where the custom business services are configured. Each sub-directory holds at least one docker-compose.yml file to startup the corresponding service and optional additional configuration files. 
+The **/apps/** directory is the place where the custom business services are configured. Each sub-directory holds at least one docker-compose.yml file to startup the corresponding services. Optional additional configuration files are located in this directory. 
 
-You can checkout this structure from [GitHub](https://github.com/imixs/imixs-cloud) or you can create the folders manually. 
+You can fork this structure from [GitHub](https://github.com/imixs/imixs-cloud) to setup and create your own environment. 
  
 	$ git clone https://github.com/imixs/imixs-cloud.git
  
