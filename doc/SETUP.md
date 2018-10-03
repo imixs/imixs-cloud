@@ -112,9 +112,20 @@ To create the overlay networks on the manager-node run:
 	docker network create --driver=overlay imixs-proxy-net
 
  
-### The Swarm UI – swarmpit.io
-_Imixs-Cloud_ uses [swarmpit.io](http://swarmpit.io) as a lightweight Docker Swarm management UI. 
-swarmpit.io is started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'swarmpit/'
+## Docker-Swarm UI
+
+There are two different UIs which can be used to manage a docker-swarm from the browser.
+
+ * [Swarmpit](https://swarmpit.io/)
+ * [protainer.io](https://portainer.io/)
+ 
+Both UIs part of the Imixs-Cloud project and pre-configured. But only one of them should be used as both listen on port 8200!
+
+ 
+ 
+### Swarmpit 
+
+[swarmpit.io](http://swarmpit.io) ia a lightweight Docker Swarm management UI. It can be started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'swarmpit/'
 
 To start the service on the manager node:
 
@@ -122,7 +133,7 @@ To start the service on the manager node:
 
 Note: It can take some minutes until swarmpit is started.
 
-After the swarmpit the front-end can be access on port 8200
+After swarmpit was installed and started, the front-end can be access on port 8200
 
 http://manager-node.com:8200
 
@@ -131,6 +142,26 @@ http://manager-node.com:8200
 The default userid is ‘admin’ with the password ‘admin’.
 
 ** Note: ** If you change the network configuration you need to remove and already existing swarmpit service and its volume!
+
+
+### portainer.io
+
+[protainer.io](https://portainer.io/)  provides a detailed overview of Docker-Swarm cluster and allows you to manage containers, images, networks and volumes. This works also for the cluster worker nods as portainer starts agents on each worker. 
+
+It can be started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'portainer/'
+
+To start the service on the manager node:
+
+	docker stack deploy -c management/portainer/docker-compose.yml portainer
+
+Note: It can take some minutes until swarmpit is started.
+
+The front-end can be access on port 8200
+
+http://manager-node.com:8200
+
+
+
 
 
 ## The HTTP Reverse Proxy – traefik.io
