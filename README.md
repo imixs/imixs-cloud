@@ -1,10 +1,10 @@
 # The Imixs-Cloud
 
-_Imixs-Cloud_ is a conceptual infrastructure project, describing a lightweight [docker](https://www.docker.com/) based server environment for business applications.
+_Imixs-Cloud_ is an open infrastructure project, describing a lightweight [docker](https://www.docker.com/) based server environment for business applications.
 The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
 
 
-_Imixs-Cloud_ runs on a [docker swarm](https://docs.docker.com/engine/swarm/)
+_Imixs-Cloud_ is based on a [docker swarm](https://docs.docker.com/engine/swarm/)
 consisting of multiple Docker hosts acting as managers and workers. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized enterprises.
 The project is open source and continuous under development. We sincerely invite you to participate in it!
 
