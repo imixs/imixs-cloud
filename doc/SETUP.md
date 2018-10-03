@@ -166,7 +166,7 @@ http://manager-node.com:8200
 
 ## The HTTP Reverse Proxy – traefik.io
 
-The HTTP reverse proxy is used to hide services from the internet. In addition the proxy also acts as a load balancer to be used if applications need to be scaled over several nodes.
+The HTTP reverse proxy is used to hide services from the Internet. In addition the proxy also acts as a load balancer to be used if applications need to be scaled over several nodes.
 
 In _Imixs-Cloud_ [traefik.io](http://traefik.io) is used as the service for a reverse proxy. 
 The service uses a separate overlay network to scan for services. A service which should be available through the proxy need to be run in the network 'imixs-proxy-net'. 

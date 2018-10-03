@@ -56,41 +56,12 @@ You can check the registry API via the Rest API:
 
 	https://manager-node.com:8300/v2/
 
-### How to grant a Client
-To grant your local client to be allowed to push/pull images from the new private docker registry, a copy of the certificate need to be copied into the docker certs.d directory of the local client and the docker service must be restart once:
 
 
-	mkdir -p /etc/docker/certs.d/manager-node.com:8300
-	cp domain.cert /etc/docker/certs.d/manager-node.com:8300/ca.crt
-	service docker restart
+### Add the registry into your Swarm UI
 
-**Note:** This is also true for the master-node itself. 
-
-
-To push a local image from a client into the registry the image must be tagged first:
-
-	docker tag emilevauge/whoami manager-node.com:8300/emilevauge/whoami
-	docker push manager-node.com:8300/emilevauge/whoami
-	The push refers to a repository [manager-node.com:8300/emilevauge/whoami]
-	7384fdb82758: Pushed 
-	latest: digest: sha256:f716da0c5896906613b2da5f465c75efd07b1e0e430c2b702c656f4ce2602f69 size: 528
-
-
-### Authentication
-
-If you already have defined a HTTPs Basic authentication layer as described in the section [How to secure Imixs-Cloud](SETUP.md), you need to first login to your docker registry:
-
-	 docker login -u admin https://manager-node.com:8300
-
-After the successful login, you can push the image.
-
-**Note:** This is also true for the master-node itself if a service need to pull a image from the private registry. 
-
-### Add the registry into swarmpit
-
-The private registry can also be added into swarmpit -  “Registry -> NEW REGISTRY“. Add the URL “https://manager-node-com:8300/”
-
-
+If you have installed a docker swarm-ui you can add the prived registry. 
+Add the registry by the URL “https://manager-node-com:8300/”
 
 
 
@@ -116,3 +87,15 @@ To push a local image from a client into the Imixs-Cloud registry, the image mus
 
 The push refers to a Imixs-Cloud repository on the host [manager-node.com:8300]
 
+
+
+
+### Authentication
+
+If you already have defined a HTTPs Basic authentication layer as described in the section [How to secure Imixs-Cloud](SETUP.md), you need to first login to your docker registry:
+
+	 docker login -u admin https://manager-node.com:8300
+
+After the successful login, you can push the image.
+
+**Note:** This is also true for the master-node itself if a service need to pull a image from the private registry. 
