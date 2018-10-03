@@ -2,12 +2,14 @@ version: '3'
 
 services:
   app:
-     image: traefik:v1.4.4
+     image: traefik:v1.6.5
      volumes:
        - /var/run/docker.sock:/var/run/docker.sock
        - $PWD/management/traefik/traefik.toml:/etc/traefik/traefik.toml
+       - $PWD/management/traefik/acme:/etc/traefik/acme
      ports:
        - 80:80
+       - 443:443
        - 8100:8080
      deploy:
        placement:

@@ -32,6 +32,14 @@ defaultEntryPoints = ["http"]
 [entryPoints]
     [entryPoints.http]
     address = ":80"
+# HTTPS configuratiton
+#  [entryPoints.http]
+#  address = ":80"
+#    [entryPoints.http.redirect]
+#	entryPoint = "https"
+#  [entryPoints.https]
+#  address = ":443"
+#    [entryPoints.https.tls]    
     
 
 # Traefik logs
@@ -84,13 +92,13 @@ defaultEntryPoints = ["http"]
 ################################################################
 
 # Enable web configuration backend
-[web]
+#[web]
 
 # Web administration port
 #
 # Required
 #
-address = ":8080"
+#address = ":8080"
 
 # To enable basic auth generate user credentials with htpasswd
 # [web.auth.basic]
@@ -112,7 +120,7 @@ swarmmode = true
 # Required
 # Default: "unix:///var/run/docker.sock"
 #
-# endpoint = "tcp://10.10.10.10:2375"
+# endpoint = "tcp://127.0.0.1:2377"
 
 # Default domain used.
 # Can be overridden by setting the "traefik.domain" label on a container.
@@ -127,4 +135,20 @@ domain = "your-domain.com"
 # Optional
 # Default: true
 #
-# exposedbydefault = true
+exposedbydefault = true
+
+
+
+################################################################
+# HTTPS - ACME
+################################################################
+#
+#[acme]
+#email = "yourmail@yourdomain.com"
+#storage = "/etc/traefik/acme/acme.json"
+#entryPoint = "https"
+#OnHostRule = true
+#[acme.httpChallenge]
+#  entryPoint = "http"
+	
+	
