@@ -61,9 +61,11 @@ The **/management/** sub-folder holds the configuration for all management servi
 
 The **/apps/** directory is the place where the custom business services are configured. Each sub-directory holds at least one docker-compose.yml file to startup the corresponding services. Optional additional configuration files are located in this directory. 
 
-You can fork this structure from [GitHub](https://github.com/imixs/imixs-cloud) to setup and create your own _Imixs-Cloud_ environment. 
+You can copy this structure from [GitHub](https://github.com/imixs/imixs-cloud) to setup and create your own _Imixs-Cloud_ environment. 
  
-	$ git clone https://github.com/imixs/imixs-cloud.git
+	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
+	
+Optional you can also fork the repo directyl on Github. 
  
 # How to Setup
 
