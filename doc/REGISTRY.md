@@ -46,7 +46,7 @@ openssl creates two files in the folder 'management/registry/certs/':
 The configuration of the registry service is defined by docker-compose.yml located in the folder 'registry/'
 Create a docker-compose.yml file. (See /registry/docker-compose.yml). 
 
-No the registry-service can be started with :
+Now the registry-service can be started with :
 
 	docker stack deploy -c management/registry/docker-compose.yml registry
 	
