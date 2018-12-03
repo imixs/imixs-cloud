@@ -13,7 +13,7 @@ The private registry in the _Imixs-Cloud_ is secured with a TLS (Transport Layer
 To create the certificate a DNS host name for the manager-node is needed. The following example registers the DNS name '_manager-node.com_'. The keys are stored in the directory _registry/_:
 
 
-	mkdir mkdir -p ./management/registry/certs && cd ./management/registry/certs
+	mkdir -p ./management/registry/certs && cd ./management/registry/certs
 	openssl req -newkey rsa:4096 -nodes -sha256 \
 	            -keyout domain.key -x509 -days 356 \
 	            -out domain.cert 
