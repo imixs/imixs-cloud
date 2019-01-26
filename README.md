@@ -80,6 +80,7 @@ Read the following sections to setup a _Imixs-Cloud_ environment:
  * [HTTPS support](doc/HTTPS_ENCRYPTION.md) - how to setup HTTPS encryption. 
  * [Version Control](doc/VERSIONCONTROL.md) - how to setup a Git repo
  * [Stateful Services](doc/STATEFUL.md) - how to deploy stateful services. 
+ * [Monitoring](doc/MONITORING.md) - how to monitor the docker-warm. 
 
 
 # How to Manage Services
