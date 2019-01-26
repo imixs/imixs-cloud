@@ -53,9 +53,10 @@ The result user/password string can be added directly in the docker-compose.yml 
 	         traefik.frontend.auth.basic.users: "admin:$$a3451$$MhabbIEpI$$m544Ai23455q42iC00"
 	....
 
+
 **NOTE:** In the password string, you need to replace all '$' by '$$'
 
-With this configuration trafik.io will protect your prometheus service for anonymous access. 
+Multiple user/password combinations can be separated by ','. You can find more information about traefik.io security [here](https://docs.traefik.io/configuration/backends/docker/#security-considerations).
 
 ### Provide a general password file
 
