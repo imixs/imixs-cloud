@@ -4,11 +4,11 @@ The following section describes additional security concepts of Imixs-Cloud
 
 ## Traefik: Setup Basic Authentication 
 
-The traefik web frontend (8080) is accessabel to anonymous per default. To secure the frontend follow these steps:
+The traefik web front-end (8080) is accessible to anonymous per default. To secure the front-end follow these steps:
 
 **1. Generate a password**
 
-Generate a password with the htpasswd command for the user admin
+To generate a password you can use the commadline tool 'htpasswd' which is part of the apache2-utils. Run the command to generate a password for the user admin:
 
 	htpasswd -n admin
 	New password: 
@@ -17,7 +17,7 @@ Generate a password with the htpasswd command for the user admin
 
 **2. Update the traefik.toml file**
 
-Copy the result into the traefik.toml file into the section _[web.auth.basic]_
+Copy the result of the user/password string into the section _[web.auth.basic]_ of the traefik.toml file:
 
 	...
 	[web.auth.basic]
@@ -29,6 +29,42 @@ you can add several user entries by comma separated.
 **3. Restart the Treafik Service**
 
 Reload the traefik service from the swarmpit UI.
+
+
+
+
+## Secure a Service with Basic Authentication
+
+Most services (e.g. WordPress) offer their own authentication mechanism. If your service does not provide a authentication (e.g. Prometheus) you can 
+configure a basic authentication easily with trafic.io. 
+
+First you need to generate again a password with the 'htpasswd' command from the apache2-util package. 
+
+The result user/password string can be added directly in the docker-compose.yml file. See the following example with a service configuration with basic authentication via traefik.io:
+
+	....
+	services:
+	  app:
+	     image: prom/prometheus
+	     deploy:
+	       labels:
+	         traefik.port: "9090"
+	         traefik.frontend.rule: "Host:myhost.com"
+	         traefik.frontend.auth.basic.users: "admin:$$a3451$$MhabbIEpI$$m544Ai23455q42iC00"
+	....
+
+**NOTE:** In the password string, you need to replace all '$' by '$$'
+
+With this configuration trafik.io will protect your prometheus service for anonymous access. 
+
+### Provide a general password file
+
+As an alternative of defining user/password strings in each service configuration you can also generate password file and link this file with your service:
+
+
+	...
+	traefik.frontend.auth.basic.usersFile=/path/.htpasswd
+	...
 
 
 
