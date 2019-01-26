@@ -1,0 +1,48 @@
+version: '3.2'
+
+services:
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - $PWD/management/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    deploy:
+      labels:
+        #traefik.port: "9090"
+        #traefik.frontend.rule: "Host:prometheus.myhost.com"
+        # traefik.frontend.auth.basic.usersFile: /path/.htpasswd   
+        #traefik.frontend.auth.basic.users: "admin:$$axxxxxxxxxxxxxxxxxxxxxxxxx"
+        #traefik.docker.network: "imixs-proxy-net" 
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - frontend
+      - backend     
+     
+     
+  grafana:
+    image: grafana/grafana
+    #volumes:
+    #  - ./data/grafana:/var/lib/grafana:rw
+    deploy:
+      labels:
+        traefik.port: "3000"
+        traefik.frontend.rule: "Host:grafana.myhost.com"
+        traefik.docker.network: "imixs-proxy-net" 
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - frontend
+      - backend
+
+
+
+networks:
+  frontend:
+    external:
+      name: imixs-proxy-net 
+  backend: 
+  
+

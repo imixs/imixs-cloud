@@ -1,6 +1,9 @@
 # How to Montior Imixs-Cloud
 
-The following section describes how you can monitor Imixs-Cloud
+The following section describes how you can monitor Imixs-Cloud. The monitoring stack in Imixs-Cloud provices the following services:
+
+ * Prometheus - the prometheus service configured for docker-swarm
+ * Grafana - the monitoring dashboard
 
 ## Prometheus
 
@@ -24,9 +27,11 @@ If the file is currently empty, paste the following:
 
 If the file is not empty, add those two keys, making sure that the resulting file is valid JSON. Be careful that every line ends with a comma (,) except for the last line.
 
+**Note:** The metrics-add is the manager-ip address from your docker-swarm!
+
 Save the file, and restart Docker.
 
-	$ service docker restart	
+	$ service docker restart
 
 Docker now exposes Prometheus-compatible metrics on port 9323.
 
@@ -68,11 +73,21 @@ The general configuration is defined by the file 'prometheus.yml':
 	      - targets: ['localhost:9323']
 
 
+**Note:** The static_config target must point to the manager-node-ip address! Otherwise you will see the following error:
 
-### Starting 
+	Get http://localhost:9323/metrics: dial tcp 127.0.0.1:9323: connect: connection refused
 
-To start the Prometheus service run:
+## Grafana
 
-	$ docker stack deploy -c management/portainer/docker-compose.yml portainer
+The Imixs-Cloud Monitoring Service also incluse a grafana service which is providing a dashboard for prometheus.
 
-Prometheus will be available on port 9090. You can customize the setup using the traefik.io integration and map the prometheus service to a hostname and also secure the service with basic authentication. Uncomment the corresponding lables in the docker-compose.yml file. 
+
+
+## Starting 
+
+To start the Monitoring service run:
+
+	$ docker stack deploy -c management/monitoring/docker-compose.yml monitoring
+
+Prometheus will be available on port 9090. Grafana Dashboard will be available on port 3000.
+You can customize the setup using the traefik.io integration and map the prometheus service to a hostname and also secure the service with basic authentication. Uncomment the corresponding lables in the docker-compose.yml file. 
