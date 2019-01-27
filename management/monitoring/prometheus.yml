@@ -36,7 +36,5 @@ scrape_configs:
       
   - job_name: 'node-exporter'
     static_configs:
-      # add IP adresses for all nodes to monitor
-      - targets: ['manager-node-ip:9100']
-      - targets: ['worker-node1-ip:9100']
-      - targets: ['worker-node2-ip:9100']
+      # add IP adresses for all nodes to monitor separted by ,
+      - targets: ['manager-node-ip:9100','worker-node1-ip:9100','worker-node2-ip:9100']

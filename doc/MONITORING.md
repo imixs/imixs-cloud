@@ -80,13 +80,11 @@ The general configuration is defined by the file 'prometheus.yml':
 	      
 	  - job_name: 'node-exporter'
 	    static_configs:
-	      # add IP adresses for all nodes to monitor
-	      - targets: ['manager-node-ip:9100']
-	      - targets: ['worker-node1-ip:9100']
-	      - targets: ['worker-node2-ip:9100']	
+	      # add IP adresses for all nodes to monitor sepated by ,
+	      - targets: ['manager-node-ip:9100','worker-node1-ip:9100','worker-node2-ip:9100']	
 
 
-**Note:** Ad in the section 'node-exporter' all targets with the IP addresses from your swarm nodes to be monitored.  
+**Note:** Add in the section 'node-exporter' all targets with the IP addresses from your swarm nodes to be monitored.  The IP addresses with port numbers are comma separated. 
 
 ## The node-exporter
 
