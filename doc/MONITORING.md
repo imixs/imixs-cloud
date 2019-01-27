@@ -80,15 +80,17 @@ The general configuration is defined by the file 'prometheus.yml':
 	      
 	  - job_name: 'node-exporter'
 	    static_configs:
-	      # add IP adresses for all nodes to monitor sepated by ,
-	      - targets: ['manager-node-ip:9100','worker-node1-ip:9100','worker-node2-ip:9100']	
+          # the targets listed here must match the service names from the docker-compose file
+          - targets: ['manager-001:9100','worker-001:9100']
 
 
-**Note:** Add in the section 'node-exporter' all targets with the IP addresses from your swarm nodes to be monitored.  The IP addresses with port numbers are comma separated. 
+**Note:** Add in the section 'node-exporter' all node-exporter services from the docker-compose.yml file need to be added. The service names with port 9100 are comma separated. 
 
 ## The node-exporter
 
-The node -exporter is an important service provided by prometheus. This service will provide the machine data in a prometheus format. There for this service is deployed in 'global' mode which means the service will be started on every node in your docker-swarm network. It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the IP address from every node here! 
+The node -exporter is an important service provided by prometheus. This service will provide the machine data in a prometheus format. This service need to be deployed separately for each node in the docker swarm with an unique service name (here 'manager-001' and 'worker-001'). 
+
+**Note:** It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the service name from every node here! 
 
 ## Grafana
 

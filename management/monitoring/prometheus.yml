@@ -36,5 +36,5 @@ scrape_configs:
       
   - job_name: 'node-exporter'
     static_configs:
-      # add IP adresses for all nodes to monitor separted by ,
-      - targets: ['manager-node-ip:9100','worker-node1-ip:9100','worker-node2-ip:9100']
+      # the targets listed here must match the service names from the docker-compose file
+      - targets: ['manager-001:9100','worker-001:9100']

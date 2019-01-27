@@ -27,21 +27,54 @@ services:
 
 
   ################################################################
-  # The promethes node exporter 
-  #   - runs on every node
+  # The promethes node-exporter 
+  # For each node a separte service need to be added 
   ################################################################
-  node-exporter:
+  # START NODE-EXPORTERS.....
+  manager-001:
     image: prom/node-exporter
-    ports:
-      - '9100:9100'
     volumes:
+      - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-      - /proc:/host/proc:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$|/)"'
+      - '--collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$"'
     deploy:
-      mode: global
+      placement:
+        constraints:
+         # Hostname of the manager node!
+         - node.hostname == manager-001
+    networks:
+      - backend
 
-
+  worker-001:
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$|/)"'
+      - '--collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$"'
+    deploy:
+      placement:
+        constraints:
+         # Hostname of the first woker node!
+         - node.hostname == worker-001
+    networks:
+      - backend
+  ################################################################
+  # END NODE-EXPORTERS.....
+  ################################################################
+      
+      
      
   ################################################################
   # Grafana
