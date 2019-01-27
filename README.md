@@ -191,6 +191,15 @@ To start the stack run the docker command with the option _--with-registry-auth_
 This will force the docker service to authenticate against the registry.
 You can setup  a private registry in your _Imixs-Cloud_ environment. See the section "[The Private Registry](doc/REGISTRY.md)"  
   
+  
+# How to Montior
+
+_Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your docker-swarm.
+
+<img src="./doc/imixs-cloud-04.png" />  
+  
+The monitoring is based on [Prometheus](https://prometheus.io/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to montor your docker-swarm network but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
+  
 # Contribute
 
 _Imixs-Cloud_ is open source and your are sincerely invited to participate in it. 

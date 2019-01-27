@@ -4,7 +4,7 @@ _Imixs-Cloud_ also provides a monitoring feature which allows you to monitor you
 
 <img src="./imixs-cloud-04.png" />
 
-The following section describes how you can monitor Imixs-Cloud. The monitoring stack in Imixs-Cloud provices the following services:
+The following section describes how you can monitor Imixs-Cloud. The monitoring stack in Imixs-Cloud provides the following services:
 
  * Prometheus - the prometheus main service configured for docker-swarm.
  * Node-Exporter - a prometheus service which provides the machine data from every node in your docker-swarm.
@@ -86,24 +86,24 @@ The general configuration is defined by the file 'prometheus.yml':
 	      - targets: ['worker-node2-ip:9100']	
 
 
-**Note:** Ad in the section node-exporter all targets with the IP addresses from your swarm nodes to be monitored.  Otherwise you will see the following error:
+**Note:** Ad in the section 'node-exporter' all targets with the IP addresses from your swarm nodes to be monitored.  
 
 ## The node-exporter
 
-The node -exporter is an imprtant service provided by prometheus. This service will provide the machine data in a prometheus format. There for this service is deployed in 'global' mode which means the service will be started on every node in your docker-swarm network. It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the IP address from every node here! 
+The node -exporter is an important service provided by prometheus. This service will provide the machine data in a prometheus format. There for this service is deployed in 'global' mode which means the service will be started on every node in your docker-swarm network. It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the IP address from every node here! 
 
 ## Grafana
 
-The Imixs-Cloud Monitoring Service also includes a grafana service which is providing a dashboard for prometheus.
+The Imixs-Cloud Monitoring Service also includes a [Grafana](https://grafana.com/) service which is providing a dashboard for prometheus.
 The grafana service maps a data volume named 'grafana-data' to store your settings made in grafana. 
 
 
 
-## Starting 
+## Starting The Monitor Service 
 
-To start the Monitoring service run:
+After you have edited the prometheus.yml file you can start the Monitoring service with:
 
 	$ docker stack deploy -c management/monitoring/docker-compose.yml monitoring
 
 Prometheus will be available on port 9090. Grafana Dashboard will be available on port 3000.
-You can customize the setup using the traefik.io integration and map the prometheus service to a hostname and also secure the service with basic authentication. Uncomment the corresponding lables in the docker-compose.yml file. 
+You can customize the setup using the traefik.io integration and map the prometheus service to a hostname and also secure the service with basic authentication. Uncomment the corresponding labels in the docker-compose.yml file. 
