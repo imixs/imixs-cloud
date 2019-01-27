@@ -92,6 +92,60 @@ The node -exporter is an important service provided by prometheus. This service 
 
 **Note:** It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the service name from every node here! 
 
+This is the corresponding example in the docker-compose.yml file:
+
+
+	  ...
+	  ################################################################
+	  # The promethes node-exporter 
+	  # For each node a separte service need to be added 
+	  ################################################################
+	  # START NODE-EXPORTERS.....
+	  manager-001:
+	    image: prom/node-exporter
+	    volumes:
+	      - /proc:/host/proc:ro
+	      - /sys:/host/sys:ro
+	      - /:/rootfs:ro
+	    command:
+	      - '--path.procfs=/host/proc'
+	      - '--path.sysfs=/host/sys'
+	      - '--path.rootfs=/host'
+	      - '--collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$|/)"'
+	      - '--collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$"'
+	    deploy:
+	      placement:
+	        constraints:
+	         # Hostname of the manager node!
+	         - node.hostname == manager-001
+	    networks:
+	      - backend
+	
+	  worker-001:
+	    image: prom/node-exporter
+	    volumes:
+	      - /proc:/host/proc:ro
+	      - /sys:/host/sys:ro
+	      - /:/rootfs:ro
+	    command:
+	      - '--path.procfs=/host/proc'
+	      - '--path.sysfs=/host/sys'
+	      - '--path.rootfs=/host'
+	      - '--collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$|/)"'
+	      - '--collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$"'
+	    deploy:
+	      placement:
+	        constraints:
+	         # Hostname of the first woker node!
+	         - node.hostname == worker-001
+	    networks:
+	      - backend
+	  ################################################################
+	  # END NODE-EXPORTERS.....
+	  ################################################################
+	  ...
+	  
+
 ## Grafana
 
 The Imixs-Cloud Monitoring Service also includes a [Grafana](https://grafana.com/) service which is providing a dashboard for prometheus.
