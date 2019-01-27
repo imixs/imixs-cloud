@@ -2,6 +2,11 @@ version: '3.2'
 
 services:
 
+
+  ################################################################
+  # Prometheus 
+  #  - runs on manager node
+  ################################################################
   prometheus:
     image: prom/prometheus
     volumes:
@@ -19,12 +24,33 @@ services:
     networks:
       - frontend
       - backend     
+
+
+  ################################################################
+  # The promethes node exporter 
+  #   - runs on every node
+  ################################################################
+  node-exporter:
+    image: prom/node-exporter
+    ports:
+      - '9100:9100'
+    volumes:
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /proc:/host/proc:ro
+    deploy:
+      mode: global
+
+
      
-     
+  ################################################################
+  # Grafana
+  #  - runs on manager node
+  ################################################################
   grafana:
     image: grafana/grafana
-    #volumes:
-    #  - ./data/grafana:/var/lib/grafana:rw
+    volumes: 
+      - grafana-data:/var/lib/grafana
     deploy:
       labels:
         traefik.port: "3000"
@@ -36,6 +62,11 @@ services:
     networks:
       - frontend
       - backend
+
+
+
+volumes:
+  grafana-data:
 
 
 

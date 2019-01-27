@@ -1,9 +1,14 @@
 # How to Montior Imixs-Cloud
 
+_Imixs-Cloud_ also provides a monitoring feature which allows you to monitor your docker-swarm.
+
+<img src="./imixs-cloud-04.png" />
+
 The following section describes how you can monitor Imixs-Cloud. The monitoring stack in Imixs-Cloud provices the following services:
 
- * Prometheus - the prometheus service configured for docker-swarm
- * Grafana - the monitoring dashboard
+ * Prometheus - the prometheus main service configured for docker-swarm.
+ * Node-Exporter - a prometheus service which provides the machine data from every node in your docker-swarm.
+ * Grafana - the monitoring dashboard connected to prometheus.
 
 ## Prometheus
 
@@ -70,16 +75,27 @@ The general configuration is defined by the file 'prometheus.yml':
 	         # scheme defaults to 'http'.
 	
 	    static_configs:
-	      - targets: ['localhost:9323']
+	      - targets: ['manager-node-ip:9323']
+	    
+	      
+	  - job_name: 'node-exporter'
+	    static_configs:
+	      # add IP adresses for all nodes to monitor
+	      - targets: ['manager-node-ip:9100']
+	      - targets: ['worker-node1-ip:9100']
+	      - targets: ['worker-node2-ip:9100']	
 
 
-**Note:** The static_config target must point to the manager-node-ip address! Otherwise you will see the following error:
+**Note:** Ad in the section node-exporter all targets with the IP addresses from your swarm nodes to be monitored.  Otherwise you will see the following error:
 
-	Get http://localhost:9323/metrics: dial tcp 127.0.0.1:9323: connect: connection refused
+## The node-exporter
+
+The node -exporter is an imprtant service provided by prometheus. This service will provide the machine data in a prometheus format. There for this service is deployed in 'global' mode which means the service will be started on every node in your docker-swarm network. It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the IP address from every node here! 
 
 ## Grafana
 
-The Imixs-Cloud Monitoring Service also incluse a grafana service which is providing a dashboard for prometheus.
+The Imixs-Cloud Monitoring Service also includes a grafana service which is providing a dashboard for prometheus.
+The grafana service maps a data volume named 'grafana-data' to store your settings made in grafana. 
 
 
 

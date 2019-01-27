@@ -31,6 +31,12 @@ scrape_configs:
          # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ['localhost:9323']
-
+      - targets: ['manager-node-ip:9323']
+    
       
+  - job_name: 'node-exporter'
+    static_configs:
+      # add IP adresses for all nodes to monitor
+      - targets: ['manager-node-ip:9100']
+      - targets: ['worker-node1-ip:9100']
+      - targets: ['worker-node2-ip:9100']
