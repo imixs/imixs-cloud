@@ -15,30 +15,9 @@ The following section describes how you can monitor Imixs-Cloud. The monitoring 
 [Prometheus](https://prometheus.io/) is an open-source systems monitoring and alerting toolkit. 
 The Prometheus service can be integrated in Docker Swarm to monitor your Docker instance. You can find general information about Docker and Prometeus [here](https://docs.docker.com/config/thirdparty/prometheus/). 
 
+_Imixs-Cloud_  runs the Prometheus service as a container. It is already configured in the management folder /management/prometeus. So no separate setup is necessary here.
+
 ### Configuration
-
-Prometheus is already configured in the management folder /management/prometeus. 
-To configure the Docker daemon on the management node as a Prometheus target, you need to specify the metrics-address. 
-The best way to do this is via the daemon.json, which is located at /etc/docker/daemon.json . If the file does not exist, create it.
-
-    /etc/docker/daemon.json
-
-If the file is currently empty, paste the following:
-
-	{
-	  "metrics-addr" : "127.0.0.1:9323",
-	  "experimental" : true
-	}
-
-If the file is not empty, add those two keys, making sure that the resulting file is valid JSON. Be careful that every line ends with a comma (,) except for the last line.
-
-**Note:** The metrics-add is the manager-ip address from your docker-swarm!
-
-Save the file, and restart Docker.
-
-	$ service docker restart
-
-Docker now exposes Prometheus-compatible metrics on port 9323.
 
 The general configuration is defined by the file 'prometheus.yml':
 
@@ -80,15 +59,22 @@ The general configuration is defined by the file 'prometheus.yml':
 	      
 	  - job_name: 'node-exporter'
 	    static_configs:
-          # the targets listed here must match the service names from the docker-compose file
+          # the targets listed here must match the 'node-exporter' service names from the docker-compose file
           - targets: ['manager-001:9100','worker-001:9100']
+	
+	  - job_name: 'cadvisor'
+	    static_configs:
+	      # the targets listed here must match the 'cadvisor' service names from the docker-compose file
+	      - targets: ['docker-manager-001:8080','docker-worker-001:8080','docker-worker-002:8080','docker-worker-003:8080']
 
 
-**Note:** Add in the section 'node-exporter' all node-exporter services from the docker-compose.yml file need to be added. The service names with port 9100 are comma separated. 
+
+**Note:** In the sections 'node-exporter' and 'cadvisor' the target lists all corresponding services from the docker-compose.yml file. Take care about the service names here as the need to match the configuration. The service names with port number are comma separated. 
+
 
 ## The node-exporter
 
-The node -exporter is an important service provided by prometheus. This service will provide the machine data in a prometheus format. This service need to be deployed separately for each node in the docker swarm with an unique service name (here 'manager-001' and 'worker-001'). 
+The node -exporter is an important service provided by prometheus. This service will provide the machine metrics in a prometheus format. This service need to be deployed separately for each node in the docker swarm with an unique service name. 
 
 **Note:** It is important that you take care of the 'node-exporter' job description in the prometheus.yml file. You need to add the service name from every node here! 
 
@@ -144,6 +130,62 @@ This is the corresponding example in the docker-compose.yml file:
 	  # END NODE-EXPORTERS.....
 	  ################################################################
 	  ...
+
+This example defines one node-exporter for the node 'manager-001' and one for the node 'worker-001'.
+
+
+## The cAdvisor
+
+Just as the node-exporter provides the machine data, the so-called [cAdvisor](https://github.com/google/cadvisor) provides data about Docker itself. This service is needed to get Prometheus metrics from running docker containers.  Again this service need to be deployed separately for each node in the docker swarm with an unique service name. 
+
+**Note:** It is important that you take care of the 'cadvisor' job description in the prometheus.yml file. You need to add the service name from every node here! 
+
+This is the corresponding example in the docker-compose.yml file:
+
+
+	  ...
+	  ################################################################
+	  # cAdvisor
+	  #   - runs on every node
+	  ################################################################
+	  # START CADVISORS.....
+	  docker-manager-001:
+	    image: google/cadvisor:latest
+	    volumes:
+	    - /:/rootfs:ro
+	    - /var/run:/var/run:rw
+	    - /sys:/sys:ro
+	    - /var/lib/docker/:/var/lib/docker:ro
+	    deploy:
+	      placement:
+	        constraints:
+	         # Hostname of the first manager node!
+	          - node.hostname == manager-001
+	    networks:
+	      - backend
+	
+	  docker-worker-001:
+	    image: google/cadvisor:latest
+	    volumes:
+	    - /:/rootfs:ro
+	    - /var/run:/var/run:rw
+	    - /sys:/sys:ro
+	    - /var/lib/docker/:/var/lib/docker:ro
+	    deploy:
+	      placement:
+	        constraints:
+	         # Hostname of the first woker node!
+	          - node.hostname == worker-001
+	    networks:
+	      - backend
+	
+	  ################################################################
+	  # END CADVISORS.....
+	  ################################################################
+	  ...
+	
+This example defines one cadvisor for the node 'manager-001' and one for the node 'worker-001'.
+
 	  
 
 ## Grafana
@@ -155,9 +197,12 @@ The grafana service maps a data volume named 'grafana-data' to store your settin
 
 ## Starting The Monitor Service 
 
-After you have edited the prometheus.yml file you can start the Monitoring service with:
+After you have added the node-exporters and cadvisors into the docker-compose.yml file and edited the prometheus.yml file you can start the Monitoring service with:
 
 	$ docker stack deploy -c management/monitoring/docker-compose.yml monitoring
 
 Prometheus will be available on port 9090. Grafana Dashboard will be available on port 3000.
-You can customize the setup using the traefik.io integration and map the prometheus service to a hostname and also secure the service with basic authentication. Uncomment the corresponding labels in the docker-compose.yml file. 
+
+The 'node-exporter' and 'cadvisor' services are not exposed to the itnernet and only available for prometheus via the internal network 'backend' as defined by the docker-compose.yml file.  
+
+You can customize the setup using the traefik.io integration and map the prometheus and grafana services to hostnames. With the help from traefik.io You can also secure the service with basic authentication. Uncomment the corresponding labels in the docker-compose.yml file.  See the [setup section](SETUP.md) for details about traefik.io. 

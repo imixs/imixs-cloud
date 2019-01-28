@@ -1,7 +1,13 @@
 version: '3.2'
 
-services:
+networks:
+  frontend:
+    external:
+      name: imixs-proxy-net 
+  backend: 
+  
 
+services:
 
   ################################################################
   # Prometheus 
@@ -75,6 +81,53 @@ services:
   ################################################################
       
       
+
+
+
+  ################################################################
+  # cAdvisor
+  #   - runs on every node
+  ################################################################
+  # START CADVISORS.....
+  docker-manager-001:
+    image: google/cadvisor:latest
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      placement:
+        constraints:
+         # Hostname of the first manager node!
+          - node.hostname == manager-001
+    networks:
+      - backend
+
+  docker-worker-001:
+    image: google/cadvisor:latest
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      placement:
+        constraints:
+         # Hostname of the first woker node!
+          - node.hostname == worker-001
+    networks:
+      - backend
+
+  ################################################################
+  # END CADVISORS.....
+  ################################################################
+
+
+
+
+
+
      
   ################################################################
   # Grafana
@@ -102,11 +155,4 @@ volumes:
   grafana-data:
 
 
-
-networks:
-  frontend:
-    external:
-      name: imixs-proxy-net 
-  backend: 
-  
 
