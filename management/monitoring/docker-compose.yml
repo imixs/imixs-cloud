@@ -136,7 +136,7 @@ services:
   grafana:
     image: grafana/grafana
     #environment:
-    #  GF_SMTP_ENABLED: true    
+    #  GF_SMTP_ENABLED: "true"
     #  GF_SMTP_HOST: "mailgateway:25"
     #  GF_SMTP_FROM_ADDRESS: "alert@myhost.com"
     volumes: 
