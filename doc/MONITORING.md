@@ -193,8 +193,17 @@ This example defines one cadvisor for the node 'manager-001' and one for the nod
 The Imixs-Cloud Monitoring Service also includes a [Grafana](https://grafana.com/) service which is providing a dashboard for prometheus.
 The grafana service maps a data volume named 'grafana-data' to store your settings made in grafana. 
 
+If you want to enable an E-Mail gateway, just uncomment the corresponding environment section of the grafana service in the docker-compose.yml:
 
+    ...
+    environment:
+      GF_SMTP_ENABLED: true    
+      GF_SMTP_HOST: "mailgateway:25"
+      GF_SMTP_FROM_ADDRESS: "alert@myhost.com" 
+	...
 
+Fill in your corresponding mail configuration from your mail gateway. 
+ 
 ## Starting The Monitor Service 
 
 After you have added the node-exporters and cadvisors into the docker-compose.yml file and edited the prometheus.yml file you can start the Monitoring service with:
