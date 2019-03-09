@@ -112,6 +112,28 @@ To create the overlay networks on the manager-node run:
 	docker network create --driver=overlay imixs-proxy-net
 
  
+ 
+### Join a Manager Node 
+
+You can also add an additional Manager Node to your swarm. An additional manager improves the fault tolerance but can also be used as a worker node by default. Docker recommends three or five manager nodes per cluster to implement high availability. See the section [Join as a manager node](https://docs.docker.com/engine/swarm/join-nodes/) in the official docker documentation.
+
+To retrieve the join command including the join token for manager nodes, run the following command on a manager node:
+
+	$ docker swarm join-token manager
+
+Run the command from the output on the new manager node to join it to the swarm.
+
+**Note:** In the section "HTTP Reverse Proxy – traefik.io" we setup a http reverse proxy server. To make sure that the reverse proxy runs on the leader node you need to change the placement constraints for traefik in the docker-compose.yml file:
+
+	....
+     deploy:
+       placement:
+         constraints:
+			- node.hostname == manager-01
+    ....
+    
+This will guaranty that traefik.io runs on a node with a fixed IP address. 
+ 
 ## Docker-Swarm UI
 
 There are two different UIs which can be used to manage a docker-swarm from the browser.
