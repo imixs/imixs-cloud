@@ -157,7 +157,7 @@ Note: It can take some minutes until swarmpit is started.
 
 After swarmpit was installed and started, the front-end can be access on port 8200
 
-http://manager-node.com:8200
+    http://manager-node.com:8200
 
 <img src="imixs-cloud-02.png" />
 
@@ -166,11 +166,11 @@ The default userid is ‘admin’ with the password ‘admin’.
 ** Note: ** If you change the network configuration you need to remove and already existing swarmpit service and its volume!
 
 
-### portainer.io
+### Portainer.io
 
-[protainer.io](https://portainer.io/)  provides a detailed overview of Docker-Swarm cluster and allows you to manage containers, images, networks and volumes. This works also for the cluster worker nods as portainer starts agents on each worker. 
+[protainer.io](https://portainer.io/) is an alternative to Swarmpit and offers more features. The UI provides a detailed overview of Docker-Swarm cluster and allows you to manage containers, images, networks and volumes. This works also for the cluster worker nods as portainer starts agents on each worker. 
 
-It can be started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'portainer/'
+Portainer can be started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'portainer/'
 
 To start the service on the manager node:
 
@@ -178,12 +178,12 @@ To start the service on the manager node:
 
 The front-end can be access on port 8200
 
-http://manager-node.com:8200
+    http://manager-node.com:8200
 
 <img src="imixs-cloud-05.png" />
 
 
-
+**Note:** If you have already installed swarmpit you need first to undeploy it from your manger node!
 
 
 ## The HTTP Reverse Proxy – traefik.io
