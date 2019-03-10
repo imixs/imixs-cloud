@@ -17,6 +17,8 @@ services:
     image: prom/prometheus
     volumes:
       - $PWD/management/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
     deploy:
       labels:
         #traefik.port: "9090"
@@ -141,11 +143,13 @@ services:
     #  GF_SMTP_FROM_ADDRESS: "alert@myhost.com"
     volumes: 
       - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
     deploy:
-      labels:
-        traefik.port: "3000"
-        traefik.frontend.rule: "Host:grafana.myhost.com"
-        traefik.docker.network: "imixs-proxy-net" 
+#      labels:
+#        traefik.port: "3000"
+#        traefik.frontend.rule: "Host:grafana.myhost.com"
+#        traefik.docker.network: "imixs-proxy-net" 
       placement:
         constraints:
           - node.role == manager
