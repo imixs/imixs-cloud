@@ -1,6 +1,7 @@
 # The Imixs-Cloud
 
 _Imixs-Cloud_ is an open infrastructure project, describing a lightweight [docker](https://www.docker.com/) based container environment for business applications.
+
 The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
 _Imixs-Cloud_ is based on a [docker swarm](https://docs.docker.com/engine/swarm/) and typically
 consists of multiple Docker hosts. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized enterprises.
@@ -45,8 +46,7 @@ Only the _management node_ should be visible via the Internet. _Worker nodes_ ar
  
 ### The Configuration Directory 
  
-The complete infrastructure is described in an easy maintainable directory structure of docker files. The _management node_ holds the configuration for all services in a central directory which can be synchronized with a code repository like Git.
-The configuration directory is used to setup and run the Imixs-Cloud and its services. The directory can be located in a project directory and is structured like in the following example:
+The complete infrastructure is described in a central directory structure which can be easily extended with new services at any time. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to setup the environment on a new manager node. 
 
 	/-
 	 |+ management/

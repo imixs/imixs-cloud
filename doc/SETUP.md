@@ -31,7 +31,7 @@ The management node has the following directory structure located in the manager
 	/-
 	 |- management/
 	 |   - registry/
-	 |   - swarmpit/
+	 |   - portainer/
 	 |   - traefik/
 	 |- apps/
 
@@ -176,11 +176,11 @@ To start the service on the manager node:
 
 	docker stack deploy -c management/portainer/docker-compose.yml portainer
 
-Note: It can take some minutes until swarmpit is started.
-
 The front-end can be access on port 8200
 
 http://manager-node.com:8200
+
+<img src="imixs-cloud-05.png" />
 
 
 
