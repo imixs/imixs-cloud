@@ -44,9 +44,16 @@ Only the _management node_ should be visible via the Internet. _Worker nodes_ ar
 
 <img src="doc/imixs-cloud-01.png" />
  
+ 
+### Docker Swarm Dashboards
+
+There a several solutions to manage a Docker Swarm through a modern web based user interface. You will find examples in the [Setup Guide](doc/SETUP.md).
+
+<img src="doc/imixs-cloud-05.png" />
+ 
 ### The Configuration Directory 
  
-The complete infrastructure is described in a central directory structure which can be easily extended with new services at any time. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to setup the environment on a new manager node. 
+The complete infrastructure of a Imixs-Cloud environment is described in a central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to setup the environment on a new manager node. 
 
 	/-
 	 |+ management/
@@ -148,7 +155,7 @@ The following example shows a docker-compose file describing a Wordpress applica
 
 
 
-### The Networks
+### Networks and Load Balancing
 The _Imixs-Cloud_ provides a reverse proxy concept based on [Traefik.io](https://traefik.io/). In the example the wordpress service is mapped to the domain name 'your.host.local'. Traefik.io  automatically manages the routing so that your application is available on port 80. 
 In this example both services are bound to a internal overlay network called 'backend'. Only the service 'wordpress' is connected to the external network '_imixs-proxy-net_'. As a result, the service 'wordpress' is visible outside of the stack. This is a typical setup to isolate your services from other applications within your cluster environment. Read the [Imixs-Cloud setup guide](doc/SETUP.md) to learn how the proxy network is working. 
 
