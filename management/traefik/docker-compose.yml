@@ -12,6 +12,7 @@ services:
        - 443:443
        - 8100:8080
      deploy:
+       mode: global
        placement:
          constraints:
            - node.role == manager

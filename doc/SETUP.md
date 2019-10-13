@@ -239,7 +239,8 @@ If a container is linked to several networks (e.g. a backend network for a datab
 # HA Cluster Setup 
 
 Setting up Docker Swarm HA cluster for production is also an easy job. 
-You can add additional Manager Nodes to your swarm to get high availability. A HA Setup improves the fault tolerance but can also be used as a worker node by default. Docker recommends three or five manager nodes per cluster to implement high availability. See the section [Join as a manager node](https://docs.docker.com/engine/swarm/join-nodes/) in the official docker documentation. 
+You can add additional Manager Nodes to your swarm to get high availability. A HA Setup improves the fault tolerance but can also be used as a worker node for management services like the proxy server. Docker recommends three or five manager nodes per cluster to implement high availability. See the official [Swarm administration guide](https://docs.docker.com/engine/swarm/admin_guide/)
+
 
 ## Prerequisites
 
@@ -252,26 +253,35 @@ If you lost more than half of manager hosts, your cluster will be not functional
 
 ## Adding a New Manger Node
 
-To retrieve the join command including the join token for manager nodes, run the following command on a manager node:
+Adding a manager node to your swarm cluster is similar to adding a worker node. 
+To retrieve the join command including the join token for manager nodes, run the following command on an existing manager node:
 
 	$ docker swarm join-token manager
+	To add a manager to this swarm, run the following command:
+	
+	    docker swarm join --token SWMTKN-1-57xxxxxxxxxxxxxxxxr XXX.XXX.XXX.XXX:2377
+	
+Run the join command from the output on the new manager node.  It can take some seconds. See also the section [Join as a manager node](https://docs.docker.com/engine/swarm/join-nodes/) in the official docker documentation. 
 
-Run the command from the output on the new manager node to join it to the swarm.
-
-Now, verify current cluster status:
+Finally, verify your current cluster status:
 
 	$ docker node ls
 
 
-**Note:** In the section "HTTP Reverse Proxy – traefik.io" we setup a http reverse proxy server. To make sure that the reverse proxy runs on the leader node you need to change the placement constraints for traefik in the docker-compose.yml file:
+**Note:** Because manager nodes are meant to be a stable component of the infrastructure, you should use a fixed IP addresses. If the swarm restarts and a manager node  gets a new IP address, there is no way to contact an existing manager. Therefore the swarm is hung while nodes try to contact one another at their old IP addresses. For worker nodes, dynamic IP addresses are OK.
+
+### HA Reverse Proxy
+
+In the section "HTTP Reverse Proxy – traefik.io" we setup a http reverse proxy server. To make sure that the reverse proxy runs on all manager nodes in a docker swarm HA cluster you need to set the deploy mode to 'global' and the placement constraints 'node.role == manager':
 
 	....
      deploy:
+       mode: global
        placement:
          constraints:
-			- node.hostname == manager-01
+           - node.role == manager
     ....
     
-This will guaranty that traefik.io runs on a node with a fixed IP address. 
+This will guaranty that traefik.io runs on all manager nodes. In this way internet requests to your services can be answered by any manager node. If you have a floating IP Address you can switch between your manager nodes to manage you DNS entries in more flexible way. 
 
 
