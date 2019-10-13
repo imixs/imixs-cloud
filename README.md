@@ -1,10 +1,9 @@
 # The Imixs-Cloud
 
-_Imixs-Cloud_ is an open infrastructure project, describing a lightweight [docker](https://www.docker.com/) based container environment for business applications.
+_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based container environment for production business applications. The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
 
-The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
-_Imixs-Cloud_ is based on a [docker swarm](https://docs.docker.com/engine/swarm/) and typically
-consists of multiple Docker hosts. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized enterprises.
+The _Imixs-Cloud_ is based on a [docker swarm](https://docs.docker.com/engine/swarm/) cluster environment.
+Docker swarm is much easier to setup and in its management compared to a Kubernetes cluster. However, when deciding which platform  to use, you should consider your own criterias. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized enterprises.
 The project is open source and continuous under development. We sincerely invite you to participate in it!
 
 
@@ -12,12 +11,12 @@ The project is open source and continuous under development. We sincerely invite
 The main objectives of the _Imixs-Cloud_ project can be itemized under the following rules:
 
  1. _A new environment can be setup easily and run on commodity hardware._
- 2. _The docker command line interface (CLI) is the main interface to setup and manage the environment._ 
+ 2. _The docker command line interface (CLI) is all you need to know to setup and manage the environment._ 
  3. _Scalabillity and configuration is managed by the core concepts of docker-swarm and docker-compose._
  4. _Docker Images can be deployed to a central Docker-Registry which is part of the environment._
  5. _All services are isolated and accessible through a central reverse proxy server._
  6. _The environment configuration can be managed by a private code repository like Git._
- 7. _Docker UI Front-End services are used to monitor the infrastructure._
+ 7. _Docker UI Front-End services are used to monitor and manage the infrastructure._
  
  
 ## Basic Architecture
@@ -57,12 +56,14 @@ The complete infrastructure of a Imixs-Cloud environment is described in a centr
 
 	/-
 	 |+ management/
+	    |- monitoring/
+	    |- portainer/
 	    |- registry/
-	    |- swarmpit/
 	    |- traefik/
 	 |+ apps/
 	    |+ MY-APP/
 	       |  docker-compose.yml
+	    .....
 
 The **/management/** sub-folder holds the configuration for all management services running on the management node only. This configuration is maintained by this project and can be customized for individual needs. 
 

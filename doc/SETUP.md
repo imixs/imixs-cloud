@@ -50,8 +50,8 @@ The following ports must be available on each node.
 The following ports will be later published to be accessable from the internet:
 
  * 80 - The Reverse proxy endpoint 
- * 8100 - The reverse proxy server UI traefik
- * 8200 - The swarm management UI swarmpit
+ * 8100 - The reverse proxy server UI (traefik.io)
+ * 8200 - The swarm management UI (portainer.io)
  * 8300 - The imixs private registry
 
 
@@ -72,10 +72,12 @@ The IP address given here is the IP from the manager-node.
 	
 ### Join the swarm node 
 
-To join the swarm node from a worker node you can run the command _docker swarm join_ followed by the swarm token. 
+To join the swarm from a worker node you can run the command _docker swarm join_ followed by the swarm token. 
 To get the join token later run the following command on the manager node:
 
 	docker swarm join-token worker 
+
+#### Working with VMs
 
 Working with VMs, the worker-node has typically a private IPv4 address. As a result the swarm may not run correctly, specially in relation with overlay networks. To solve those problems the public IPv4 address of the worker-node need to be added with the option  _–advertise-addr_ when joining the swarm.
 
@@ -87,6 +89,7 @@ Working with VMs, the worker-node has typically a private IPv4 address. As a res
 
 Where [worker-ip-address] is the public IPv4 address of the worker-node joining the swarm.
 
+#### Verify the swarm
 
 To verify the nodes in a swarm run:
 
@@ -111,28 +114,7 @@ To create the overlay networks on the manager-node run:
 	docker network create --driver=overlay imixs-cloud-net
 	docker network create --driver=overlay imixs-proxy-net
 
- 
- 
-### Join a Manager Node 
 
-You can also add an additional Manager Node to your swarm. An additional manager improves the fault tolerance but can also be used as a worker node by default. Docker recommends three or five manager nodes per cluster to implement high availability. See the section [Join as a manager node](https://docs.docker.com/engine/swarm/join-nodes/) in the official docker documentation.
-
-To retrieve the join command including the join token for manager nodes, run the following command on a manager node:
-
-	$ docker swarm join-token manager
-
-Run the command from the output on the new manager node to join it to the swarm.
-
-**Note:** In the section "HTTP Reverse Proxy – traefik.io" we setup a http reverse proxy server. To make sure that the reverse proxy runs on the leader node you need to change the placement constraints for traefik in the docker-compose.yml file:
-
-	....
-     deploy:
-       placement:
-         constraints:
-			- node.hostname == manager-01
-    ....
-    
-This will guaranty that traefik.io runs on a node with a fixed IP address. 
  
 ## Docker-Swarm UI
 
@@ -247,3 +229,49 @@ The label following label is important here:
 	traefik.docker.network: "imixs-proxy-net"
 
 If a container is linked to several networks (e.g. a backend network for a database and a frontend network for the reverse proxy), be sure to set the proper network name for the traefik.docker.network (in our case 'imixs-proxy-net') otherwise traefik will randomly pick one (depending on how docker is returning them). This will result in a situation where traefik doesn't find the correct route to the backend service and will end up with a 'Gateway Timeout' message. 
+
+
+
+
+
+ 
+ 
+# HA Cluster Setup 
+
+Setting up Docker Swarm HA cluster for production is also an easy job. 
+You can add additional Manager Nodes to your swarm to get high availability. A HA Setup improves the fault tolerance but can also be used as a worker node by default. Docker recommends three or five manager nodes per cluster to implement high availability. See the section [Join as a manager node](https://docs.docker.com/engine/swarm/join-nodes/) in the official docker documentation. 
+
+## Prerequisites
+
+**Note:** You can not setup a Docker Swarm HA cluster  with less then 3 manager nodes!
+
+Swarm uses Raft consensus protocol, which is similar to etcd used in Kubernetes. Swarm cluster can keep full functionality only if more than half of all manager nodes still available. Therefore, if you tolerate loss of 1 manager node, then 3 managers are required. If you tolerate losing 2 manager nodes, you must have 5 of them in total. And so on.
+ 
+If you lost more than half of manager hosts, your cluster will be not functional anymore. In case of 3 managers this will happen when you lost any 2 of them
+
+
+## Adding a New Manger Node
+
+To retrieve the join command including the join token for manager nodes, run the following command on a manager node:
+
+	$ docker swarm join-token manager
+
+Run the command from the output on the new manager node to join it to the swarm.
+
+Now, verify current cluster status:
+
+	$ docker node ls
+
+
+**Note:** In the section "HTTP Reverse Proxy – traefik.io" we setup a http reverse proxy server. To make sure that the reverse proxy runs on the leader node you need to change the placement constraints for traefik in the docker-compose.yml file:
+
+	....
+     deploy:
+       placement:
+         constraints:
+			- node.hostname == manager-01
+    ....
+    
+This will guaranty that traefik.io runs on a node with a fixed IP address. 
+
+
