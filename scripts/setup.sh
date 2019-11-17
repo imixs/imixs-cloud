@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 # determine if we run as sudo
 userid="${SUDO_USER:-$USER}"
 if [ "$userid" == 'root' ]

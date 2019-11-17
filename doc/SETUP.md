@@ -6,7 +6,7 @@ For a quick setup you can clone the git repositry and start the setup:
 
 1) install git 
 
-	$ sudo apt-get install git
+	$ sudo apt-get install -y git 
 
 2) clone repo....
 
