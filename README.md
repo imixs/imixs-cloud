@@ -25,15 +25,15 @@ For a quick setup you need at least a Debian 10 server with a public internet ad
 
 1) from your users home directory first install git 
 
-	$ sudo apt-get install -y git 
+	  $ sudo apt-get install -y git 
 
 2) clone the imixs-cloud repo from github....
 
-	$ cd && git clone https://github.com/imixs/imixs-cloud.git
+	  $ cd && git clone https://github.com/imixs/imixs-cloud.git
 
 3) start the setup script
 
-	$ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVR_IP_ADDRESS]
+	  $ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVR_IP_ADDRESS]
 
 replace [YOUR\_SERVR\_IP\_ADDRESS] with your servers public IP address 
  
