@@ -2,7 +2,7 @@
 
 The following section describes the setup procedure of _Imixs-Cloud_ with [Docker-Swarm](https://docs.docker.com/engine/swarm/) into a productive environment in detail.
 
-For a quick setup you can clone the git repositry and start the setup:
+For a quick setup you can clone the git repository and start the setup:
 
 1) install git 
 
@@ -14,8 +14,9 @@ For a quick setup you can clone the git repositry and start the setup:
 
 3) start the setup
 
-	$ sudo ./imixs-cloud/scripts/setup.sh 
+	$ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVR_IP_ADDRESS]
 
+replace [YOUR\_SERVR\_IP\_ADDRESS] with your servers public IP address
 
 **That's it.** 
 

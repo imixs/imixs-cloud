@@ -19,6 +19,36 @@ The main objectives of the _Imixs-Cloud_ project can be itemized under the follo
  7. _Docker UI Front-End services are used to monitor and manage the infrastructure._
  
  
+## Quick Start
+
+For a quick setup you need at least a Debian 10 server with a public internet address and a user with sudo privileges.
+
+1) from your users home directory first install git 
+
+	$ sudo apt-get install -y git 
+
+2) clone the imixs-cloud repo from github....
+
+	$ cd && git clone https://github.com/imixs/imixs-cloud.git
+
+3) start the setup script
+
+	$ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVR_IP_ADDRESS]
+
+replace [YOUR\_SERVR\_IP\_ADDRESS] with your servers public IP address 
+ 
+
+Finally you can launch the portainer Web UI:
+
+	$ docker stack deploy -c ~/imixs-cloud/management/portainer/docker-compose.yml portainer 
+ 
+**That's it! You can now access your swarm from your browser:**
+
+	http://[YOUR_SERVR_IP_ADDRESS]:8200 
+ 
+
+Continue reading for more details... 
+ 
 ## Basic Architecture
 
 The basic architecture of the _Imixs-Cloud_ consists of the following components:
@@ -29,6 +59,7 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
  * A central Reverse-Proxy service to dispatch requests (listening on port 80).
  * A management UI running on the management node.
  * A private registry to store custom docker images.
+ 
  
  
 ### Nodes
