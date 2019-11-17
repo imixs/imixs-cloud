@@ -1,8 +1,27 @@
 # How to setup the Imixs-Cloud
 
-The following section describes the setup procedure of _Imixs-Cloud_ with [Docker-Swarm](https://docs.docker.com/engine/swarm/) into a productive environment. 
+The following section describes the setup procedure of _Imixs-Cloud_ with [Docker-Swarm](https://docs.docker.com/engine/swarm/) into a productive environment in detail.
 
-Read the following tutorial for general information about how to setup a Docker-Swarm:
+For a quick setup you can clone the git repositry and start the setup:
+
+1) install git 
+
+	$ sudo apt-get install git
+
+2) clone repo....
+
+	$ git clone https://github.com/imixs/imixs-cloud.git
+
+3) start the setup
+
+	$ sudo ./imixs-cloud/scripts/setup.sh 
+
+
+**That's it.** 
+
+Read the following section for more information. 
+
+See also the following tutorial for general information about how to setup a Docker-Swarm:
 
 * [Official Docker-Swarm Tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/)
 * [Lightweight Docker Swarm Environment - by Ralph Soika](http://ralph.blog.imixs.com/lightweight-docker-swarm-environment/)
