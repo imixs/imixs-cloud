@@ -1,0 +1,19 @@
+# Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whoami
+  template:
+    metadata:
+      labels:
+        app: whoami
+    spec:
+      containers:
+      - name: whoami-container
+        image: containous/whoami

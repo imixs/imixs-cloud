@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    ingress-controller: traefik
+  name: traefik-ingress
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: traefik
+  name: traefik
+  namespace: traefik-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+      - name: traefik
+        image: traefik:v2.0
+        imagePullPolicy: Always
+        args:
+        - --api.debug=true
+        - --api.insecure=true
+        - --log.level=debug
+        - --entrypoints.http.Address=:80
+        - --entrypoints.https.Address=:443
+        - --entrypoints.traefik.Address=:8080
+        - --entrypoints.mqtt.Address=:8883
+        - --providers.kubernetescrd
+        - --ping=true
+        - --certificatesresolvers.default.acme.tlschallenge=true
+        - --certificatesresolvers.default.acme.email=info@imixs.com
+        - --certificatesresolvers.default.acme.storage=acme.json
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 8080
+          name: admin
+          protocol: TCP
+        - containerPort: 8883
+          name: mqtt
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /ping
+            port: admin
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: admin
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 250m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+      restartPolicy: Always
+      serviceAccount: traefik-ingress-controller
+      serviceAccountName: traefik-ingress-controller
