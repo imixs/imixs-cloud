@@ -37,6 +37,10 @@ For a quick setup you need at least a Debian 10 server with a public internet ad
 
 replace [YOUR\_SERVR\_IP\_ADDRESS] with your servers public IP address 
  
+4) create the overlay networks withon your swarm:
+
+	   $ docker network create --driver=overlay imixs-cloud-net
+	   $ docker network create --driver=overlay imixs-proxy-net
 
 Finally you can launch the portainer Web UI:
 
