@@ -1,13 +1,16 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: ingressroute
+  name: whoami-service
+  namespace: default
 spec:
-  entryPoints:
-    - http
-  routes:
-    - match: Host(`whoami.my-host.com`)
-      kind: Rule
-      services:
-        - name: whoami-service
-          port: 80
+  rules:
+  - host: {YOUR-WORKER-HOST-NAME}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: whoami-service
+          servicePort: http      
+
+              
