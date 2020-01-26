@@ -1,6 +1,6 @@
 # How to setup the Imixs-Cloud
 
-The following section describes the setup procedure of _Imixs-Cloud_ with [Docker-Swarm](https://docs.docker.com/engine/swarm/) into a productive environment in detail.
+The following section describes the setup procedure of _Imixs-Cloud_ to run a kubernetes cluster into a productive environment for small and medium organisations.
 
 For a quick setup you can clone the git repository and start the setup:
 
@@ -32,276 +32,121 @@ See also the following tutorial for general information about how to setup a Doc
 
 A _Imixs-Cloud_ consists of a minimum of two nodes.
 
-* The management node is the swarm manager and provides a private registry and a reverse proxy service.
-* The worker nodes are serving the applications. 
+* The master node is the kubernetes api server
+* The worker nodes are serving the applications (pods). 
 
 A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must have docker installed and be able to access the manager at the IP address.
 
-### Install Docker
+## The setup.sh script
 
-To install docker on a node follow the [official installation guide for Docker CE](https://docs.docker.com/engine/installation/linux/docker-ce/debian/).
-If you have unix user to run the docker cli, you have to add the user to the group 'docker'
+In order to ensure that all nodes are running the same software releases run the following setup script. This script is designed for Debian 9 (Stretch) but of course you can adapt the script for a different Lnux distribution. The script installs the following tools:
 
-	adduser username docker
-	
-### Directories
+ - docker-ce (the docker engine)
+ - docker-ce-cli (the docker command line interface)
+ - containerd.io (the container runtime)
+ - kubelet (the kubernetes node agent)
+ - kubeadm (the kubernetes cluster tool)
+ - kubectl (the kubernetes command line interface)
 
-The management node has the following directory structure located in the manager home directory to setup and run the Imixs-Workflow-Cloud and its services. 
 
-	/-
-	 |- management/
-	 |   - registry/
-	 |   - portainer/
-	 |   - traefik/
-	 |- apps/
+The install script can be found in the script directory /scripts/. Run the setup script as sudo:
 
-The /management/ directory holds the service configuration for the management services running on the management node only. 
-The /apps/ directory contains service setups to start applications running on the worker nodes.
+	$ chmod u+x scripts/setup.sh
+	$ scripts/setup.sh
 	
 
-### Open networks, protocols and ports
+### Debian Version 9
 
-The following ports must be available on each node. 
+This guide assumes that you are running Kubernetes V 1.17.2 on Debian 9 (Stretch). 
 
- - TCP port 2377 for cluster management communications
- - TCP and UDP port 7946 for communication among nodes
- - UDP port 4789 for overlay network traffic
- 
-The following ports will be later published to be accessable from the internet:
+In Debian 10 (buster) there are some changes in the network layer which affects Kubernetes internal network communication. If you use Debian 10 make sure you first reconfigure the network layers! Otherwise you will see internal API I/O timeout errors. 
 
- * 80 - The Reverse proxy endpoint 
- * 8100 - The reverse proxy server UI (traefik.io)
- * 8200 - The swarm management UI (portainer.io)
- * 8300 - The imixs private registry
 
 
-## Init the swarm manager
 
-To setup docker swarm on the management-node run the following command:
+## Setup the Cluster
 
-	docker swarm init --advertise-addr [manager-ip-address]
-	
-'manager-ip-address' is the fixed ip address of the manger node to be used by worker nodes. (Typically the main address of the manager-node)
+After you have installed the necessary libraries you can initialize the Kubernetes cluster using the following kubeadm command:
 
+	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS]
 
-This command init the swarm and returns a pre-configured docker swarm join command for to be executed on any worker-node to joint the swarm. For example: 
+Replace [NODE\_IP\_ADDRESS] with your servers public IP address.
 
-	docker swarm join --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx 192.168.99.100:2377
+You will see a detailed protocol showing what happens behind the scene. If something went wrong you can easily roll back everything with the command:
 
-The IP address given here is the IP from the manager-node.
-	
-### Join the swarm node 
+	$ sudo kubeadm reset
 
-To join the swarm from a worker node you can run the command _docker swarm join_ followed by the swarm token. 
-To get the join token later run the following command on the manager node:
+The last output form the protocol shows you the join token needed to setup a worker node. If you forgot to note the join token run:
 
-	docker swarm join-token worker 
+	$ sudo kubeadm token create --print-join-command
 
-#### Working with VMs
+### Setup kubectl on a Server
 
-Working with VMs, the worker-node has typically a private IPv4 address. As a result the swarm may not run correctly, specially in relation with overlay networks. To solve those problems the public IPv4 address of the worker-node need to be added with the option  _–advertise-addr_ when joining the swarm.
+To make kubectl work for your non-root user, run these commands, which are also part of the kubeadm init output:
 
+	mkdir -p $HOME/.kube
+	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+	sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-	docker swarm join \
-	 --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxx-xxxxxxxx \
-	 --advertise-addr [worker-ip-address]\
-	 [manager-ip-address]:2377
+This will copy the configuration of your master node into the kubernetes config directory ./kube of your home directory.
 
-Where [worker-ip-address] is the public IPv4 address of the worker-node joining the swarm.
 
-#### Verify the swarm
+### Setup a flannel network
 
-To verify the nodes in a swarm run:
+Next, deploy the flannel network to the kubernetes cluster using the kubectl command.
 
-	docker node ls
-	ID				HOSTNAME 	STATUS 		AVAILABILITY 	MANAGER STATUS
-	niskvdwg4k4k1otrrnpzvgbdn * 	manager1	Ready 		Active 		Leader
-	c54zgxn45bvogr78qp5q2vq2c 	worker1		Ready 		Active 
+	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-To inspect a node in detail to see if the correct IP is given, run:
+The flannel network will been deployed to the Kubernetes cluster. After some seconds the cluster should be up and running. You can check the status with:
 
-	docker node inspect worker1
+	$ kubectl cluster-info
 
-### Create Overlay Networks
+and list all nodes with:
 
-The nodes in the Imixs-Cloud  communicate via two different overlay networks:
+	$ kubectl get nodes
 
- * imixs-cloud-network - used for the swarm 
- * imixs-proxy-network - used by the reverse proxy
- 
-To create the overlay networks on the manager-node run:
+## Install Worker Nodes
 
-	docker network create --driver=overlay imixs-cloud-net
-	docker network create --driver=overlay imixs-proxy-net
+Now you can run the same script used to install the master node on each of your worker nodes. This will install the docker runtime and kubernetes tools. To add the new node to your cluster created in the previous step run the join command from the master setup. If you do not know the join command you can run the following command on your master node frist:
 
+	$ kubeadm token create --print-join-command
 
- 
-## Docker-Swarm UI
+Run the output as a root user on your worker node:
 
-There are two different UIs which can be used to manage a docker-swarm from the browser.
+	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx     --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
- * [Swarmpit](https://swarmpit.io/)
- * [protainer.io](https://portainer.io/)
- 
-Both UIs part of the Imixs-Cloud project and pre-configured. But only one of them should be used as both listen on port 8200!
+## Controlling Your Cluster From your Workstation
 
- 
- 
-### Swarmpit 
+In different to docker-swarm, a kubernetes cluster can be administrated remote from your workstation. The tool ‘kubectl’ is the kubernetes command line tool used to manage your cluster via the kubernetes api either from your server or from a workstatio..
+Setup kubectl on Your Workstation
 
-[swarmpit.io](http://swarmpit.io) ia a lightweight Docker Swarm management UI. It can be started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'swarmpit/'
+To run kubectl from your workstation you need first to install it. You will find the official install guide here. Note: you install only the kubectl tool, not a full kubernetes server as in the section before.
 
-To start the service on the manager node:
+In order to get kubectl talking to your cluster, you can again copy the content from the administrator kubeconfig file (/etc/kubernetes/admin.conf) into your workstation. (See the section above ‘Setup cubectl on a Server’)
 
-	docker stack deploy -c management/swarmpit/docker-compose.yml swarmpit
+	$HOME/.kube/config 
 
-Note: It can take some minutes until swarmpit is started.
+**Note:** The admin.conf file gives the user superuser privileges over the cluster. This file should be used sparingly. For normal users, it’s recommended to generate an unique credential to which you whitelist privileges. Kubernetes supports different authentication strategies, defined here.
 
-After swarmpit was installed and started, the front-end can be access on port 8200
 
-    http://manager-node.com:8200
 
-<img src="imixs-cloud-02.png" />
 
-The default userid is ‘admin’ with the password ‘admin’.
 
-** Note: ** If you change the network configuration you need to remove and already existing swarmpit service and its volume!
 
 
-### Portainer.io
 
-[protainer.io](https://portainer.io/) is an alternative to Swarmpit and offers more features. The UI provides a detailed overview of Docker-Swarm cluster and allows you to manage containers, images, networks and volumes. This works also for the cluster worker nods as portainer starts agents on each worker. 
 
-Portainer can be started as a service on the manager node. The configuration is defined by docker-compose.yml located in the folder 'portainer/'
 
-To start the service on the manager node:
 
-	docker stack deploy -c management/portainer/docker-compose.yml portainer
 
-The front-end can be access on port 8200
 
-    http://manager-node.com:8200
 
-<img src="imixs-cloud-05.png" />
 
 
-**Note:** If you have already installed swarmpit you need first to undeploy it from your manger node!
 
 
-## The HTTP Reverse Proxy – traefik.io
 
-The HTTP reverse proxy is used to hide services from the Internet. In addition the proxy also acts as a load balancer to be used if applications need to be scaled over several nodes.
 
-In _Imixs-Cloud_ [traefik.io](http://traefik.io) is used as the service for a reverse proxy. 
-The service uses a separate overlay network to scan for services. A service which should be available through the proxy need to be run in the network 'imixs-proxy-net'. 
 
-Traefik is configured by a docker-compose.yml file and a traefik.toml file  located in the folder 'management/traefik/'
-
-To start the service on the manager node:
-
-	docker stack deploy -c management/traefik/docker-compose.yml proxy
-    
-    
-After traefik is stared you can access the web UI via port 8100
-
-	http://manager-node.com:8100
-
-<img src="imixs-cloud-03.png" />
-
-**Note: **The Traefik configuraiton is done in the traefik.toml file. You can set the logLevel to "DEBUG" if something goes wrong. 
-
-To test the proxy you can start the whoami service:
-	
-	docker service create \
-	    --name whoami1 \
-	    --network imixs-proxy-net \
-	    --label traefik.port=80 \
-	    --label traefik.frontend.rule=Host:whoami.imixs.com \
-	    --label traefik.docker.network=imixs-proxy-net \
-	    emilevauge/whoami
-
-
-It is recommended to create a docker-compose file instead of running the container configuration manually. Look at the following example of the corresponding docker-compose.yml file:
-
-	version: '3.1'	
-	services:
-	 app:
-	   image: emilevauge/whoami	   
-	   deploy:
-	     labels:
-	      traefik.port: "80"
-	      traefik.frontend.rule: "Host:whoami.your-domain.com"
-	      traefik.docker.network: "imixs-proxy-net"	   
-	networks:
-	   default:
-	    external:
-	      name:  imixs-proxy-net  
-
-
-To start the service as a stack: 
-
-	docker stack deploy -c apps/whoami/docker-compose.yml whoami
-
-	
-### The Traefik Docker Network	
-The label following label is important here:
-
-	traefik.docker.network: "imixs-proxy-net"
-
-If a container is linked to several networks (e.g. a backend network for a database and a frontend network for the reverse proxy), be sure to set the proper network name for the traefik.docker.network (in our case 'imixs-proxy-net') otherwise traefik will randomly pick one (depending on how docker is returning them). This will result in a situation where traefik doesn't find the correct route to the backend service and will end up with a 'Gateway Timeout' message. 
-
-
-
-
-
- 
- 
-# HA Cluster Setup 
-
-Setting up Docker Swarm HA cluster for production is also an easy job. 
-You can add additional Manager Nodes to your swarm to get high availability. A HA Setup improves the fault tolerance but can also be used as a worker node for management services like the proxy server. Docker recommends three or five manager nodes per cluster to implement high availability. See the official [Swarm administration guide](https://docs.docker.com/engine/swarm/admin_guide/)
-
-
-## Prerequisites
-
-**Note:** You can not setup a Docker Swarm HA cluster  with less then 3 manager nodes!
-
-Swarm uses Raft consensus protocol, which is similar to etcd used in Kubernetes. Swarm cluster can keep full functionality only if more than half of all manager nodes still available. Therefore, if you tolerate loss of 1 manager node, then 3 managers are required. If you tolerate losing 2 manager nodes, you must have 5 of them in total. And so on.
- 
-If you lost more than half of manager hosts, your cluster will be not functional anymore. In case of 3 managers this will happen when you lost any 2 of them
-
-
-## Adding a New Manger Node
-
-Adding a manager node to your swarm cluster is similar to adding a worker node. 
-To retrieve the join command including the join token for manager nodes, run the following command on an existing manager node:
-
-	$ docker swarm join-token manager
-	To add a manager to this swarm, run the following command:
-	
-	    docker swarm join --token SWMTKN-1-57xxxxxxxxxxxxxxxxr XXX.XXX.XXX.XXX:2377
-	
-Run the join command from the output on the new manager node.  It can take some seconds. See also the section [Join as a manager node](https://docs.docker.com/engine/swarm/join-nodes/) in the official docker documentation. 
-
-Finally, verify your current cluster status:
-
-	$ docker node ls
-
-
-**Note:** Because manager nodes are meant to be a stable component of the infrastructure, you should use a fixed IP addresses. If the swarm restarts and a manager node  gets a new IP address, there is no way to contact an existing manager. Therefore the swarm is hung while nodes try to contact one another at their old IP addresses. For worker nodes, dynamic IP addresses are OK.
-
-### HA Reverse Proxy
-
-In the section "HTTP Reverse Proxy – traefik.io" we setup a http reverse proxy server. To make sure that the reverse proxy runs on all manager nodes in a docker swarm HA cluster you need to set the deploy mode to 'global' and the placement constraints 'node.role == manager':
-
-	....
-     deploy:
-       mode: global
-       placement:
-         constraints:
-           - node.role == manager
-    ....
-    
-This will guaranty that traefik.io runs on all manager nodes. In this way internet requests to your services can be answered by any manager node. If you have a floating IP Address you can switch between your manager nodes to manage you DNS entries in more flexible way. 
 
 

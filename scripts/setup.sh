@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/bin/sh
+
+############################################################
+# Kubernetes Install Script for Debian 9 (Stretch)
+# 
+# run as sudo 
+############################################################
+
  
 # determine if we run as sudo
 userid="${SUDO_USER:-$USER}"
@@ -13,20 +20,10 @@ if [ "$EUID" -ne 0 ]
     exit 1
 fi
 
-# Check advertise-addr
 
-if [ $# -eq 0 ]
-  then
-    echo "No arguments supplied"
-    echo "*** Setup failed: advertise-addr is missing! ( setup.sh [SERVER-IP])"
-
-    exit 0
-fi
-
-# Run as root
-echo "========================================================================="
+echo "#############################################"
 echo " adding repositories..."
-echo "========================================================================="
+echo "#############################################"
 apt-get update
 apt-get install -y apt-transport-https ca-certificates ne curl gnupg2 software-properties-common
 
@@ -37,21 +34,44 @@ add-apt-repository \
            $(lsb_release -cs) \
            stable"
            
+# Add kubernetes repository           
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+cat <<EOF | tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
 
-echo "========================================================================="
-echo " installing docker..."
-echo "========================================================================="
+
+echo "#############################################"
+echo " installing docker and kubernetes...."
+echo "#############################################"
 apt-get update
-apt-get install -y docker-ce docker-ce-cli containerd.io
+apt-get install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl
 
-# add current user to docker group
-adduser $userid docker
+# Setup docker daemon with systemd (only used for debian).
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+mkdir -p /etc/systemd/system/docker.service.d
+systemctl daemon-reload
+systemctl restart docker
+# Setup docker daemon - END -
 
-echo "========================================================================="
-echo " init docker-swarm manager node..."
-echo "========================================================================="
-docker swarm init --advertise-addr $1
+
+#####################################################################################
+# Kubernetes is now installed. To setup a new kubernetes cluster with a master node 
+# run:
+#  $ kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[YOUR-NODE-IP-ADDRESS]
+#
+# This command will setup a new cluster. Follow the instructions of the output.
+# The output will show also the command how to join a worker node.
+# You can use this script also to install a worker node. 
+#####################################################################################
 
 
-echo " adding default overlay network 'imixs-cloud-net' ...."
-docker network create --driver=overlay imixs-cloud-net
