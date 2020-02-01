@@ -4,13 +4,13 @@
 
 To deploy traefik.io within the imixs-cloud run:
 
-	$ kubectl apply -f management/traefik17/
+	$ kubectl apply -f management/traefik21/
 	
 to undeploy traefik.io run:
 
-	$ kubectl delete -f management/traefik17/
+	$ kubectl delete -f management/traefik21/
 
 
 Find out more about Ingress and Traefik:
 
- - https://docs.traefik.io/providers/kubernetes-ingress/
+ - https://docs.traefik.io

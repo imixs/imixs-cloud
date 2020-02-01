@@ -1,0 +1,61 @@
+# Service Account
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: traefik-ingress-controller
+
+
+# Daemon Set
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  namespace: kube-system
+  name: traefik-ingress-controller
+  labels:
+    k8s-app: traefik-ingress-lb
+    app: traefik
+
+spec:
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-lb
+      name: traefik-ingress-lb
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-lb
+        name: traefik-ingress-lb
+    spec:
+      terminationGracePeriodSeconds: 60
+      # hostPort doesn't work with CNI, so we have to use hostNetwork instead
+      # see https://github.com/kubernetes/kubernetes/issues/23920
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      serviceAccountName: traefik-ingress-controller
+      containers:
+      - name: traefik-ingress-lb
+        image: traefik:v2.1
+        args:
+          - --log.level=DEBUG
+          - --api.insecure
+          - --accesslog
+          - --entrypoints.web.Address=:80
+          - --entrypoints.websecure.Address=:443
+          - --providers.kubernetescrd
+          - --certificatesresolvers.default.acme.tlschallenge
+          - --certificatesresolvers.default.acme.email=foo@you.com
+          - --certificatesresolvers.default.acme.storage=acme.json
+          # Please note that this is the staging Let's Encrypt server.
+          # Once you get things working, you should remove that whole line altogether.
+          - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+        ports:
+          - name: http
+            containerPort: 80
+          - name: https
+            containerPort: 443
+          - name: admin
+            containerPort: 8080
+
