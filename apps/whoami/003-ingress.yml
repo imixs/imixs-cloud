@@ -1,16 +1,36 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
+# Ingress Route HTTP
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: whoami-service
+  name: simpleingressroute
   namespace: default
 spec:
-  rules:
-  - host: {YOUR-WORKER-HOST-NAME}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: whoami-service
-          servicePort: http      
+  entryPoints:
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`{YOUR-WORKER-HOST-NAME}`) && PathPrefix(`/notls`)
+    services:
+    - name: whoami-service
+      port: 80
 
-              
+
+# Ingress Route HTTPS
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroutetls
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`{YOUR-WORKER-HOST-NAME}`) && PathPrefix(`/tls`)
+    kind: Rule
+    services:
+    - name: whoami-service
+      port: 80
+  tls:
+    certResolver: default

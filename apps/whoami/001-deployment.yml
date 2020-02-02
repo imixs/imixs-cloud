@@ -1,9 +1,12 @@
 # Deployment
 ---
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
-  name: whoami-deployment
+  namespace: default
+  name: whoami
+  labels: 
+    app: whoami
 spec:
   replicas: 1
   selector:
@@ -17,3 +20,6 @@ spec:
       containers:
       - name: whoami-container
         image: containous/whoami
+        ports: 
+          - name: web
+            containerPort: 80
