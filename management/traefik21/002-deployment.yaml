@@ -1,0 +1,44 @@
+# Service Account
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: traefik-ingress-controller
+
+
+# Deployment
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: kube-system
+  name: traefik-ingress-controller
+  labels:
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: traefik-ingress-lb
+  template:
+    metadata:
+      labels:
+        name: traefik-ingress-lb
+    spec:
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: traefik-ingress-controller
+      containers:
+      - name: traefik-ingress-lb
+        image: traefik:v2.1
+        args:
+          - --log.level=INFO
+          - --api.dashboard=true
+        ports:
+          - name: web
+            containerPort: 8000
+          - name: websecure
+            containerPort: 4443
+          - name: admin
+            containerPort: 8080
+
