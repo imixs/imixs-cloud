@@ -24,7 +24,7 @@ spec:
         - --api.insecure
         - --accesslog
         - --global.checknewversion=true
-        - --entryPoints.traefik.address=:8080
+        - --entryPoints.traefik.address=:8100
         - --entryPoints.web.address=:80
         - --entryPoints.websecure.address=:443
 #        - --certificatesresolvers.default.acme.dnschallenge=true
@@ -46,7 +46,7 @@ spec:
           failureThreshold: 3
           httpGet:
             path: /ping
-            port: 8080
+            port: 8100
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -54,7 +54,7 @@ spec:
           timeoutSeconds: 2
         name: traefik
         ports:
-        - containerPort: 8080
+        - containerPort: 8100
           name: traefik
           protocol: TCP
         - containerPort: 80
@@ -67,7 +67,7 @@ spec:
           failureThreshold: 1
           httpGet:
             path: /ping
-            port: 8080
+            port: 8100
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 10
