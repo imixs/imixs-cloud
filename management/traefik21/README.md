@@ -14,3 +14,4 @@ to undeploy traefik.io run:
 Find out more about Ingress and Traefik:
 
  - https://docs.traefik.io
+ - https://ralph.blog.imixs.com/2020/02/01/kubernetes-setup-traefik-2-1/
