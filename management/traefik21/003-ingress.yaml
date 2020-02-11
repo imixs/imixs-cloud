@@ -1,13 +1,41 @@
-# Traefik Dashboard
----
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: v1
+kind: ServiceAccount
 metadata:
-  name: traefik-dashboard
+  name: traefik
+  namespace: kube-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: traefik
+    release: traefik
+  name: traefik
+  namespace: kube-system
 spec:
-  routes:
-  - match: Host(`{YOUR-WORKER-HOST-NAME}`)
-    kind: Rule
-    services:
-    - name: api@internal
-      kind: TraefikService
+  externalIPs:
+  - {YOUR-HOST-IP}
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: web
+    nodePort: 31909
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: websecure
+    nodePort: 30584
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: admin
+    nodePort: 32316
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: traefik
+    release: traefik
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}

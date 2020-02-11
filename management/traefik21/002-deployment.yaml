@@ -1,44 +1,85 @@
-# Service Account
----
-kind: ServiceAccount
-apiVersion: v1
-metadata:
-  namespace: kube-system
-  name: traefik-ingress-controller
-
-
-# Deployment
----
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
-  namespace: kube-system
-  name: traefik-ingress-controller
   labels:
+    app: traefik
+    release: traefik
+  name: traefik
+  namespace: kube-system
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: traefik-ingress-lb
+      app: traefik
+      release: traefik
   template:
     metadata:
       labels:
-        name: traefik-ingress-lb
+        app: traefik
+        release: traefik
     spec:
-      terminationGracePeriodSeconds: 60
-      serviceAccountName: traefik-ingress-controller
       containers:
-      - name: traefik-ingress-lb
-        image: traefik:v2.1
-        args:
-          - --log.level=INFO
-          - --api.dashboard=true
+      - args:
+        - --api.insecure
+        - --accesslog
+        - --global.checknewversion=true
+        - --entryPoints.traefik.address=:8080
+        - --entryPoints.web.address=:80
+        - --entryPoints.websecure.address=:443
+#        - --certificatesresolvers.default.acme.dnschallenge=true
+#        - --certificatesresolvers.default.acme.dnschallenge.provider=cloudflare
+         # uncomment staging server for production
+#        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+#        - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
+#        - --certificatesresolvers.default.acme.storage=acme.json
+        - --api.dashboard=true
+        - --ping=true
+        - --providers.kubernetescrd
+        - --log.level=DEBUG
+#        envFrom:
+#         - secretRef:
+#             name: cloudflaredns
+        image: traefik:2.1.4
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: traefik
         ports:
-          - name: web
-            containerPort: 8000
-          - name: websecure
-            containerPort: 4443
-          - name: admin
-            containerPort: 8080
-
+        - containerPort: 8080
+          name: traefik
+          protocol: TCP
+        - containerPort: 80
+          name: web
+          protocol: TCP
+        - containerPort: 443
+          name: websecure
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /ping
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: traefik
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 60
