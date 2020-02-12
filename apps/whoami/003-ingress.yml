@@ -10,11 +10,13 @@ spec:
     - web
   routes:
   - kind: Rule
-    match: Host(`{YOUR-WORKER-HOST-NAME}`) && PathPrefix(`/notls`)
+    match: Host(`{YOUR-WORKER-HOST-NAME}`)
     services:
     - name: whoami-service
       port: 80
-
+    # uncomment to redirect http -> https
+    #middlewares: 
+    #- name: redirect
 
 # Ingress Route HTTPS
 ---
@@ -27,10 +29,15 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`{YOUR-WORKER-HOST-NAME}`) && PathPrefix(`/tls`)
+  - match: Host(`{YOUR-WORKER-HOST-NAME}`)
     kind: Rule
     services:
     - name: whoami-service
       port: 80
   tls:
     certResolver: default
+
+    
+
+    
+    

@@ -58,6 +58,44 @@ You can use _htpasswd_ to generate the passwords.
 
 See also [here](https://docs.traefik.io/middlewares/basicauth/).
 
+
+
+## HTTP to HTTPS Redirect
+
+For redirection from HTTP to HTTPS a router middleware is configured in the 003-ingress.yaml file:
+
+
+	# Redirect http -> https
+	---
+	apiVersion: traefik.containo.us/v1alpha1
+	kind: Middleware
+	metadata:
+	  name: redirect
+	spec:
+	  redirectScheme:
+	    scheme: https
+
+This middleware can be used to redirect a service automatically form http to https. You just need to add the redirect to the routes definition of your ingressRoute:
+
+	...
+	  routes:
+	  - kind: Rule
+	    match: Host(`{YOUR-WORKER-HOST-NAME}`)
+	    services:
+	    - name: your-service
+	      port: 80
+	    # apply auto redirect
+	    middlewares: 
+	    - name: redirect
+    ....
+    
+
+
+More information about redirection and redirection on domain can be found [here](https://docs.traefik.io/migration/v1-to-v2/#http-to-https-redirection-is-now-configured-on-routers).
+
+
+
+
 ## Find more....
 
 Find out more about Ingress and Traefik:

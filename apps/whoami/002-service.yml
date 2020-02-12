@@ -3,13 +3,14 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: whoami-service
+  name: whoami
 
 spec:
+#  type: ClusterIP
   ports:
-    - protocol: TCP
-      name: web
-      port: 80
+  - protocol: TCP
+    port: 80
+    name: web
   selector:
     app: whoami
     
