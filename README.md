@@ -9,7 +9,7 @@ The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubern
 
 
 
-<center><img src="./doc/docker-logo.png" style="height:90px;margin-right:100px;"/><img src="./doc/kubernetes-icon-color.png" style="height:100px;"/></center>
+<center><img src="./doc/docker-k8s-logo.png" /></center>
 
 ## The Main Objectives
 The main objectives of the _Imixs-Cloud_ project can be itemized under the following rules:
