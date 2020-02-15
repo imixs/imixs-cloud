@@ -1,9 +1,12 @@
 # The Imixs-Cloud
 
-_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based container environment for production business applications. The main objectives of this project are **simplicity**, **transparency** and **operational readiness**. 
+_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. This project is optimized to **build**, **run** and **maintain** business applications in a production ready cluster. The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**. 
 
-The _Imixs-Cloud_ is based on the [Kubernetes](https://kubernetes.io/) cluster environment.
-Kubernetes is a powerful platform with no limits in scaling and flexibility. This project provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. _Imixs-Cloud_ is optimized to **build**, **run** and **maintain** business services in small and medium-sized organizations.
+The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal.
+
+**Note:** In our first version 
+
+
 The project is open source and constantly under development. We sincerely invite you to participate in it!
 
 
@@ -162,6 +165,15 @@ You can download the tool from the [release page on Github](https://github.com/d
 Now you can start the tools with
 
 $ ~/k9s
+
+
+## Helm 
+
+Helm is a tool which helps you manage Kubernetes applications by so called Helm Charts. Helm Charts help you define, install, and upgrade even the most complex Kubernetes application.
+
+To install helm run
+
+	$ ./scripts/get_helm.sh
 
 
 # How to Montior

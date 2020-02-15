@@ -43,6 +43,17 @@ openssl creates two files in the folder 'management/registry/certs/':
 * domain.cert – this file can be handled to the client using the private registry
 * domain.key – this is the private key which is necessary to run the private registry with TLS
 
+### Create a Secret
+
+Next use the kubectl command _create secret_ to packages these files into a Secret.
+
+	$ kubectl create secret generic registry-key --from-file=./domain.cert --from-file=./domain.key
+
+
+
+
+
+
 The configuration of the registry service is defined by docker-compose.yml located in the folder 'registry/'
 Create a docker-compose.yml file. (See /registry/docker-compose.yml). 
 
