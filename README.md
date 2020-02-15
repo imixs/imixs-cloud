@@ -1,6 +1,6 @@
 # The Imixs-Cloud
 
-_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. This project is optimized to **build**, **run** and **maintain** business applications in a production ready cluster. The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**. 
+_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**.  This project is optimized to **build**, **run** and **maintain** business applications in a production ready cluster.
 
 The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
 
@@ -9,7 +9,7 @@ The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubern
 
 
 
-<p align="center"><img src="./doc/docker-k8s-logo.png" /></p>
+<p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
 
 ## The Main Objectives
 The main objectives of the _Imixs-Cloud_ project can be itemized under the following rules:
@@ -154,7 +154,7 @@ If you want to remove an already deployed service or object just use the delete 
 [K9s](https://github.com/derailed/k9s) is a powerful terminal tool to interact with your Kubernetes cluster. 
 
 
-<img src="doc/imixs-cloud-05.png" />
+<img src="doc/images/k9s.png" />
 
 You can download the tool from the [release page on Github](https://github.com/derailed/k9s/releases). To install the tool on your home directory:
 
@@ -165,6 +165,14 @@ You can download the tool from the [release page on Github](https://github.com/d
 Now you can start the tools with
 
 $ ~/k9s
+
+
+## Traefik
+
+To access your applications from outside of your cluster -Imixs-Cloud_ provides the Ingress Router [Traefik.io](https://containo.us/traefik/). This tool allows you to easily expose your services to public Internet addresses.
+
+<img src="doc/images/traefik-ui.png" />
+
 
 
 ## Helm 
@@ -180,7 +188,7 @@ To install helm run
 
 _Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your docker-swarm.
 
-<img src="./doc/imixs-cloud-04.png" />  
+<img src="./doc/images/grafana.png" />  
   
 The monitoring is based on [Prometheus](https://prometheus.io/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to montor your docker-swarm network but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
   
