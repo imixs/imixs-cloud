@@ -2,14 +2,14 @@
 
 _Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. This project is optimized to **build**, **run** and **maintain** business applications in a production ready cluster. The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**. 
 
-The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal.
+The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
 
-**Note:** In our first version 
-
-
-The project is open source and constantly under development. We sincerely invite you to participate in it!
+**Note:** Our first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm follow the branch [imixs-cloud docker-swarm](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
 
 
+
+
+<center><img src="./doc/docker-logo.png" style="height:90px;margin-right:100px;"/><img src="./doc/kubernetes-icon-color.png" style="height:100px;"/></center>
 
 ## The Main Objectives
 The main objectives of the _Imixs-Cloud_ project can be itemized under the following rules:
