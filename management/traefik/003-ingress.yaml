@@ -14,7 +14,7 @@ metadata:
   namespace: kube-system
 spec:
   externalIPs:
-  - {YOUR-HOST-IP}
+  - {MASTER-NODE-IP}
   externalTrafficPolicy: Cluster
   ports:
   - name: web

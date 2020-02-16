@@ -31,14 +31,14 @@ The following command installs harbor into the _Imixs-Cloud_.
 	
 	$ helm install registry harbor/harbor --set persistence.enabled=false\
 	  --set expose.type=nodePort --set expose.tls.enabled=true\
-	  --set externalURL=https://{HOST_NAME}:30003\
-	  --set expose.tls.commonName={HOST_NAME}
+	  --set externalURL=https://{MASTER-NODE}:30003\
+	  --set expose.tls.commonName={MASTER-NODE}
 
-replace the `{HOST_NAME}` with the DNS name of your worker node. 
+replace the `{MASTER-NODE}` with the DNS name of your master node. 
 
 After a few seconds you can access harbor from your web browser via https:
 
-	https://{HOST_NAME}:30003
+	https://{MASTER-NODE}:30003
 	
 The default User/Password is:
 
@@ -63,29 +63,31 @@ To  be allowed to push/pull images from the private docker registry hosted in yo
 
 You can download the Harbor certificate from the Habor web frontend from your web browser or via command line :
 
-	$ wget -O ca.crt --no-check-certificate https://{HOST_NAME}:30003/api/systeminfo/getcert
+	$ wget -O ca.crt --no-check-certificate https://{MASTER-NODE}:30003/api/systeminfo/getcert
 
-replace {HOST_NAME} with your cluster node name.
+replace {MASTER-NODE} with your cluster master node name.
 
 now create a new directly in your local docker/certs.d directory and copy the certificate:
 
-	mkdir -p /etc/docker/certs.d/{HOST_NAME}:30003
-	cp ca.cert /etc/docker/certs.d/{HOST_NAME}:30003/ca.crt
-	service docker restart
+	$ mkdir -p /etc/docker/certs.d/{MASTER-NODE}:30003
+	$ cp ca.crt /etc/docker/certs.d/{MASTER-NODE}:30003/ca.crt
+	$ service docker restart
 	
 Now you need to first login to your registry with docker:
 
-	$ docker login -u admin {HOST_NAME}:30003
+	$ docker login -u admin {MASTER-NODE}:30003
 	
 
 # Push a local docker image
 
 To push a local docker image into the registry you first need to tag the image with the repository uri
 
-	$ docker tag SOURCE_IMAGE[:TAG] {HOST_NAME}:30002/library/IMAGE[:TAG]
+	$ docker tag SOURCE_IMAGE[:TAG] {MASTER-NODE}:30003/library/IMAGE[:TAG]
+
+**Note:** '/library/' is the project library name defined in Harbor!
 
 next you can push the image:
 
 
-	$ docker push {HOST_NAME}:30002/library/IMAGE[:TAG]	
+	$ docker push {MASTER-NODE}:30003/library/IMAGE[:TAG]	
 	

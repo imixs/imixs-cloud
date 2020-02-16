@@ -33,13 +33,13 @@ Also comment the ACM Staging server from the Let's Encrypt setup after you have 
 ### Ingress Configuration  
 
 The 003-ingressroute.yaml file contains the ingress configuration for the Taefik.io service.  
-The spec defines a external IP address which is used to route external requests to one cluster node. Traffic that ingresses into the cluster with the external IP (as destination IP), on the Service port, will be routed to one of the Service endpoints. externalIPs are not managed by Kubernetes and are the responsibility of the cluster administrator.
+The spec defines a external IP address which is used to route external requests to one cluster node. Traffic that ingresses into the cluster with the external IP (as destination IP), on the Service port, will be routed to one of the Service endpoints. externalIPs are not managed by Kubernetes and are the responsibility of the cluster administrator. Find more details [here](https://kubernetes.io/docs/concepts/services-networking/service/#external-ips).
 
-So before your apply the traefik configuration please replace the _{YOUR-CLUSTER-NODE-IP}_ with the Node IP address of your worker node.
+So before you apply the traefik configuration please replace the _{MASTER-NODE-IP}_ with the Node IP address of one of your kubernetes cluster nodes used to ingress external traefik. This should typically be the IP address from your master node.
  
 	spec:
 	  externalIPs:
-	  - {YOUR-CLUSTER-NODE-IP} 
+	  - {MASTER-NODE-IP} 
 	  
 	  
 ### Apply Configuration
@@ -80,7 +80,7 @@ This middleware can be used to redirect a service automatically form http to htt
 	...
 	  routes:
 	  - kind: Rule
-	    match: Host(`{YOUR-WORKER-HOST-NAME}`)
+	    match: Host(`{YOUR-INTERNET-DNS-NAME}`)
 	    services:
 	    - name: your-service
 	      port: 80
