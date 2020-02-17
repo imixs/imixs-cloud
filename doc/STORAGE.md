@@ -1,9 +1,9 @@
-# Storrage
+# Storage
 
 To run statefull docker images (e.g. a Database like PostgreSQL) you have two choices.
 
  - run the service on a dedicated node - this avoids the lost of data if kubernetes re-schedules your server to another node
- - use a ceph or glusterfs storrage 
+ - use a ceph or glusterfs storage 
  
 
 # Gluster
@@ -36,7 +36,7 @@ To test the gluster status run:
 
 	$ service glusterd status	
 	
-Repeat this installation on each node you wish to joing your gluster network storrage.
+Repeat this installation on each node you wish to joing your gluster network storage.
 
 
 ## Setup Gluster Network
