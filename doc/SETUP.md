@@ -2,6 +2,40 @@
 
 The following section describes the setup procedure of _Imixs-Cloud_ to run a kubernetes cluster into a productive environment for small and medium organisations.
 
+## Hostnames
+
+To enable communication between your cluster nodes using short names, make sure that on each node the short host names a listed in the /etc/hosts with the public or private IP addresses.
+
+
+
+## The Cluster-User
+
+** Note:**
+In Imixs-Cloud you should always work with a non-root, sudo privileged cluster user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
+
+To create a cluster-user follow the next steps and replace '{username}' with the name of our cluster user you have choosen. 
+
+	$ useradd -m {username} -s /bin/bash
+	$ passwd {username}
+	$ echo "{username} ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/{username}
+	$ sudo chmod 0440 /etc/sudoers.d/{username}
+
+Next create a SSH key on the master node and distribute the public key to each worker node. Leave the passphrase and filename empty  
+
+	# login with your cluster user
+	$ su {username}
+	$ ssh-keygen
+
+The keys will be stored in the .ssh/ directory. 
+
+Now you can copy the key to all worker nodes
+
+	ssh-copy-id {username}@node1
+	ssh-copy-id {username}@node2
+
+ 
+## Setup 
+ 
 For a quick setup you can clone the git repository and start the setup:
 
 1) install git 
@@ -14,19 +48,11 @@ For a quick setup you can clone the git repository and start the setup:
 
 3) start the setup
 
-	$ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVR_IP_ADDRESS]
+	$ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVER_IP_ADDRESS]
 
-replace [YOUR\_SERVR\_IP\_ADDRESS] with your servers public IP address
+replace [YOUR\_SERVER\_IP\_ADDRESS] with your servers public IP address
 
 **That's it.** 
-
-Read the following section for more information. 
-
-See also the following tutorial for general information about how to setup a Docker-Swarm:
-
-* [Official Docker-Swarm Tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/)
-* [Lightweight Docker Swarm Environment - by Ralph Soika](http://ralph.blog.imixs.com/lightweight-docker-swarm-environment/)
-* [How to Run Docker-Swarm on VM Servers - by Ralph Soika](http://ralph.blog.imixs.com/how-to-run-docker-swarm-on-a-vm-servers/)
 
 ## Nodes
 
@@ -35,7 +61,7 @@ A _Imixs-Cloud_ consists of a minimum of two nodes.
 * The master node is the kubernetes api server
 * The worker nodes are serving the applications (pods). 
 
-A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. All nodes in the swarm must have docker installed and be able to access the manager at the IP address.
+A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. 
 
 ## The setup.sh script
 
@@ -101,9 +127,7 @@ The flannel network will been deployed to the Kubernetes cluster. After some sec
 
 	$ kubectl cluster-info
 
-and list all nodes with:
 
-	$ kubectl get nodes
 
 ## Install Worker Nodes
 
@@ -115,6 +139,10 @@ Run the output as a root user on your worker node:
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx     --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+and list all nodes with:
+
+	$ kubectl get nodes
+	
 ## Controlling Your Cluster From your Workstation
 
 In different to docker-swarm, a kubernetes cluster can be administrated remote from your workstation. The tool ‘kubectl’ is the kubernetes command line tool used to manage your cluster via the kubernetes api either from your server or from a workstatio..
