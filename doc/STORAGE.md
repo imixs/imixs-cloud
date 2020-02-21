@@ -14,7 +14,7 @@ Gluster is a scalable network filesystem. This allows you to create a large, dis
 
 You can install Glusterfs on any node this includes the kubernetes worker nodes. 
 
-The following guide explains how to intall Glusterfs on Debian 9. You will find more information about insallation [here](https://docs.gluster.org/en/latest/Install-Guide/Overview/).
+The following guide explains how to intall Glusterfs on Debian 9. You will find more information about installation [here](https://docs.gluster.org/en/latest/Install-Guide/Overview/).
 
  
 Run the following commands as root:
@@ -130,7 +130,7 @@ The ceph-deploy utility must login to a Ceph node as a user that has passwordles
 
 ** Note:**
 In Imixs-Cloud you should always work with an unprivileged cluster user defined on your master node and also on all your worker nodes. 
-So if you did not have created a cluster-user you should first create a ssh user on all your ceph nodes. You can find details it the [Setup section](SETUP.md). For background information see alos [here](https://docs.ceph.com/docs/master/start/quick-start-preflight/#create-a-ceph-deploy-user).
+So if you did not have created a cluster-user you should first create a ssh user on all your ceph nodes. You can find details it the [Setup section](SETUP.md). For background information see also [here](https://docs.ceph.com/docs/master/start/quick-start-preflight/#create-a-ceph-deploy-user).
 
 
 ## Install a Ceph Cluster
@@ -236,6 +236,107 @@ Wipout a logical device. (replace [device-name] with you device e.g. sdb)
 
 
 
+## Kubernetes
+
+In the following steps we create a kubernetes rdb provisoner and a ceph pool applied to a storageClass. Find also more details [here](https://ralph.blog.imixs.com/2020/02/21/kubernetes-storage-volumes-with-ceph). 
+
+First create the provisioner with:
+
+	$ kubectl create -n kube-system -f 001-rbd-provisioner.yaml 
+
+To check your new deployment run:
+
+	$ kubectl get pods -l app=rbd-provisioner -n kube-system
+	NAME                               READY   STATUS    RESTARTS   AGE
+	rbd-provisioner-7ab15f45bd-rnxx8   1/1     Running   0          96s
+
+### Get the client.admin Secret Key
+
+To allow kubernetes to access your ceph cluster you need to provide the ceph admin key. With the following command you can get the ceph admin key out from one of your ceph nodes:
+
+	$ sudo ssh node1 ceph auth get-key client.admin
+	ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==
+
+Copy the key and create a kubernetes secret named ‘ceph-secret’:
+
+	 $ kubectl create secret generic ceph-secret \
+	    --type="kubernetes.io/rbd" \
+	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
+	    --namespace=kube-system
+	secret/ceph-secret created
+
+### Create a Ceph Pool and a User Key
+
+Now create a separate Ceph pool for Kubernetes:
+
+	$ sudo ssh node-1 ceph --cluster ceph osd pool create kube 16 16
+	pool 'kube' created
+
+For this new pool you can create a user key:
+
+	sudo ssh node-1 "ceph auth get-or-create client.kube mon 'allow r' osd 'allow rwx pool=kube'"
+	[client.kube]
+		key = CDEgU1BeVMyDJxAA7+ufUoqTdvmZUUR8tJeGnEg==
+
+Also for this user key we create a separate kubernetes secret:
+
+	$ kubectl create secret generic ceph-secret-kube \
+	    --type="kubernetes.io/rbd" \
+	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
+	    --namespace=kube-system
+
+Both kubernetes secrets ‘ceph-secret’ and ‘ceph-secret-kube’ are used for the StorageClass created in the next step.
+The StorageClass
+
+Next a storage class definition holds the information about the ceph cluster environment. Replace {node-ip} with the ip addresses of you cluster nodes:
+
+	apiVersion: storage.k8s.io/v1
+	kind: StorageClass
+	metadata:
+	  name: fast-rbd
+	provisioner: ceph.com/rbd
+	parameters:
+	  monitors: {node-1}:6789, {node-2}:6789, {node-3}:6789
+	  adminId: admin
+	  adminSecretName: ceph-secret
+	  adminSecretNamespace: kube-system
+	  pool: kube
+	  userId: kube
+	  userSecretName: ceph-secret-kube
+	  userSecretNamespace: kube-system
+	  imageFormat: "2"
+	  imageFeatures: layering
+
+Take care of the ‘adminSecretName’ and the ‘userSecretName’ which we generated before.
+
+Now you can apply the new StorageClass:
+
+	$ kubectl create -f pool-1-storageclass.yaml
+
+### The PersistentVolumeClaim
+
+As you now have created a ceph pool and the corresponding storageClass you are ready to define a so called PersistentVolumeClaim (PVC). A PVC is part of your pods. The PVC will create the persistence volume automatically associated with your pod.
+
+	kind: PersistentVolumeClaim
+	apiVersion: v1
+	metadata:
+	  name: testclaim
+	spec:
+	  accessModes:
+	    - ReadWriteOnce
+	  resources:
+	    requests:
+	      storage: 1Gi
+	  storageClassName: fast-rbd
+
+create the claim:
+
+	$ kubectl create -f test-pvc.yaml
+
+and finally you can test the status of your persistent volume claim:
+
+	$ kubectl get pvc
+	NAME          STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+	testclaim     Bound     pvc-060e5142-f915-4385-8e86-4166fe2980f6   1Gi        RWO            fast-rbd       27m
 
 
-	
