@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ############################################################
-# Kubernetes Install Script for Debian 9 (Stretch)
+# Kubernetes Install Script for Debian 10 (Buster)
 # 
 # run as sudo 
 ############################################################

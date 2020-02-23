@@ -48,9 +48,10 @@ For a quick setup you can clone the git repository and start the setup:
 
 3) start the setup
 
-	$ sudo ./imixs-cloud/scripts/setup.sh [YOUR_SERVER_IP_ADDRESS]
+	$ cd imixs-cloud
+	$ sudo ./scripts/setup.sh
 
-replace [YOUR\_SERVER\_IP\_ADDRESS] with your servers public IP address
+
 
 **That's it.** 
 
@@ -77,10 +78,7 @@ In order to ensure that all nodes are running the same software releases run the
 
 The install script can be found in the script directory /scripts/. Run the setup script as sudo:
 
-	$ chmod u+x scripts/setup.sh
 	$ sudo scripts/setup.sh
-	
-
 
 
 

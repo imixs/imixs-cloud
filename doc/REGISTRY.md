@@ -42,7 +42,7 @@ After a few seconds you can access harbor from your web browser via https:
 	
 The default User/Password is:
 
-	admin/Harbor12345		
+	admin/Harbor12345
 	
 <img src="./images/harbor.png" />
 	
