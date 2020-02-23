@@ -2,14 +2,14 @@
 
 The templates here are used to define a ceph storage class.
 
-## Create provisioner
+## Create the RBD provisioner
 
 Create the provisioner with:
 
-	$ kubectl create -n kube-system -f 001-rbd-provisioner.yaml 
+	$ kubectl create -n kube-system -f rbd-provisioner.yaml 
 
 	
-## Admin Secret
+### Admin Secret
 
 With the following command you can get the ceph admin key out from one of your ceph nodes:
 
@@ -24,7 +24,7 @@ Copy the key and create a kubernetes secret named ‘ceph-secret’:
 	    --namespace=kube-system
 	secret/ceph-secret created	
 	
-## Create a Ceph Pool and a User Key
+### Create a Ceph Pool and a User Key
 
 Create a separate Ceph pool for Kubernetes:
 
@@ -48,8 +48,46 @@ Both kubernetes secrets ‘ceph-secret’ and ‘ceph-secret-kube’ are used fo
 
 
 
-## Create a StorageClass
+### Create a RBD StorageClass
 
 Edit the file pool-1-storageclass.yaml and create the storageClass with:
 
 	$ kubectl create -n kube-system -f pool-1-storageclass.yaml 
+	
+	
+	
+	
+## Create the CEPHFS provisioner
+
+
+Create the dedicated namespace for CephFS
+
+	$ kubectl create ns cephfs
+
+
+With the following command you can get the ceph admin key out from one of your ceph nodes:
+
+	$ sudo ssh node1 ceph auth get-key client.admin
+	ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==
+
+Copy the key and create a kubernetes secret named ‘ceph-secret’:
+
+	 $ kubectl create secret generic ceph-secret-admin \
+	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
+	    --namespace=cephfs
+	secret/ceph-secret created	
+	
+Create the provisioner with:
+
+	$ kubectl create -n cephfs -f cephfs-provisioner.yaml
+
+
+
+### Create a CEPHFS StorageClass
+
+Edit the file cephfs-storageclass.yaml and create the storageClass with:
+
+	$ kubectl create -f cephfs-storageclass.yaml 
+	
+		
+	

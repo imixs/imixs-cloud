@@ -78,7 +78,7 @@ In order to ensure that all nodes are running the same software releases run the
 The install script can be found in the script directory /scripts/. Run the setup script as sudo:
 
 	$ chmod u+x scripts/setup.sh
-	$ scripts/setup.sh
+	$ sudo scripts/setup.sh
 	
 
 ### Debian Version 9

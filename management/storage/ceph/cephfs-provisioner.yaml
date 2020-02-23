@@ -1,7 +1,8 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: rbd-provisioner
+  name: cephfs-provisioner
+  namespace: cephfs
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -19,70 +20,91 @@ rules:
     resources: ["services"]
     resourceNames: ["kube-dns","coredns"]
     verbs: ["list", "get"]
-  - apiGroups: [""]
-    resources: ["endpoints"]
-    verbs: ["get", "list", "watch", "create", "update", "patch"]
+    
+    
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: rbd-provisioner
+  name: cephfs-provisioner
 subjects:
   - kind: ServiceAccount
-    name: rbd-provisioner
-    namespace: kube-system
+    name: cephfs-provisioner
+    namespace: cephfs
 roleRef:
   kind: ClusterRole
-  name: rbd-provisioner
+  name: cephfs-provisioner
   apiGroup: rbac.authorization.k8s.io
+  
+  
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: rbd-provisioner
+  name: cephfs-provisioner
+  namespace: cephfs
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "get", "delete"]
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+    
+    
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: rbd-provisioner
+  name: cephfs-provisioner
+  namespace: cephfs
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: rbd-provisioner
+  name: cephfs-provisioner
 subjects:
 - kind: ServiceAccount
-  name: rbd-provisioner
-  namespace: kube-system
+  name: cephfs-provisioner
+  
+  
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: rbd-provisioner
+  name: cephfs-provisioner
+  namespace: cephfs
+  
+  
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rbd-provisioner
+  name: cephfs-provisioner
+  namespace: cephfs
 spec:
   replicas: 1
   selector: 
     matchLabels:
-      app: rbd-provisioner
+      app: cephfs-provisioner  
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: rbd-provisioner
+        app: cephfs-provisioner
     spec:
       containers:
-      - name: rbd-provisioner
-        image: "quay.io/external_storage/rbd-provisioner:latest"
+      - name: cephfs-provisioner
+        image: "quay.io/external_storage/cephfs-provisioner:latest"
         env:
         - name: PROVISIONER_NAME
-          value: ceph.com/rbd
-      serviceAccount: rbd-provisioner
+          value: ceph.com/cephfs
+        - name: PROVISIONER_SECRET_NAMESPACE
+          value: cephfs
+        command:
+        - "/usr/local/bin/cephfs-provisioner"
+        args:
+        - "-id=cephfs-provisioner-1"
+      serviceAccount: cephfs-provisioner
+      
+ 

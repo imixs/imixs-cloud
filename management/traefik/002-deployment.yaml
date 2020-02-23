@@ -53,7 +53,7 @@ spec:
         name: traefik
         ports:
         - containerPort: 8100
-          name: traefik
+          name: admin
           protocol: TCP
         - containerPort: 80
           name: web

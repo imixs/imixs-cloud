@@ -131,7 +131,8 @@ roleRef:
   name: traefik-ingress-controller
 subjects:
   - kind: ServiceAccount
-    name: traefik-ingress-controller
+#    name: traefik-ingress-controller
+    name: traefik
     namespace: kube-system
 
     
