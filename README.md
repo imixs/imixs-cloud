@@ -25,7 +25,7 @@ The main objectives of the _Imixs-Cloud_ project can be itemized under the follo
  
 ## Quick Start
 
-For a quick setup you need at least a Debian 9 server with a public internet address and a user with sudo privileges.
+For a quick setup you need at least a Debian 10 (Buster) server with a public internet address and a user with sudo privileges.
 
 1) from your users home directory first install git 
 

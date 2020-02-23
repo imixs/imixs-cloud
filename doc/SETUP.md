@@ -65,7 +65,7 @@ A node can be a virtual or a hardware node. All nodes are defined by unique fixe
 
 ## The setup.sh script
 
-In order to ensure that all nodes are running the same software releases run the following setup script. This script is designed for Debian 9 (Stretch) but of course you can adapt the script for a different Lnux distribution. The script installs the following tools:
+In order to ensure that all nodes are running the same software releases run the following setup script. This script is designed for Debian 10 (Buster) but of course you can adapt the script for a different Lnux distribution. The script installs the following tools:
 
  - docker-ce (the docker engine)
  - docker-ce-cli (the docker command line interface)
@@ -80,12 +80,6 @@ The install script can be found in the script directory /scripts/. Run the setup
 	$ chmod u+x scripts/setup.sh
 	$ sudo scripts/setup.sh
 	
-
-### Debian Version 9
-
-This guide assumes that you are running Kubernetes V 1.17.2 on Debian 9 (Stretch). 
-
-In Debian 10 (buster) there are some changes in the network layer which affects Kubernetes internal network communication. If you use Debian 10 make sure you first reconfigure the network layers! Otherwise you will see internal API I/O timeout errors. 
 
 
 
