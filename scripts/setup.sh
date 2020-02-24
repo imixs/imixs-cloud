@@ -24,8 +24,8 @@ fi
 echo "#############################################"
 echo " adding repositories..."
 echo "#############################################"
-apt-get update
-apt-get install -y apt-transport-https ca-certificates ne curl gnupg2 software-properties-common
+apt update
+apt install -y apt-transport-https ca-certificates ne curl gnupg2 software-properties-common
 
 # Add docker repositry
 curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
@@ -43,7 +43,7 @@ EOF
 
 echo " switch to legacy versions..."
 # ensure legacy binaries are installed - this is required for Debian 10
-apt-get install -y iptables arptables ebtables
+apt install -y iptables arptables ebtables
 
 # switch to legacy versions
 update-alternatives --set iptables /usr/sbin/iptables-legacy
@@ -55,8 +55,8 @@ update-alternatives --set ebtables /usr/sbin/ebtables-legacy
 echo "#############################################"
 echo " installing docker and kubernetes...."
 echo "#############################################"
-apt-get update
-apt-get install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl
+apt update
+apt install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl
 
 # Setup docker daemon with systemd (only used for debian).
 cat > /etc/docker/daemon.json <<EOF

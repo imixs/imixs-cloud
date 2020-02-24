@@ -40,7 +40,7 @@ For a quick setup you can clone the git repository and start the setup:
 
 1) install git 
 
-	$ sudo apt-get install -y git
+	$ sudo apt install -y git
 
 2) clone repo....
 

@@ -203,6 +203,27 @@ You ceph cluster is now ready to use!
 
 
 
+
+
+
+### Create a CephFS 
+
+create metadata servers:
+
+
+	$ ceph-deploy mds create node-1 node-2 node-3
+	
+next connect to a woker node and create two RADOS pools , one for the actual data and one for the metadata.
+
+	$ sudo ceph osd pool create cephfs_data 64
+	$ sudo ceph osd pool create cephfs_metadata 64
+	
+and enable the filesystem feature
+
+	$ sudo ceph fs new cephfs cephfs_metadata cephfs_data
+
+
+
 ## Starting over
 
 If at any point you run into trouble and you want to start over, execute the following to purge the Ceph packages, and erase all its data and configuration:
