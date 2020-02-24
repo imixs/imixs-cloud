@@ -79,7 +79,7 @@ Copy the key and create a kubernetes secret named ‘ceph-secret’:
 	
 Create the provisioner with:
 
-	$ kubectl create -n cephfs -f cephfs-provisioner.yaml
+	$ kubectl create -n cephfs -f management/storage/ceph/cephfs-provisioner.yaml
 
 
 
@@ -87,7 +87,7 @@ Create the provisioner with:
 
 Edit the file cephfs-storageclass.yaml and create the storageClass with:
 
-	$ kubectl create -f cephfs-storageclass.yaml 
+	$ kubectl create -f management/storage/ceph/cephfs-storageclass.yaml 
 	
 		
 	

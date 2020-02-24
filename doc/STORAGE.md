@@ -114,7 +114,7 @@ On your Kubernetes master node run as non root user:
 	
 	$ wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 	$ echo deb https://download.ceph.com/debian-luminous/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
-	$ sudo apt-get update && sudo apt-get install ceph-deploy ntp
+	$ sudo apt update && sudo apt install ceph-deploy ntp
 	$ sudo /etc/init.d/ntp restart
 
 
