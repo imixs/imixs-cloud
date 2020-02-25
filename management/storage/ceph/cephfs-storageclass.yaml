@@ -9,5 +9,5 @@ parameters:
   adminId: admin
   # replace the ceph-admin-secret with a kubernetes secret holding your ceph client.admin key
   adminSecretName: {ceph-admin-secret}
-  adminSecretNamespace: cephfs
+  adminSecretNamespace: kube-system
   claimRoot: /pvc-volumes

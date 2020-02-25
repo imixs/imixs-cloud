@@ -1,69 +1,12 @@
 # Ceph Pool
 
-The templates here are used to define a ceph storage class.
+The templates here are used to define a ceph provisioner and the storage class used for  a CephFS.
 
-## Create the RBD provisioner
-
-Create the provisioner with:
-
-	$ kubectl create -n kube-system -f rbd-provisioner.yaml 
-
-	
-### Admin Secret
-
-With the following command you can get the ceph admin key out from one of your ceph nodes:
-
-	$ sudo ssh node1 ceph auth get-key client.admin
-	ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==
-
-Copy the key and create a kubernetes secret named ‘ceph-secret’:
-
-	 $ kubectl create secret generic ceph-secret \
-	    --type="kubernetes.io/rbd" \
-	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
-	    --namespace=kube-system
-	secret/ceph-secret created	
-	
-### Create a Ceph Pool and a User Key
-
-Create a separate Ceph pool for Kubernetes:
-
-	$ sudo ssh node-1 ceph --cluster ceph osd pool create kube 16 16
-	pool 'kube' created
-
-For this new pool you can create a user key:
-
-	sudo ssh node-1 "ceph auth get-or-create client.kube mon 'allow r' osd 'allow rwx pool=kube'"
-	[client.kube]
-		key = CDEgU1BeVMyDJxAA7+ufUoqTdvmZUUR8tJeGnEg==
-
-create a separate kubernetes secret for this user:
-
-	$ kubectl create secret generic ceph-secret-kube \
-	    --type="kubernetes.io/rbd" \
-	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
-	    --namespace=kube-system
-
-Both kubernetes secrets ‘ceph-secret’ and ‘ceph-secret-kube’ are used for the StorageClass yaml file!
+Before you can deploy the CephFS provisioner into you kubernetes cluster you first need to create a secret and edit the cephfs-storageclass.yaml file.
 
 
-
-### Create a RBD StorageClass
-
-Edit the file pool-1-storageclass.yaml and create the storageClass with:
-
-	$ kubectl create -n kube-system -f pool-1-storageclass.yaml 
-	
-	
-	
 	
 ## Create the CEPHFS provisioner
-
-
-Create the dedicated namespace for CephFS
-
-	$ kubectl create ns cephfs
-
 
 With the following command you can get the ceph admin key out from one of your ceph nodes:
 
@@ -74,20 +17,66 @@ Copy the key and create a kubernetes secret named ‘ceph-secret’:
 
 	 $ kubectl create secret generic ceph-secret-admin \
 	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
-	    --namespace=cephfs
+	    --namespace=kube-system
 	secret/ceph-secret created	
-	
+
 Create the provisioner with:
 
-	$ kubectl create -n cephfs -f management/storage/ceph/cephfs-provisioner.yaml
+	$ kubectl create -n kube-system -f management/storage/ceph/cephfs-provisioner.yaml
 
 
 
-### Create a CEPHFS StorageClass
+## Create a CEPHFS StorageClass
 
 Edit the file cephfs-storageclass.yaml and create the storageClass with:
 
-	$ kubectl create -f management/storage/ceph/cephfs-storageclass.yaml 
-	
+	$ kubectl create -f management/storage/ceph/cephfs-storageclass.yaml
+
 		
+# Volume Claim Example 
+
+The following is an example how to create a volume claim for the CephFS within a pod.
+
+volumeclaim.yaml:
+
+	kind: PersistentVolumeClaim
+	apiVersion: v1
+	metadata:
+	  name: mydata
+	#  namespace: cephfs
+	spec:
+	  storageClassName: cephfs
+	  accessModes:
+	    - ReadWriteMany
+	  resources:
+	    requests:
+	      storage: 1Gi
+
+
+Within a deployment you can than mount a volume based on this claim. See the following example:
+
+
+	apiVersion: apps/v1
+	kind: Deployment
+	.....
+	spec:
+	  ....
+	  template:
+	    ....
+	    spec:
+	      containers:
+	      .....
+	        volumeMounts:
+	        - mountPath: /var/lib/myapp/data
+	          name: mydata
+	      restartPolicy: Always
+	      volumes:
+	      - name: mydata
+	        persistentVolumeClaim:
+	          claimName: mydata
+	....
+
+	
+	
+	
 	

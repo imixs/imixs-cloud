@@ -2,7 +2,7 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: cephfs-provisioner
-  namespace: cephfs
+  namespace: kube-system
 rules:
   - apiGroups: [""]
     resources: ["persistentvolumes"]
@@ -30,7 +30,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: cephfs-provisioner
-    namespace: cephfs
+    namespace: kube-system
 roleRef:
   kind: ClusterRole
   name: cephfs-provisioner
@@ -42,7 +42,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cephfs-provisioner
-  namespace: cephfs
+  namespace: kube-system
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
@@ -57,7 +57,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: cephfs-provisioner
-  namespace: cephfs
+  namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -72,7 +72,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: cephfs-provisioner
-  namespace: cephfs
+  namespace: kube-system
   
   
 ---
@@ -80,7 +80,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cephfs-provisioner
-  namespace: cephfs
+  namespace: kube-system
 spec:
   replicas: 1
   selector: 
@@ -100,7 +100,7 @@ spec:
         - name: PROVISIONER_NAME
           value: ceph.com/cephfs
         - name: PROVISIONER_SECRET_NAMESPACE
-          value: cephfs
+          value: kube-system
         command:
         - "/usr/local/bin/cephfs-provisioner"
         args:
