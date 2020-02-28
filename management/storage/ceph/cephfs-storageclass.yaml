@@ -3,6 +3,7 @@ apiVersion: storage.k8s.io/v1
 metadata:
   name: cephfs
 provisioner: ceph.com/cephfs
+reclaimPolicy: Retain
 parameters:
   # replace the {node-1}.. with the IP addresses of you ceph nodes
   monitors: {node-1}:6789, {node-2}:6789, {node-3}:6789

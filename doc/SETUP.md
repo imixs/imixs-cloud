@@ -40,7 +40,11 @@ For a quick setup you can clone the git repository and start the setup:
 
 1) install git 
 
+	# For Debian 10 
 	$ sudo apt install -y git
+	
+	# For CentOS 7
+	$ sudo yum install -y git
 
 2) clone repo....
 
@@ -78,7 +82,12 @@ In order to ensure that all nodes are running the same software releases run the
 
 The install script can be found in the script directory /scripts/. Run the setup script as sudo:
 
-	$ sudo scripts/setup.sh
+	# For Debian 10
+	$ sudo scripts/setup_debian.sh
+	
+	# For CentOS 7
+	$ sudo scripts/setup_centos.sh
+	
 
 
 
