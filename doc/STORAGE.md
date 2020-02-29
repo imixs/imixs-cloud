@@ -215,12 +215,102 @@ create metadata servers:
 	
 next connect to a woker node and create two RADOS pools , one for the actual data and one for the metadata.
 
-	$ sudo ceph osd pool create cephfs_data 64
-	$ sudo ceph osd pool create cephfs_metadata 64
+	$ sudo ceph osd pool create cephfs_data 32
+	$ sudo ceph osd pool create cephfs_metadata 32
 	
 and enable the filesystem feature
 
 	$ sudo ceph fs new cephfs cephfs_metadata cephfs_data
+
+
+
+## Kubernetes
+
+With the following command you can get the ceph admin key out from one of your ceph nodes:
+
+	$ sudo ssh node1 ceph auth get-key client.admin
+	ABCxxxxxx/xxxxxxxkPo6+OXpOj9N2ZQ==
+
+Copy the key and create a kubernetes secret named ‘ceph-secret’:
+
+	$ kubectl create secret generic ceph-secret \
+	    --from-literal=key='ABCxxxxxx/xxxxxxxkPo6+OXpOj9N2ZQ==' \
+	    --namespace=kube-system
+	secret/ceph-secret created	
+
+Create the provisioner with:
+
+	$ kubectl create -n kube-system -f management/storage/ceph/cephfs-provisioner.yaml
+
+
+
+### Create a CEPHFS StorageClass
+
+Edit the file cephfs-storageclass.yaml and create the storageClass with:
+
+	$ kubectl create -f management/storage/ceph/cephfs-storageclass.yaml
+
+
+
+
+		
+# Volume Claim Example 
+
+The following is an example how to create a volume claim for the CephFS within a pod.
+
+volumeclaim.yaml:
+
+	kind: PersistentVolumeClaim
+	apiVersion: v1
+	metadata:
+	  name: mydata
+	#  namespace: cephfs
+	spec:
+	  storageClassName: cephfs
+	  accessModes:
+	    - ReadWriteMany
+	  resources:
+	    requests:
+	      storage: 1Gi
+
+
+Within a deployment you can than mount a volume based on this claim. See the following example:
+
+
+	apiVersion: apps/v1
+	kind: Deployment
+	.....
+	spec:
+	  ....
+	  template:
+	    ....
+	    spec:
+	      containers:
+	      .....
+	        volumeMounts:
+	        - mountPath: /var/lib/myapp/data
+	          name: mydata
+	      restartPolicy: Always
+	      volumes:
+	      - name: mydata
+	        persistentVolumeClaim:
+	          claimName: mydata
+	....
+
+	
+
+
+
+
+and finally you can test the status of your persistent volume claim:
+
+	$ kubectl get pvc
+	NAME          STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+	testclaim     Bound     pvc-060e5142-f915-4385-8e86-4166fe2980f6   1Gi        RWO            fast-rbd       27m
+
+
+
+
 
 
 
@@ -255,109 +345,5 @@ Wipout a logical device. (replace [device-name] with you device e.g. sdb)
 	$ sudo dd if=/dev/zero of=/dev/[device-name] bs=1M count=1
 	$ sudo ceph-volume lvm zap /dev/[device-name] --destroy
 
-
-
-## Kubernetes
-
-In the following steps we create a kubernetes rdb provisoner and a ceph pool applied to a storageClass. Find also more details [here](https://ralph.blog.imixs.com/2020/02/21/kubernetes-storage-volumes-with-ceph). 
-
-First create the provisioner with:
-
-	$ kubectl create -n kube-system -f 001-rbd-provisioner.yaml 
-
-To check your new deployment run:
-
-	$ kubectl get pods -l app=rbd-provisioner -n kube-system
-	NAME                               READY   STATUS    RESTARTS   AGE
-	rbd-provisioner-7ab15f45bd-rnxx8   1/1     Running   0          96s
-
-### Get the client.admin Secret Key
-
-To allow kubernetes to access your ceph cluster you need to provide the ceph admin key. With the following command you can get the ceph admin key out from one of your ceph nodes:
-
-	$ sudo ssh node1 ceph auth get-key client.admin
-	ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==
-
-Copy the key and create a kubernetes secret named ‘ceph-secret’:
-
-	 $ kubectl create secret generic ceph-secret \
-	    --type="kubernetes.io/rbd" \
-	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
-	    --namespace=kube-system
-	secret/ceph-secret created
-
-### Create a Ceph Pool and a User Key
-
-Now create a separate Ceph pool for Kubernetes:
-
-	$ sudo ssh node-1 ceph --cluster ceph osd pool create kube 16 16
-	pool 'kube' created
-
-For this new pool you can create a user key:
-
-	sudo ssh node-1 "ceph auth get-or-create client.kube mon 'allow r' osd 'allow rwx pool=kube'"
-	[client.kube]
-		key = CDEgU1BeVMyDJxAA7+ufUoqTdvmZUUR8tJeGnEg==
-
-Also for this user key we create a separate kubernetes secret:
-
-	$ kubectl create secret generic ceph-secret-kube \
-	    --type="kubernetes.io/rbd" \
-	    --from-literal=key='ABCyWw9dOUm/FhABBK0A9PXkPo6+OXpOj9N2ZQ==' \
-	    --namespace=kube-system
-
-Both kubernetes secrets ‘ceph-secret’ and ‘ceph-secret-kube’ are used for the StorageClass created in the next step.
-The StorageClass
-
-Next a storage class definition holds the information about the ceph cluster environment. Replace {node-ip} with the ip addresses of you cluster nodes:
-
-	apiVersion: storage.k8s.io/v1
-	kind: StorageClass
-	metadata:
-	  name: fast-rbd
-	provisioner: ceph.com/rbd
-	parameters:
-	  monitors: {node-1}:6789, {node-2}:6789, {node-3}:6789
-	  adminId: admin
-	  adminSecretName: ceph-secret
-	  adminSecretNamespace: kube-system
-	  pool: kube
-	  userId: kube
-	  userSecretName: ceph-secret-kube
-	  userSecretNamespace: kube-system
-	  imageFormat: "2"
-	  imageFeatures: layering
-
-Take care of the ‘adminSecretName’ and the ‘userSecretName’ which we generated before.
-
-Now you can apply the new StorageClass:
-
-	$ kubectl create -f pool-1-storageclass.yaml
-
-### The PersistentVolumeClaim
-
-As you now have created a ceph pool and the corresponding storageClass you are ready to define a so called PersistentVolumeClaim (PVC). A PVC is part of your pods. The PVC will create the persistence volume automatically associated with your pod.
-
-	kind: PersistentVolumeClaim
-	apiVersion: v1
-	metadata:
-	  name: testclaim
-	spec:
-	  accessModes:
-	    - ReadWriteOnce
-	  resources:
-	    requests:
-	      storage: 1Gi
-	  storageClassName: fast-rbd
-
-create the claim:
-
-	$ kubectl create -f test-pvc.yaml
-
-and finally you can test the status of your persistent volume claim:
-
-	$ kubectl get pvc
-	NAME          STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-	testclaim     Bound     pvc-060e5142-f915-4385-8e86-4166fe2980f6   1Gi        RWO            fast-rbd       27m
 
 

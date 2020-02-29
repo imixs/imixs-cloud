@@ -5,11 +5,11 @@ Traefik.io is a reverse proxy and load balancer to be used within a kubernetes c
 
 To deploy traefik.io within the imixs-cloud run:
 
-	$ kubectl apply -f management/traefik21/
+	$ kubectl apply -f management/traefik/
 	
 to undeploy traefik.io run:
 
-	$ kubectl delete -f management/traefik21/
+	$ kubectl delete -f management/traefik/
 
 
 
@@ -46,7 +46,7 @@ So before you apply the traefik configuration please replace the _{MASTER-NODE-I
 	  
 After you have configured the resource yaml files you can apply your changes to the kubernetes cluster:
 
-	$ kubectl apply -f management/traefik21/
+	$ kubectl apply -f management/traefik/
 
 
 
