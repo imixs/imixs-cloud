@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ############################################################
 # Kubernetes Install Script for Debian 10 (Buster)

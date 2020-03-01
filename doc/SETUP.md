@@ -53,7 +53,12 @@ For a quick setup you can clone the git repository and start the setup:
 3) start the setup
 
 	$ cd imixs-cloud
-	$ sudo ./scripts/setup.sh
+	
+	# For Debian 10
+	$ sudo scripts/setup_debian.sh
+	
+	# For CentOS 7
+	$ sudo scripts/setup_centos.sh
 
 
 
