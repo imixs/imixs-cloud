@@ -1,6 +1,6 @@
 # Storage
 
-To run statefull docker images (e.g. a Database like PostgreSQL) you have two choices.
+To run stateful docker images (e.g. a Database like PostgreSQL) you have two choices.
 
  - run the service on a dedicated node - this avoids the lost of data if kubernetes re-schedules your server to another node
  - use a distributed storage solution like [ceph](https://ceph.io/) or [glusterfs](https://www.gluster.org/) storage 
@@ -14,7 +14,7 @@ Gluster is a scalable network filesystem. This allows you to create a large, dis
 
 You can install Glusterfs on any node this includes the kubernetes worker nodes. 
 
-The following guide explains how to intall Glusterfs on Debian 9. You will find more information about installation [here](https://docs.gluster.org/en/latest/Install-Guide/Overview/).
+The following guide explains how to intall Glusterfs on Debian 10(buster). You will find more information about installation [here](https://docs.gluster.org/en/latest/Install-Guide/Overview/).
 
  
 Run the following commands as root:
@@ -25,16 +25,19 @@ Run the following commands as root:
 	$ wget -O - https://download.gluster.org/pub/gluster/glusterfs/7/rsa.pub | apt-key add -
 	
 	# Add the source (s/amd64/arm64/ as necessary):	
-    $ echo deb [arch=amd64] https://download.gluster.org/pub/gluster/glusterfs/7/LATEST/Debian/stretch/amd64/apt stretch main > /etc/apt/sources.list.d/gluster.list
+    $ echo deb [arch=amd64] https://download.gluster.org/pub/gluster/glusterfs/7/LATEST/Debian/buster/amd64/apt buster main > /etc/apt/sources.list.d/gluster.list
     
     # Install...
-    $ apt-get update
-    $ apt-get install glusterfs-server
+    $ apt update
+    $ apt install -y glusterfs-server
+    # Start daemon...
+    $ sudo service glusterd start
 	
 	
 To test the gluster status run:
 
 	$ service glusterd status	
+	
 	
 Repeat this installation on each node you wish to joing your gluster network storage.
 
@@ -75,12 +78,12 @@ replace [GLUSTER-NODE1] with the gluster node dns name or ip address.
 Now you can start your new volume 'gv0': 
 
 
-	$ gluster volume start gv0
+	$ sudo gluster volume start gv0
 	volume start: gv0: success
 
 With the following command you can check the status of the new volume:
 
-	$ gluster volume info
+	$ sudo gluster volume info
 	
 Find more about the setup [here}(https://docs.gluster.org/en/latest/Quick-Start-Guide/Quickstart/).
 
