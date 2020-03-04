@@ -1,0 +1,25 @@
+# ######################################
+# Gluster Service endpoints
+#
+# The endpoints name. If using a service, then the endpoints name must match the service name.
+# An array of IP addresses for each node in the Gluster pool. Currently, host names are not supported.
+# The port numbers are ignored, but must be legal port numbers. The value 1 is commonly used.
+# ######################################
+
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: gluster-cluster 
+subsets:
+- addresses:              
+  - ip: {IP-NODE-1}
+  ports:                  
+  - port: 1
+    protocol: TCP
+- addresses:
+  - ip: {IP-NODE-2}
+  ports:
+  - port: 1
+    protocol: TCP
+    
+    

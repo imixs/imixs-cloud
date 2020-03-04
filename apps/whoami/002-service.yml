@@ -1,0 +1,16 @@
+# Service
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: whoami
+
+spec:
+#  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    name: web
+  selector:
+    app: whoami
+    

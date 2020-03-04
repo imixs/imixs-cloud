@@ -1,0 +1,43 @@
+# IngresRoute http
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: whoami-notls
+  namespace: default
+
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`{YOUR-DNS-NAME}`) 
+    kind: Rule
+    services:
+    - name: whoami
+      port: 80
+    # redirect http to https
+    middlewares: 
+    - name: redirect
+
+
+
+# IngresRoute https
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: whoami-tls
+  namespace: default
+
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`{YOUR-DNS-NAME}`) 
+    kind: Rule
+    services:
+    - name: whoami
+      port: 80
+  tls:
+    certResolver: default
+
