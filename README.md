@@ -1,73 +1,81 @@
 # The Imixs-Cloud
 
-<p style="font-size:28px;">Take Control Over Your Self Managed Kubernetes Cluster</p>
+#### Build Your Self Managed Kubernetes Cluster!
 
 
-_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**.  This project is optimized to **build**, **run** and **maintain** business applications in a production ready cluster.
+_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. 
+This projects goal is to **build**, **run** and **maintain** business applications in a production ready and self managed kubernetes cluster.
+The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**. 
 
 The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
 
-**Note:** Our first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm follow the branch [imixs-cloud docker-swarm](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
+**Note:** Our first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
 
 
 
 
 <p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
 
-## The Main Objectives
-The main objectives of the _Imixs-Cloud_ project can be itemized under the following rules:
 
- 1. _A new environment can be setup easily and run on commodity hardware._
- 2. _A command line interface (CLI) is all you need to know to setup and manage the environment._ 
- 3. _Scalabillity and configuration is managed by the core concepts of Kubernetes._
- 4. _Docker Images can be deployed to a central Docker-Registry which is part of the environment._
- 5. _All services are isolated and accessible through a central reverse proxy server._
- 6. _The environment configuration can be managed by a private code repository like Git._
- 7. _A terminal UI to interact with the Kubernetes clusters._
- 
- 
 ## Quick Start
 
-For a quick setup you need at least a Debian 10 (Buster) server with a public internet address and a user with sudo privileges.
+For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
+All configuraiton files and scripts are provided in this git repository. You can clone the repository or just copy what you need. 
 
-1) from your users home directory first install git 
+### 1. Install Kubernetes
 
-	   $ sudo apt-get install -y git 
+First clone this git repository on your master node. There for you have to install git 
 
-2) clone the imixs-cloud repo from github....
+	$ sudo apt install -y git 
+	   
+If you are running Fedora or CentOS than use the yum installer
+	   
+	$ sudo yum install -y git 
 
-	   $ cd && git clone https://github.com/imixs/imixs-cloud.git
-	   $ cd imixs-cloud/
 
-3) run the setup script on your master node to install Kubernetes
+next you can clone the imixs-cloud repo from github....
+
+	$ cd && git clone https://github.com/imixs/imixs-cloud.git
+	$ cd imixs-cloud/
+
+now you can run the setup script on your master node to install Docker and Kubernetes:
  
-	   $ sudo ./scripts/setup.sh
+	$ sudo ./scripts/setup_debian.sh
+
+If you are running Fedora or CentOS than run:
+
+	$ sudo ./scripts/setup_centos.sh
 
  
-4) initialize your Kubernetes cluster
+### 2. Initialize Your Kubernetes Master Node
+
+Run the kubeadm tool to setup your kubernetes master node:
 
 	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS]
 
 Replace [NODE\_IP\_ADDRESS] with your servers public IP address. 
 
-5) deploy a cluster network
+next deploy a cluster network
 
 	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
+### 3. Setup Your Kubernetes Worker Nodes
 
-6) run the setup script now on each of your worker nodes:
+To setup your cluster you can join any worker node into your new kubernetes cluster. Just run the setup script again on each of your worker nodes:
 
-	$ sudo ./scripts/setup.sh
+	$ sudo ./scripts/setup_debian.sh
 
-7) join your worker notes to your new cluster using the join command from your master node
+you can join your worker note into your new cluster using the join command from your master node
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx  --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
 
+If you do not know the join command run the followign command on your master node:
 
+	$ kubeadm token create --print-join-command
  
 **That's it! Your kubernetes cluster is ready**
 
-You will find a more detailed description about how to setup your Kubernetes cluster  in the [setup section](doc/SETUP.md)
+You will find a detailed description about how to setup your Kubernetes cluster in the [setup section](doc/SETUP.md)
 
 
 
