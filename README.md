@@ -1,6 +1,6 @@
 # The Imixs-Cloud
 
-#### Build Your Self Managed Kubernetes Cluster!
+### Build Your Self Managed Kubernetes Cluster!
 
 
 _Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. 
@@ -24,7 +24,7 @@ All configuraiton files and scripts are provided in this git repository. You can
 
 ### 1. Install Kubernetes
 
-First clone this git repository on your master node. There for you have to install git 
+First clone this git repository on your master node. Therefore, you must first install git:
 
 	$ sudo apt install -y git 
 	   
@@ -80,22 +80,24 @@ You will find a detailed description about how to setup your Kubernetes cluster 
 
 
  
-## Basic Architecture
+# The Basic Architecture
 
 The basic architecture of the _Imixs-Cloud_ consists of the following components:
 
  * A Kubernetes Cluster running on virtual or hardware nodes. 
- * One master node, providing central services.
+ * One master node, providing the central services.
  * One or many worker nodes to run your services and applications. 
- * A central Reverse-Proxy service to dispatch requests (listening on port 80).
- * A management UI running on the management node.
+ * A central Reverse-Proxy service to dispatch requests from the internet (listening on port 80).
+ * A management UI and CLI running on the management node.
  * A private registry to store custom docker images.
  
 
  
 ## The Configuration Directory 
  
-The complete infrastructure of a Imixs-Cloud environment is described in a central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to setup the environment on a new manager node. The imixs-cloud directory contains different sub-directories holding your applications, scripts and tools:
+The complete infrastructure of a _Imixs-Cloud_ environment is described in a central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to role back changes if something went wrong. 
+
+The imixs-cloud directory contains different sub-directories holding your applications, scripts and tools:
 
 	/-
 	 |+ management/
@@ -146,7 +148,7 @@ For example to deploy the traefik configuration you just need to call:
 
 	$ kubectl apply -f management/traefik/
 	
-In kubernetes object configurations are typically defined in separate files. Use a naming convention to create an implicit order in which your objects should be created.
+In kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which your objects should be created.
 
 	 |+ traefik/
 	    |- 001.crd-rbac.yaml
@@ -162,28 +164,28 @@ If you want to remove an already deployed service or object just use the delete 
 
 ## Manage your Cluster using K9S
 
-[K9s](https://github.com/derailed/k9s) is a powerful terminal tool to interact with your Kubernetes cluster. 
+To manage your kubernetes cluster you can use [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/), which is already installed on your master node. There is a huge number of commands to obtain information or change configurations. Take a look into the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/).
+
+A more convenient way to obtain information about your cluster provides the tool [K9s](https://github.com/derailed/k9s). K9s is a powerful terminal tool to interact with your Kubernetes cluster. 
 
 
 <img src="doc/images/k9s.png" />
 
-You can download the tool from the [release page on Github](https://github.com/derailed/k9s/releases). To install the tool on your home directory:
 
-	# download and extract the latest version
-	$ wget https://github.com/derailed/k9s/releases/download/0.12.0/k9s_0.12.0_Linux_x86_64.tar.gz
-	$ tar xvzf k9s_0.12.0_Linux_x86_64.tar.gz
+To install k9s in _Imixs-Cloud_ follow the setup guide [here](tools/k9s/README.md).
+After you have install the tool you can start it with:
 
-Now you can start the tools with
+	$ ~/imixs-cloud/tools/k9s/k9s
 
-$ ~/k9s
 
 
 ## Traefik
 
-To access your applications from outside of your cluster -Imixs-Cloud_ provides the Ingress Router [Traefik.io](https://containo.us/traefik/). This tool allows you to easily expose your services to public Internet addresses.
+To access your applications from outside of your cluster _Imixs-Cloud_ provides the Ingress Router [Traefik.io](https://containo.us/traefik/). This tool allows you to easily expose your services to public Internet addresses.
 
 <img src="doc/images/traefik-ui.png" />
 
+You can find a detailed description how to install and setup traefik in the [section ingress](./doc/INGRESS.md)
 
 
 ## Helm 
