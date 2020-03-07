@@ -3,7 +3,7 @@
 [K9s](https://github.com/derailed/k9s) is a powerful terminal tool to interact with your Kubernetes cluster. 
 
 
-<img src="doc/images/k9s.png" />
+<img src="../../doc/images/k9s.png" />
 
 To install the tool into your _Imixs-Cloud_ environment, download the latest K9s version from the [release page on Github](https://github.com/derailed/k9s/releases) and install it into the tools subdirectory :
 
