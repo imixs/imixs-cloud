@@ -1,8 +1,16 @@
 # How to setup the Imixs-Cloud
 
-The following section describes the setup procedure of _Imixs-Cloud_ to run a kubernetes cluster into a productive environment for small and medium organisations.
+The following section describes the setup procedure of _Imixs-Cloud_ to run a kubernetes cluster into a productive environment for small and medium organizations.
 
-## Hostnames
+
+## The Cluster Nodes
+
+A _Imixs-Cloud_ consists of a minimum of two nodes.
+
+* The master node is the kubernetes api server
+* The worker nodes are serving the applications (pods). 
+
+A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. 
 
 To enable communication between your cluster nodes using short names, make sure that on each node the short host names a listed in the /etc/hosts with the public or private IP addresses.
 
@@ -11,71 +19,43 @@ To enable communication between your cluster nodes using short names, make sure 
 ## The Cluster-User
 
 ** Note:**
-In Imixs-Cloud you should always work with a non-root, sudo privileged cluster user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
+In _Imixs-Cloud_ you should always work with a non-root, sudo privileged cluster user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
 
 To create a cluster-user follow the next steps and replace '{username}' with the name of our cluster user you have choosen. 
 
 	$ useradd -m {username} -s /bin/bash
 	$ passwd {username}
-	$ echo "{username} ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/{username}
-	$ sudo chmod 0440 /etc/sudoers.d/{username}
-
-Next create a SSH key on the master node and distribute the public key to each worker node. Leave the passphrase and filename empty  
-
-	# login with your cluster user
-	$ su {username}
-	$ ssh-keygen
-
-The keys will be stored in the .ssh/ directory. 
-
-Now you can copy the key to all worker nodes
-
-	ssh-copy-id {username}@node1
-	ssh-copy-id {username}@node2
 
  
-## Setup 
+## Install the Master Node 
  
-For a quick setup you can clone the git repository and start the setup:
+_Imixs-Cloud_ provides a install script for Debain and Fedora/CentOS linux distributes. You can copy the setup script from the /scritps/ directory. But we recommend to clone the _Imixs-Cloud_ git repo so you have all scripts and configuration files in one place. You can also fork the _Imixs-Cloud_ project to customize your environment individually to your needs. 
+ 
+### Install Git
+ 
+For a easy setup install git and clone the _Imixs-Cloud_ repository on your master node:
 
-1) install git 
+For Debian 10 run:
 
-	# For Debian 10 
 	$ sudo apt install -y git
 	
-	# For CentOS 7
+For CentOS 7 run:
+	
 	$ sudo yum install -y git
 
-2) clone repo....
+Next you can clone the repo or your personal fork of _Imixs-Cloud_ ....
 
+	$ cd
 	$ git clone https://github.com/imixs/imixs-cloud.git
 
-3) start the setup
+_Imixs-Cloud_ is now installed in your home directory:
 
-	$ cd imixs-cloud
-	
-	# For Debian 10
-	$ sudo scripts/setup_debian.sh
-	
-	# For CentOS 7
-	$ sudo scripts/setup_centos.sh
+	~/imixs-cloud/
 
 
+### The Setup Script
 
-**That's it.** 
-
-## Nodes
-
-A _Imixs-Cloud_ consists of a minimum of two nodes.
-
-* The master node is the kubernetes api server
-* The worker nodes are serving the applications (pods). 
-
-A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the internet. 
-
-## The setup.sh script
-
-In order to ensure that all nodes are running the same software releases run the following setup script. This script is designed for Debian 10 (Buster) but of course you can adapt the script for a different Lnux distribution. The script installs the following tools:
+In order to ensure that all nodes are running the same software releases run the _Imixs-Cloud_ setup script on all your nodes. The script installs the following tools:
 
  - docker-ce (the docker engine)
  - docker-ce-cli (the docker command line interface)
@@ -85,13 +65,15 @@ In order to ensure that all nodes are running the same software releases run the
  - kubectl (the kubernetes command line interface)
 
 
-The install script can be found in the script directory /scripts/. Run the setup script as sudo:
+The install script can be found in the script directory /scripts/. We provide the install script for Debian/Ubuntu and Fedora/CentOS. Run the setup script as sudo:
 
-	# For Debian 10
-	$ sudo scripts/setup_debian.sh
+For Debian 10
+
+	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
 	
-	# For CentOS 7
-	$ sudo scripts/setup_centos.sh
+For CentOS 7
+
+	$ sudo ~/imixs-cloud/scripts/setup_centos.sh
 	
 
 
@@ -116,9 +98,9 @@ The last output form the protocol shows you the join token needed to setup a wor
 
 To make kubectl work for your non-root user, run these commands, which are also part of the kubeadm init output:
 
-	mkdir -p $HOME/.kube
-	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-	sudo chown $(id -u):$(id -g) $HOME/.kube/config
+	$ mkdir -p $HOME/.kube
+	$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+	$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 This will copy the configuration of your master node into the kubernetes config directory ./kube of your home directory.
 
@@ -160,7 +142,7 @@ In order to get kubectl talking to your cluster, you can again copy the content 
 
 	$HOME/.kube/config 
 
-**Note:** The admin.conf file gives the user superuser privileges over the cluster. This file should be used sparingly. For normal users, it’s recommended to generate an unique credential to which you whitelist privileges. Kubernetes supports different authentication strategies, defined here.
+**Note:** The admin.conf file gives the user superuser privileges over the cluster. This file should be used sparingly. For normal users, it’s recommended to generate an unique credential to which you whitelist privileges. Kubernetes supports different authentication strategies. We recommend you to run kubectl only from your master node which gives you more control who access your cluster. 
 
 
 

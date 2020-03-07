@@ -4,4 +4,8 @@ Helm is a tool which helps you manage Kubernetes applications by so called Helm 
 
 To install helm into the _Imixs-Cloud_ run the install script:
 
-	$ ./scripts/get_helm.sh
+	$ ~/imixs-cloud/scripts/get_helm.sh
+
+You can now check your installed version with: 
+
+	$ helm version
