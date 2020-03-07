@@ -188,22 +188,16 @@ To access your applications from outside of your cluster _Imixs-Cloud_ provides 
 You can find a detailed description how to install and setup traefik in the [section ingress](./doc/INGRESS.md)
 
 
-## Helm 
-
-Helm is a tool which helps you manage Kubernetes applications by so called Helm Charts. Helm Charts help you define, install, and upgrade even the most complex Kubernetes application.
-
-To install helm run
-
-	$ ./scripts/get_helm.sh
+## Storage Volumes
 
 
-# How to Montior
+## Monitoring
 
 _Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your docker-swarm.
 
 <img src="./doc/images/grafana.png" />  
   
-The monitoring is based on [Prometheus](https://prometheus.io/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to montor your docker-swarm network but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
+The monitoring is based on [Prometheus](https://prometheus.io/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to montor your kubernetes cluster but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
   
 # Contribute
 

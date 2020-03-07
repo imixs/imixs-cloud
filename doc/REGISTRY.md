@@ -12,7 +12,7 @@ _Habor_ is a secure, performant, scalable, and available cloud native repository
 
 ## Installation
 
-Habor consists of several services. To make it easy to install Habor the right way you can use `helm`. Make sure that you have installed helm (see the install script `scripts/get_helm.sh`)
+Habor consists of several services. To make it easy to install Habor the right way you can use `helm`. If you have not yet installed helm, follow the install guide [here](../tools/helm/README.md)
 
 ### Add the harbor helm repository
 
