@@ -11,6 +11,16 @@ Due to its simplicity and the very good integration in Kubernetes, we use [Longh
  
 <img src="images/storage-longhorn-01.png" />
  
+
+
+## Quick Setup
+
+For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhonr Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
+
+	$ kubectl apply -f management/longhorn/
+
+For a more detailed setup guide see the following sections. 
+
 ## Setup of Longhorn
  
 Longhorn is a cloud native distributed block storage for Kubernetes. Longhorn delivers simplified, easy to deploy and upgrade, 100% open source, cloud-native persistent block storage without the cost overhead of open core or proprietary alternatives. This makes Longhorn very easy to integrate in a kubernets cluster.
@@ -23,16 +33,7 @@ Make sure that 'open-iscsi' has been installed on all the nodes of the Kubernete
 For Debian/Ubuntu, use the following command to install open-iscsi: 
 
 	$ sudo apt-get install open-iscsi
-	
 
-
-### Quick Setup
-
-For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhonr Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
-
-	$ kubectl apply -f management/longhorn/
-
-For a more detailed setup guide see the following sections. 
 
 ### Install Longhorn into your Cluster
 
@@ -46,9 +47,9 @@ This will start Longhorn with the lates release. If you want to have more contro
 
 	$ kubectl apply -f management/longhorn/001-deployment.yaml
 
-The startup can take a while. You can monitor the startup with the [K93 tool](../tools/k9s/README.md).
+The startup can take a while. You can monitor the startup with the [K9s tool](../tools/k9s/README.md).
 
-## Longhorn-UI
+### The Longhorn-UI
 
 Longhorn comes with a UI web interface to monitor and administrate the cluster. 
 
