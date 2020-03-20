@@ -197,6 +197,19 @@ To run stateful docker images (e.g. a Database like PostgreSQL) you need to defi
 
 You can find a detailed description how to install and setup a Longhorn storage solution in the [section storage](./doc/STORAGE.md)
 
+
+## Registry
+
+Docker images are available on docker registries. The _Imixs-Cloud_ includes a setup to run the registry [Habor](https://goharbor.io/).
+_Habor_ is a secure, performant, scalable, and available cloud native repository for Kubernetes. 
+
+
+<img src="doc/images/harbor.png" />
+
+
+You can find a detailed description how to install and setup the Harbor registry in the [section registry](./doc/REGISTRY.md)
+
+
 ## Monitoring
 
 _Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your docker-swarm.
