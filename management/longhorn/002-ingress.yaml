@@ -1,0 +1,18 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: longhorn-frontend
+  namespace: longhorn-system
+
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`{YOUR-DNS}`) 
+    kind: Rule
+    services:
+    - name: longhorn-frontend
+#      port: 8000
+      port: 80
+      
+      

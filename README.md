@@ -190,6 +190,12 @@ You can find a detailed description how to install and setup traefik in the [sec
 
 ## Storage Volumes
 
+To run stateful docker images (e.g. a Database like PostgreSQL) you need to define a storage volume along with your service. Due to its simplicity and the very good integration in Kubernetes, we use [Longhorn](https://longhorn.io/) as the preferred storage solution within Imixs-Cloud.
+
+<img src="doc/images/storage-longhorn-01.png" />
+
+
+You can find a detailed description how to install and setup a Longhorn storage solution in the [section storage](./doc/STORAGE.md)
 
 ## Monitoring
 
