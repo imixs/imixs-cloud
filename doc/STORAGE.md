@@ -37,6 +37,7 @@ This will start Longhorn with the lates release. If you want to have more contro
 
 	$ kubectl apply -f management/longhorn/001-deployment.yaml
 
+The startup can take a while. You can monitor the startup with the [K93 tool](../tools/k9s/README.md).
 
 ## Longhorn-UI
 
@@ -76,11 +77,9 @@ Replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingres
 
 2. Create the uninstallation job to clean up CRDs from the system and wait for success:
 
-	# start uninstaller
 	kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
 	
-	# monitor
-	kubectl get job/longhorn-uninstall -w
+The uninstall process can take a while.
 
 Example output:
 
