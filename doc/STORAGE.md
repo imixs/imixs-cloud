@@ -26,7 +26,16 @@ For Debian/Ubuntu, use the following command to install open-iscsi:
 	
 
 
+### Quick Setup
+
+For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhonr Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
+
+	$ kubectl apply -f management/longhorn/
+
+For a more detailed setup guide see the following sections. 
+
 ### Install Longhorn into your Cluster
+
 
 You can install Longhorn  into your Kubernetes cluster using this command:
 
@@ -64,10 +73,10 @@ You can create a ingress for the Longhorn UI with a traefik ingress route:
 	    
 	    
 
-Replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route with:
+Replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route:
 
 
-	$ kubectl apply -f management/longhorn/
+	$ kubectl apply -f management/longhorn/002-ingress.yaml
 
 
 
@@ -107,6 +116,10 @@ Now you can easily create a Persistence Volume Claim (PVC) within your pod using
 	    requests:
 	      storage: 2Gi
 
+
+To create the new storage class run:
+
+	$ kubectl apply -f management/longhorn/003-storageclass.yaml
 
 
 
