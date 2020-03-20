@@ -71,54 +71,6 @@ Replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingres
 
 
 
-## Uninstall
-
-1. To prevent damaging the Kubernetes cluster, we recommend deleting all Kubernetes workloads using Longhorn volumes (PersistentVolume, PersistentVolumeClaim, StorageClass, Deployment, StatefulSet, DaemonSet, etc) first.
-
-2. Create the uninstallation job to clean up CRDs from the system and wait for success:
-
-	kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
-	
-The uninstall process can take a while.
-
-Example output:
-
-	$ kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
-	serviceaccount/longhorn-uninstall-service-account created
-	clusterrole.rbac.authorization.k8s.io/longhorn-uninstall-role created
-	clusterrolebinding.rbac.authorization.k8s.io/longhorn-uninstall-bind created
-	job.batch/longhorn-uninstall created
-	
-	$ kubectl get job/longhorn-uninstall -w
-	NAME                 COMPLETIONS   DURATION   AGE
-	longhorn-uninstall   0/1           3s         3s
-	longhorn-uninstall   1/1           20s        20s
-	^C
-
-
-Remove remaining components:
-
-	kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
-	kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
-
-
-
-See: 
-
-	https://github.com/longhorn/longhorn#uninstall-longhorn
-	
-
-
-#### Delete namespace 'longhorn-system'
-
-
-
-	$ kubectl get namespace "longhorn-system" -o json \
-	  | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
-	  | kubectl replace --raw /api/v1/namespaces/longhorn-system/finalize -f -
-  
-
-
 
 ## Create Longhorn Volumes
 
@@ -179,4 +131,51 @@ In such a case you just need to add a subPath
 
 
 See more details [here](https://stackoverflow.com/questions/51168558/how-to-mount-a-postgresql-volume-using-aws-ebs-in-kubernete/51174380).
+
+
+## How to Uninstall Longhorn
+
+To prevent damaging the Kubernetes cluster, it is recommended deleting all Kubernetes workloads using Longhorn volumes (PersistentVolume, PersistentVolumeClaim, StorageClass, Deployment, StatefulSet, DaemonSet, etc) first.
+
+You can create the uninstallation job to clean up CRDs from the system and wait for success:
+
+	$ kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
+	
+The uninstall process can take a while.
+
+Example output:
+
+	$ kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
+	serviceaccount/longhorn-uninstall-service-account created
+	clusterrole.rbac.authorization.k8s.io/longhorn-uninstall-role created
+	clusterrolebinding.rbac.authorization.k8s.io/longhorn-uninstall-bind created
+	job.batch/longhorn-uninstall created
+	
+	$ kubectl get job/longhorn-uninstall -w
+	NAME                 COMPLETIONS   DURATION   AGE
+	longhorn-uninstall   0/1           3s         3s
+	longhorn-uninstall   1/1           20s        20s
+	^C
+
+
+Remove remaining components:
+
+	kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
+	kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
+
+
+
+Find details about the uninstall process also [here](https://github.com/longhorn/longhorn#uninstall-longhorn).
+	
+
+
+#### Delete namespace 'longhorn-system'
+
+To remove the longhorn-system namespace you can run the following command:
+
+
+	$ kubectl get namespace "longhorn-system" -o json \
+	  | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
+	  | kubectl replace --raw /api/v1/namespaces/longhorn-system/finalize -f -
+  
 
