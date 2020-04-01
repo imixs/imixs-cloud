@@ -200,7 +200,7 @@ You can find a detailed description how to install and setup a Longhorn storage 
 
 ## Registry
 
-Docker images are available on docker registries. The _Imixs-Cloud_ includes a setup to run the registry [Habor](https://goharbor.io/).
+Docker images are available on docker registries. The _Imixs-Cloud_ includes a setup to run the registry [Harbor](https://goharbor.io/).
 _Habor_ is a secure, performant, scalable, and available cloud native repository for Kubernetes. 
 
 

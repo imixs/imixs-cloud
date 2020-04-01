@@ -346,6 +346,7 @@ spec:
       containers:
       - name: longhorn-ui
 #        image: longhornio/longhorn-ui:v0.8.0
+# We are using a custom build due to issue https://github.com/longhorn/longhorn/issues/1082#issuecomment-599416959
         image: wangsiye/longhorn-ui:dcb50b0
         imagePullPolicy: IfNotPresent
         ports:
@@ -425,20 +426,4 @@ spec:
               fieldRef:
                 fieldPath: spec.serviceAccountName
       serviceAccountName: longhorn-service-account
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: longhorn
-provisioner: driver.longhorn.io
-allowVolumeExpansion: true
-parameters:
-  numberOfReplicas: "3"
-  staleReplicaTimeout: "2880"
-  fromBackup: ""
-#  diskSelector: "ssd,fast"
-#  nodeSelector: "storage,fast"
-#  recurringJobs: '[{"name":"snap", "task":"snapshot", "cron":"*/1 * * * *", "retain":1},
-#                   {"name":"backup", "task":"backup", "cron":"*/2 * * * *", "retain":1,
-#                    "labels": {"interval":"2m"}}]'
----
+

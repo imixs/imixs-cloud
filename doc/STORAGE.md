@@ -19,6 +19,7 @@ For a quick setup check the file /management/longhorn/002-ingress.yaml. This fil
 
 	$ kubectl apply -f management/longhorn/
 
+You will find the documenation [here](https://longhorn.io/docs/). 
 For a more detailed setup guide see the following sections. 
 
 ## Setup of Longhorn
@@ -91,7 +92,12 @@ Before you create Kubernetes volumes, you must first create a storage class. Use
 	apiVersion: storage.k8s.io/v1
 	metadata:
 	  name: longhorn
+	  annotations:
+	    # make this class the default storage class
+	    storageclass.kubernetes.io/is-default-class: "true"
+
 	provisioner: driver.longhorn.io
+	reclaimPolicy: Retain
 	allowVolumeExpansion: true
 	parameters:
 	  numberOfReplicas: "3"
@@ -99,6 +105,10 @@ Before you create Kubernetes volumes, you must first create a storage class. Use
 	  fromBackup: ""
 
 This storage class definition will automatically create 3 replicas of a persistence volume.   
+
+**Note:** The storage class is marked as the 'default' storage class within the cluster. This allows you to create a PersistentVolumeClaim with an unspecified storageClassName. Find details [here](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/#defaulting-behavior).
+
+
 
 ### Create a Volume Claim
 
@@ -123,7 +133,17 @@ To create the new storage class run:
 	$ kubectl apply -f management/longhorn/003-storageclass.yaml
 
 
+### The Reclaim Policy of a PersistentVolume
 
+PersistentVolumes can have various reclaim policies, including “Retain”, “Recycle”, and “Delete”. For dynamically provisioned PersistentVolumes, the default reclaim policy is “Delete”. This means that a dynamically provisioned volume is automatically deleted when the service was deleted.  This automatic behavior might be inappropriate because previous data will be lost. In that case, it is more appropriate to use the “Retain” policy. With the “Retain” policy, if a service was and its PersistentVolumeClaim was deleted, the corresponding PersistentVolume is not be deleted. Instead, it is moved to the Released phase, where all of its data can be manually recovered.
+
+For this we can change the reclaimPolicy in your custom StorageClass.
+
+	  reclaimPolicy: Retain
+
+You can check the status of your storageClass with:
+
+	$ kubectl get StorageClass
 
 ### Data Directory exists but is not empty
 

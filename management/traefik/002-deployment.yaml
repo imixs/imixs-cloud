@@ -38,7 +38,7 @@ spec:
         - --providers.kubernetescrd
         # Use log level= INFO or DEBUG
         - --log.level=INFO
-        image: traefik:2.1.4
+        image: traefik:2.1.8
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
