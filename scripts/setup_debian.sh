@@ -56,7 +56,7 @@ echo "#############################################"
 echo " installing docker and kubernetes...."
 echo "#############################################"
 apt update
-apt install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl open-iscsi
+apt install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl open-iscsi htpasswd
 
 # Setup docker daemon with systemd (only used for debian).
 cat > /etc/docker/daemon.json <<EOF

@@ -9,7 +9,9 @@ The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **
 
 The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
 
-**Note:** Our first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
+If you have any questions just open a new [Issue on Github](https://github.com/imixs/imixs-cloud/issues) and start a new Discussion. 
+
+**Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
 
 
 
@@ -24,7 +26,7 @@ All configuraiton files and scripts are provided in this git repository. You can
 
 ### 1. Install Kubernetes
 
-First clone this git repository on your master node. Therefore, you must first install git:
+First clone this git repository on your master node. Therefore, you may need to install git:
 
 	$ sudo apt install -y git 
 	   
@@ -55,28 +57,32 @@ Run the kubeadm tool to setup your kubernetes master node:
 
 Replace [NODE\_IP\_ADDRESS] with your servers public IP address. 
 
-next deploy a cluster network
+The init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
+
+Now deploy a cluster network, this is needed for the internal communication between your cluster nodes. 
 
 	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 ### 3. Setup Your Kubernetes Worker Nodes
 
-To setup your cluster you can join any worker node into your new kubernetes cluster. Just run the setup script again on each of your worker nodes:
-
-	$ sudo ./scripts/setup_debian.sh
-
-you can join your worker note into your new cluster using the join command from your master node
+To setup your cluster you can join any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes. 
+After the setup of a new worker node is completed you can join your worker note into your new cluster using the join command from your master node
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx  --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
 
-If you do not know the join command run the followign command on your master node:
+If you do not know the join command run the following command on your master node, this will print out the command you need to join the cluster from yoru worker node:
 
 	$ kubeadm token create --print-join-command
  
+To check the status of your master and worker nodes run:
+
+	$ kubectl get nodes
+
+	 
 **That's it! Your kubernetes cluster is ready**
 
-You will find a detailed description about how to setup your Kubernetes cluster in the [setup section](doc/SETUP.md)
-
+You will find a more detailed description about how to setup your Kubernetes cluster in the [setup section](doc/SETUP.md). If you have any probelm or questions just open a new [Issue](https://github.com/imixs/imixs-cloud/issues) on Github. 
+In the following sections you will find more information about the concepts of Imixs-Cloud.
 
 
  
@@ -87,17 +93,20 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
  * A Kubernetes Cluster running on virtual or hardware nodes. 
  * One master node, providing the central services.
  * One or many worker nodes to run your services and applications. 
- * A central Reverse-Proxy service to dispatch requests from the internet (listening on port 80).
+ * A central Reverse-Proxy service to dispatch requests from the Internet (listening on port 80).
  * A management UI and CLI running on the management node.
  * A private registry to store custom docker images.
+ * A distributed storage solution for stateful services. 
  
 
  
 ## The Configuration Directory 
  
-The complete infrastructure of a _Imixs-Cloud_ environment is described in a central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to role back changes if something went wrong. 
+The complete infrastructure of a _Imixs-Cloud_ environment is described in one central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to role back changes if something went wrong. You can always start with a new environment by just forking this Github repository. 
 
-The imixs-cloud directory contains different sub-directories holding your applications, scripts and tools:
+	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
+
+The imixs-cloud directory structure contains different sub-directories holding your applications, scripts and tools:
 
 	/-
 	 |+ management/
@@ -117,18 +126,11 @@ The imixs-cloud directory contains different sub-directories holding your applic
 
  - **apps/** is the place where where your custom business services are configured. Each sub-directory holds at least one kubernetes object description (yaml file). Optional additional configuration files are also located in this directory. 
 
- - **management/** sub-folder holds the configuration for all management services running on your kubernetes cluster. This configuration is maintained by this project and can be customized for individual needs. 
+ - **management/** in this directory you can find all the management services which are part of the _Imixs-Cloud_. This different service are maintained by this project and can be customized for individual needs. 
 
- - **scripts/**  provides bash scripts to apply or delete an application and also the setup script to setup a kubernetes node.
+ - **scripts/**  provides bash scripts to setup a new kubernetes node.
 
  - **tools/**  provides useful tools
-
-
-You can copy this structure from [GitHub](https://github.com/imixs/imixs-cloud) to setup and create your own _Imixs-Cloud_ environment. 
- 
-	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
-	
-Optional you can also fork the repo directyl on Github. 
 
 
 
@@ -140,7 +142,7 @@ You can define your own services within the /apps/ directory. Each application h
 	    |+ MY-APP/
 	       |  001-deployment.yaml
 
-Using the _kubectl apply_ command you can easily create or delete your services and objects defined within a apps/ or managment/ subdirectory:
+Using the _kubectl apply_ command you can easily create or delete your services and objects defined within a apps/ or management/ sub-directory:
 
 	$ kubectl apply -f apps/MY-APP/
 

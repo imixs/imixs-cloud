@@ -16,8 +16,8 @@ spec:
     - name: whoami
       port: 80
     # redirect http to https
-    middlewares: 
-    - name: redirect
+    #middlewares: 
+    #- name: secured
 
 
 
@@ -28,7 +28,6 @@ apiVersion: traefik.containo.us/v1alpha1
 metadata:
   name: whoami-tls
   namespace: default
-
 spec:
   entryPoints: 
     - websecure
@@ -38,6 +37,8 @@ spec:
     services:
     - name: whoami
       port: 80
+    middlewares: 
+    - name: https-redirect
   tls:
     certResolver: default
 
