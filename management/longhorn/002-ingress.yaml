@@ -12,7 +12,5 @@ spec:
     kind: Rule
     services:
     - name: longhorn-frontend
-#      port: 8000
       port: 80
-      
       

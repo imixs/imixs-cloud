@@ -15,7 +15,7 @@ Due to its simplicity and the very good integration in Kubernetes, we use [Longh
 
 ## Quick Setup
 
-For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhonr Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
+For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhorn Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
 
 	$ kubectl apply -f management/longhorn/
 
@@ -24,7 +24,7 @@ For a more detailed setup guide see the following sections.
 
 ## Setup of Longhorn
  
-Longhorn is a cloud native distributed block storage for Kubernetes. Longhorn delivers simplified, easy to deploy and upgrade, 100% open source, cloud-native persistent block storage without the cost overhead of open core or proprietary alternatives. This makes Longhorn very easy to integrate in a kubernets cluster.
+Longhorn is a cloud native distributed block storage for Kubernetes. Longhorn delivers simplified, easy to deploy and upgrade, 100% open source, cloud-native persistent block storage without the cost overhead of open core or proprietary alternatives. This makes Longhorn very easy to integrate in a Kubernetes cluster.
 
 
 ### open-iscsi
@@ -43,10 +43,11 @@ You can install Longhorn  into your Kubernetes cluster using this command:
 
 	$ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
 
-This will start Longhorn with the lates release. If you want to have more control you can copy the longhonr.yaml file int your management directory stored in the Imixs-Cloud directory structure. You can change or customize this file.
+This will start Longhorn with the latest release. If you want to have more control you can customize the file /longhorn/001-deployment.yaml file located in the management directory. 
 
+To start longhorn from you custom setup run:
 
-	$ kubectl apply -f management/longhorn/001-deployment.yaml
+	$ kubectl apply -f management/longhorn/
 
 The startup can take a while. You can monitor the startup with the [K9s tool](../tools/k9s/README.md).
 
@@ -85,7 +86,7 @@ Replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingres
 
 ## Create Longhorn Volumes
 
-Before you create Kubernetes volumes, you must first create a storage class. Use following command to create a StorageClass called longhorn.
+Before you create Kubernetes volumes, you must first create a storage class. We are already providing a default StorageClass for longhorn in the file /longhonr/003-storageclass.yaml
 
 
 	kind: StorageClass
@@ -95,9 +96,8 @@ Before you create Kubernetes volumes, you must first create a storage class. Use
 	  annotations:
 	    # make this class the default storage class
 	    storageclass.kubernetes.io/is-default-class: "true"
-
+	    
 	provisioner: driver.longhorn.io
-	reclaimPolicy: Retain
 	allowVolumeExpansion: true
 	parameters:
 	  numberOfReplicas: "3"
@@ -106,13 +106,17 @@ Before you create Kubernetes volumes, you must first create a storage class. Use
 
 This storage class definition will automatically create 3 replicas of a persistence volume.   
 
+To apply the new storage class run:
+
+	$ kubectl apply -f management/longhorn/003-storageclass.yaml
+
 **Note:** The storage class is marked as the 'default' storage class within the cluster. This allows you to create a PersistentVolumeClaim with an unspecified storageClassName. Find details [here](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/#defaulting-behavior).
 
 
 
 ### Create a Volume Claim
 
-Now you can easily create a Persistence Volume Claim (PVC) within your pod using the new _longhorn_ StorageClass.
+Now you can easily create a Persistence Volume Claim (PVC) within your pod using the new _longhorn_ StorageClass. You do not need to create a PersistenceVolume manually because the storageClass will create a PV dynamically. 
 
 
 	apiVersion: v1
@@ -128,22 +132,71 @@ Now you can easily create a Persistence Volume Claim (PVC) within your pod using
 	      storage: 2Gi
 
 
-To create the new storage class run:
-
-	$ kubectl apply -f management/longhorn/003-storageclass.yaml
+You can read more about the topic in the kubernetes documentation - [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)
 
 
 ### The Reclaim Policy of a PersistentVolume
 
-PersistentVolumes can have various reclaim policies, including “Retain”, “Recycle”, and “Delete”. For dynamically provisioned PersistentVolumes, the default reclaim policy is “Delete”. This means that a dynamically provisioned volume is automatically deleted when the service was deleted.  This automatic behavior might be inappropriate because previous data will be lost. In that case, it is more appropriate to use the “Retain” policy. With the “Retain” policy, if a service was and its PersistentVolumeClaim was deleted, the corresponding PersistentVolume is not be deleted. Instead, it is moved to the Released phase, where all of its data can be manually recovered.
+PersistentVolumes can have various reclaim policies, including “Retain”, “Recycle”, and “Delete”. For dynamically provisioned PersistentVolumes, the default reclaim policy is “Delete”. This means that a dynamically provisioned volume is automatically deleted when the PVC or service was deleted.  This automatic behavior might be inappropriate because previous data will be lost. In that case, it is more appropriate to use the “Retain” policy. With the “Retain” policy, if a service and its PersistentVolumeClaim was deleted, the corresponding PersistentVolume will not be deleted. Instead, it is moved to the Released phase, where all of its data can be manually recovered.
 
-For this we can change the reclaimPolicy in your custom StorageClass.
+For this you can change the reclaimPolicy in your custom StorageClass.
 
 	  reclaimPolicy: Retain
 
 You can check the status of your storageClass with:
 
 	$ kubectl get StorageClass
+
+The _Imixs-Cloud_ project already providing a StorageClass called longhorn-durable
+
+
+### Durable Persistence Volumes
+
+As mentioned above when you delete a PVC, the corresponding PV will be deleted too, or released in case of the reclaimPolice 'Retain'.
+But even if the PV is not being deleted, this PV can not automatically be bound again to a POD. The reason for this is that a PV usually contains sensitive data and that is why kubernetes provides no possibility to bind to it, even if it is a PVC with the same name and in the same namespace as the previous one - who knows who's trying to steal the data!
+
+To use a PV also in this scenario you need to define a durable persistence volume manually. You make the PV available to a specific PVC by setting the PV.Spec.ClaimRef with a pointer to a PVC. See the following example:  
+
+	---
+	kind: PersistentVolume
+	apiVersion: v1
+	metadata:
+	  name: mysql-pv
+	spec:
+	  capacity:
+	    storage: 2Gi
+	  volumeMode: Filesystem
+	  accessModes:
+	    - ReadWriteOnce
+	  claimRef:
+	    namespace: default
+	    name: mysql-pvc
+	  csi:
+	    driver: io.rancher.longhorn 
+	    fsType: ext4
+	    volumeHandle: mysql-0
+	  storageClassName: longhorn-durable
+	---
+	apiVersion: v1
+	kind: PersistentVolumeClaim
+	metadata:
+	  name: mysql-pvc
+	spec:
+	  accessModes:
+	    - ReadWriteOnce
+	  storageClassName: longhorn-durable
+	  resources:
+	    requests:
+	      storage: 2Gi
+	  volumeName: "mysql-pv"
+
+The PV definition set the spec.csi.volumeHandle to a pre-created volume. This is an administrative job to done by the Cluster-Administrator. In Longhorn you can easily create the Persistence Volume form the UI:
+
+<img src="images/longhorn-volume-01.png" />
+
+## Known Problems
+
+
 
 ### Data Directory exists but is not empty
 
@@ -167,7 +220,7 @@ In such a case you just need to add a subPath
 See more details [here](https://stackoverflow.com/questions/51168558/how-to-mount-a-postgresql-volume-using-aws-ebs-in-kubernete/51174380).
 
 
-## How to Uninstall Longhorn
+### How to Uninstall Longhorn
 
 To prevent damaging the Kubernetes cluster, it is recommended deleting all Kubernetes workloads using Longhorn volumes (PersistentVolume, PersistentVolumeClaim, StorageClass, Deployment, StatefulSet, DaemonSet, etc) first.
 

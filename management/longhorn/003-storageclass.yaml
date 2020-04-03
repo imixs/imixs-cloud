@@ -1,3 +1,5 @@
+
+# This is the default storage class for dynamic storage claims
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -7,6 +9,30 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"
     
 provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "2880" # 48 hours in minutes
+  fromBackup: ""
+#  diskSelector: "ssd,fast"
+#  nodeSelector: "storage,fast"
+#  recurringJobs: '[{"name":"snap", "task":"snapshot", "cron":"*/1 * * * *", "retain":1},
+#                   {"name":"backup", "task":"backup", "cron":"*/2 * * * *", "retain":1,
+#                    "labels": {"interval":"2m"}}]'
+
+
+
+
+---
+
+# This storage class creates a durable pv for static storage claims 
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-durable    
+provisioner: driver.longhorn.io
+reclaimPolicy: Retain
 allowVolumeExpansion: true
 parameters:
   numberOfReplicas: "3"
