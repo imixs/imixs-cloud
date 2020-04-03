@@ -197,7 +197,7 @@ After you have created the volume in Longhorn you can deploy your POD with the P
 
 ## Known Problems
 
-Here are some known problems and how you can handle them: 
+There is also a [forum](https://forums.rancher.com/c/longhorn) to discuss questions with the longhorn community. Some known problems and how you can handle them is listed below: 
 
 
 ### Data Directory exists but is not empty
