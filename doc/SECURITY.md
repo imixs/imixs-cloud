@@ -2,6 +2,11 @@
 
 The following section describes additional security concepts of Imixs-Cloud
 
+See also [here](https://docs.traefik.io/middlewares/basicauth/).
+
+
+
+
 ## Traefik: Setup Basic Authentication 
 
 The traefik web front-end (8080) is accessible to anonymous per default. To secure the front-end follow these steps:
