@@ -9,41 +9,48 @@ Of course, only the second variant is appropriate for a Kubernetes cluster. Beca
  
 Due to its simplicity and the very good integration in Kubernetes, we use [Longhorn](https://longhorn.io/) as the preferred storage solution within Imixs-Cloud. But of course you can also integrate other distributed storage systems.
  
-<img src="images/storage-longhorn-01.png" />
+
  
 
 
 ## Quick Setup
 
+Longhorn is a cloud native distributed block storage for Kubernetes. Longhorn delivers simplified, easy to deploy and upgrade, 100% open source, cloud-native persistent block storage without the cost overhead of open core or proprietary alternatives. This makes Longhorn very easy to integrate in a Kubernetes cluster.
+
 For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhorn Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
 
 	$ kubectl apply -f management/longhorn/
 
-You will find the documenation [here](https://longhorn.io/docs/). 
-For a more detailed setup guide see the following sections. 
+The deployment may take some minutes. Corresponding to your ingress configuration you can open the Longhorn Web UI to administrate your cluster.
+
+<img src="images/storage-longhorn-01.png" />
+
+
+You will find a detailed documentation [here](https://longhorn.io/docs/). The following section describes the setup process in more detail.
+
+
 
 ## Setup of Longhorn
  
-Longhorn is a cloud native distributed block storage for Kubernetes. Longhorn delivers simplified, easy to deploy and upgrade, 100% open source, cloud-native persistent block storage without the cost overhead of open core or proprietary alternatives. This makes Longhorn very easy to integrate in a Kubernetes cluster.
+The longhorn configuration is defined in the service directory /management/longhorn . You can modify the setup and apply your individual settings as described in the following sections.
 
 
 ### open-iscsi
 	
-Make sure that 'open-iscsi' has been installed on all the nodes of the Kubernetes cluster, and the _iscsid_ daemon is running on all the nodes.
+Longhorn is based on open-iscsi. So first make sure that 'open-iscsi' has been installed on all the nodes of the Kubernetes cluster, and the _iscsid_ daemon is running on all the nodes.
 
-For Debian/Ubuntu, use the following command to install open-iscsi: 
+For Debian/Ubuntu, use the following command to install open-iscsi if it is not already installed: 
 
 	$ sudo apt-get install open-iscsi
 
 
 ### Install Longhorn into your Cluster
 
-
-You can install Longhorn  into your Kubernetes cluster using this command:
+For a quick test you can install Longhorn  into your Kubernetes cluster using the command:
 
 	$ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
 
-This will start Longhorn with the latest release. If you want to have more control you can customize the file /longhorn/001-deployment.yaml file located in the management directory. 
+This will start Longhorn with the latest release. If you want to have more control you can customize the longhorn configuration provided by _Imixs-Cloud_ in the directory  management/longhorn/
 
 To start longhorn from you custom setup run:
 
@@ -53,9 +60,7 @@ The startup can take a while. You can monitor the startup with the [K9s tool](..
 
 ### The Longhorn-UI
 
-Longhorn comes with a UI web interface to monitor and administrate the cluster. 
-
-You can create a ingress for the Longhorn UI with a traefik ingress route:
+Longhorn comes with a UI web interface to monitor and administrate the cluster. To access the UI from you _Imixs-Cloud_ setup you have to create a ingress for the Longhorn UI with a traefik ingress route. Just edit the file management/longhorn/002-ingress.yml and replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route:
 
 
 	kind: IngressRoute
@@ -74,19 +79,12 @@ You can create a ingress for the Longhorn UI with a traefik ingress route:
 	    - name: longhorn-frontend
 	      port: 8000
 	    
-	    
-
-Replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route:
-
-
-	$ kubectl apply -f management/longhorn/002-ingress.yaml
-
 
 
 
 ## Create Longhorn Volumes
 
-Before you create Kubernetes volumes, you must first create a storage class. We are already providing a default StorageClass for longhorn in the file /longhonr/003-storageclass.yaml
+Before you can create Kubernetes volumes within Longhorn, you must first provide a storage class. _Imixs-Cloud_ is already providing a default StorageClass for longhorn in the file /longhonr/003-storageclass.yaml
 
 
 	kind: StorageClass
@@ -104,19 +102,17 @@ Before you create Kubernetes volumes, you must first create a storage class. We 
 	  staleReplicaTimeout: "2880" # 48 hours in minutes
 	  fromBackup: ""
 
-This storage class definition will automatically create 3 replicas of a persistence volume.   
-
-To apply the new storage class run:
+This storage class definition will automatically create 3 replicas of a persistence volume. You can change the storageClass to your individual needs. To apply the new storage class run:
 
 	$ kubectl apply -f management/longhorn/003-storageclass.yaml
 
-**Note:** The storage class is marked as the 'default' storage class within the cluster. This allows you to create a PersistentVolumeClaim with an unspecified storageClassName. Find details [here](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/#defaulting-behavior).
+**Note:** The storage class 'longhorn' is marked as the 'default' storage class within the cluster. This allows you to create a PersistentVolumeClaim with an unspecified storageClassName. Find details [here](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/#defaulting-behavior).
 
 
 
 ### Create a Volume Claim
 
-Now you can easily create a Persistence Volume Claim (PVC) within your pod using the new _longhorn_ StorageClass. You do not need to create a PersistenceVolume manually because the storageClass will create a PV dynamically. 
+Now you can easily create a Persistence Volume Claim (PVC) within your pod using the _longhorn_ StorageClass. You do not need to create a PersistenceVolume manually because the storageClass will create a PV dynamically. 
 
 
 	apiVersion: v1
@@ -143,11 +139,10 @@ For this you can change the reclaimPolicy in your custom StorageClass.
 
 	  reclaimPolicy: Retain
 
-You can check the status of your storageClass with:
+The _Imixs-Cloud_ project is already providing such a StorageClass called 'longhorn-durable'. You can check the status of your storageClass with:
 
 	$ kubectl get StorageClass
 
-The _Imixs-Cloud_ project already providing a StorageClass called longhorn-durable
 
 
 ### Durable Persistence Volumes
@@ -190,12 +185,19 @@ To use a PV also in this scenario you need to define a durable persistence volum
 	      storage: 2Gi
 	  volumeName: "mysql-pv"
 
-The PV definition set the spec.csi.volumeHandle to a pre-created volume. This is an administrative job to done by the Cluster-Administrator. In Longhorn you can easily create the Persistence Volume form the UI:
+The PV definition _spec.csi.volumeHandle_ points to a pre-created volume. This is an administrative job to done by the Cluster-Administrator. In Longhorn you can easily create the Persistence Volume form the UI:
 
 <img src="images/longhorn-volume-01.png" />
 
+
+After you have created the volume in Longhorn you can deploy your POD with the PV/PVC definition. 
+
+**Note:** the acccessMOdes and the storage capacity in the PV must match the PVC definition
+
+
 ## Known Problems
 
+Here are some known problems and how you can handle them: 
 
 
 ### Data Directory exists but is not empty
