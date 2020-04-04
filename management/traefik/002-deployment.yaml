@@ -22,6 +22,8 @@ spec:
       containers:
       - args:
         - --api.insecure
+        #- --api.insecure=false
+        - --api.dashboard=true
         - --accesslog
         - --global.checknewversion=true
         - --entryPoints.traefik.address=:8100
@@ -33,12 +35,11 @@ spec:
         - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
         - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
         - --certificatesresolvers.default.acme.storage=acme.json
-        - --api.dashboard=true
         - --ping=true
         - --providers.kubernetescrd
         # Use log level= INFO or DEBUG
         - --log.level=INFO
-        image: traefik:2.1.8
+        image: traefik:2.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3

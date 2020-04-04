@@ -9,82 +9,64 @@ See also [here](https://docs.traefik.io/middlewares/basicauth/).
 
 ## Traefik: Setup Basic Authentication 
 
-The traefik web front-end (8080) is accessible to anonymous per default. To secure the front-end follow these steps:
-
-#### 1. Generate a password file
-
-To generate a password file you can use the commadline tool 'htpasswd' which is part of the apache2-utils.
-The following command will add a new user:password pair to a local stored password file named 'kubepasswd'
-
-	$ htpasswd -nb admin adminadmin >> .kubepasswd
-	$ htpasswd -nb user password >> .kubepasswd
-
-In kubernetes a user:password stringd must be base64-encoded. To create an encoded user:password pairs now run the following command:
+You can secure any service routed through the traefik LoadBalancer by defining a middlware for basic authentication. 
+Take a look into the [ingress](INGRESS.md) section of how to setup the middleware 'basic-auth'.
 
 
-	$ cat .kubepasswd | openssl base64
-	YWRtaW46JGFwcjEkWXdmLkF6Um0kc3owTkpQMi55cy56V2svek43aENtLwoKdXNl
-	cjokYXByMSRaU2VKQW1pOSRVV1AvcDdsQy9KSzdrbXBIMXdGL28uCgo=
+## Traefik: Dashboard
 
-The output can be used in the traefik middleware confiugration.
+The traefik web front-end in its default configuration provides the dashboard in the 'insecure' mode. This means that no authentication is needed to access the dashboard.
 
-#### 2. Define a Traefik Middleware
+To secure the dashboard you can apply a internet host and an IngresRoute for accessing the dashboard, through Traefik itself.
 
-The following traefik middleware configuration defines a basic authentication layer to be used for ingress definitions:
+#### 1. Disable the inscure mode
+
+In the file managmeent/traefik/002-deployment.yaml you need to set the api option  _'api.insecure'_  to  _'false'_
+
+    ...
+    spec:
+      containers:
+      - args:
+        - --api.insecure=false
+        - --api.dashboard=true
+     ....
+
+#### 2. Create a IngressRoute
+
+Next create a ingress route to access the trafik dashboard throgh your Internet host name and with a middleware for basic authentication:
 
 	apiVersion: traefik.containo.us/v1alpha1
-	kind: Middleware
+	kind: IngressRoute
 	metadata:
-	  name: admin-auth
+	  name: traefik-dashboard
 	spec:
-	  basicAuth:
-	    secret: authsecret
+	  routes:
+	  - match: Host(`{YOUR-HOST-NAME}`)
+	    kind: Rule
+	    services:
+	    - name: api@internal
+	      kind: TraefikService
+	    middlewares:
+	      - name: https-redirect
 	
-	---
-	apiVersion: v1
-	kind: Secret
-	metadata:
-	  name: authsecret
-	  namespace: default
 	
-	data:
-	  users: |2
-	    YWRtaW46JGFwcjEkWXdmLkF6Um0kc3owTkpQMi55cy56V2svek43aENtLwoKdXNl
-	    cjokYXByMSRaU2VKQW1pOSRVV1AvcDdsQy9KSzdrbXBIMXdGL28uCgo=
-  
-  
-Apply your new basicAuth middleware with:
-
-	$ kubectl apply -f basicauth.yaml
-
-
-
-
-
-#### 3. Secure a Service with Basic Authentication
-
-Now you can use the baicAuth middleware in your own ingress definition. See the following example:
-
-	# IngresRoute http with basicAuth
+	# IngresRoute https
 	---
 	kind: IngressRoute
 	apiVersion: traefik.containo.us/v1alpha1
 	metadata:
-	  name: my-service
-	  namespace: default
-	
+	  name: traefik-dashboard-tls
 	spec:
-	  entryPoints: 
-	    - web
 	  routes:
-	  - match: Host(`myservice.foo.com`) 
+	  - match: Host(`{YOUR-HOST-NAME}`) 
 	    kind: Rule
 	    services:
-	    - name: my-service
-	      port: 80
+	    - name: api@internal
+	      kind: TraefikService
 	    middlewares: 
-	    - name: admin-auth
+	    - name: basic-auth
+	  tls:
+	    certResolver: default
 
 
-
-
+Take a look into the [ingress](INGRESS.md) section of how to setup the middleware 'basic-auth'.

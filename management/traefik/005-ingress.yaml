@@ -1,0 +1,33 @@
+#####################################################
+# Secure traefik dashboard with https and basic auth
+#####################################################
+
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: traefik-dashboard
+#spec:
+#  routes:
+#  - match: Host(`{YOUR-HOST-NAME}`)
+#    kind: Rule
+#    services:
+#    - name: api@internal
+#      kind: TraefikService
+#    middlewares:
+#      - name: "https-redirect"
+#---
+#kind: IngressRoute
+#apiVersion: traefik.containo.us/v1alpha1
+#metadata:
+#  name: traefik-dashboard-tls
+#spec:
+#  routes:
+#  - match: Host(`{YOUR-HOST-NAME}`) 
+#    kind: Rule
+#    services:
+#    - name: api@internal
+#      kind: TraefikService
+#    middlewares: 
+#    - name: basic-auth
+#  tls:
+#    certResolver: default

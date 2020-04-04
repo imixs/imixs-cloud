@@ -48,7 +48,6 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: tlsoptions.traefik.containo.us
-
 spec:
   group: traefik.containo.us
   version: v1alpha1
@@ -73,6 +72,38 @@ spec:
     singular: traefikservice
   scope: Namespaced
 
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: tlsstores.traefik.containo.us
+
+spec:
+  group: traefik.containo.us
+  version: v1alpha1
+  names:
+    kind: TLSStore
+    plural: tlsstores
+    singular: tlsstore
+  scope: Namespaced
+
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: ingressrouteudps.traefik.containo.us
+
+spec:
+  group: traefik.containo.us
+  version: v1alpha1
+  names:
+    kind: IngressRouteUDP
+    plural: ingressrouteudps
+    singular: ingressrouteudp
+  scope: Namespaced
+
+
 
 
 
@@ -82,6 +113,7 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: traefik-ingress-controller
+
 rules:
   - apiGroups:
       - ""
@@ -114,11 +146,15 @@ rules:
       - ingressroutes
       - traefikservices
       - ingressroutetcps
+      - ingressrouteudps
       - tlsoptions
+      - tlsstores
     verbs:
       - get
       - list
       - watch
+
+
 
 ---
 kind: ClusterRoleBinding
@@ -131,7 +167,6 @@ roleRef:
   name: traefik-ingress-controller
 subjects:
   - kind: ServiceAccount
-#    name: traefik-ingress-controller
     name: traefik
     namespace: kube-system
 

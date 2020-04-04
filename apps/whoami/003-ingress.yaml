@@ -17,7 +17,7 @@ spec:
       port: 80
     # redirect http to https
     #middlewares: 
-    #- name: secured
+    #- name: https-redirect
 
 
 
@@ -37,8 +37,8 @@ spec:
     services:
     - name: whoami
       port: 80
-    middlewares: 
-    - name: https-redirect
+    #middlewares: 
+    #- name: basic-auth
   tls:
     certResolver: default
 

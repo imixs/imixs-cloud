@@ -9,14 +9,13 @@ The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **
 
 The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
 
-If you have any questions just open a new [Issue on Github](https://github.com/imixs/imixs-cloud/issues) and start a new Discussion. 
-
-**Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
-
-
+If you have any questions just open a new [Issue on Github](https://github.com/imixs/imixs-cloud/issues) and start a Discussion. 
 
 
 <p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
+
+
+**Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
 
 
 ## Quick Start
@@ -48,16 +47,15 @@ If you are running Fedora or CentOS than run:
 
 	$ sudo ./scripts/setup_centos.sh
 
+You can find details about how to create a cluster on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
  
 ### 2. Initialize Your Kubernetes Master Node
 
-Run the kubeadm tool to setup your kubernetes master node:
+After the basic setup, run the  _kubeadm_  tool to setup your kubernetes master node:
 
 	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS]
 
-Replace [NODE\_IP\_ADDRESS] with your servers public IP address. 
-
-The init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
+Replace [NODE\_IP\_ADDRESS] with your servers public IP address. At the end the init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
 
 Now deploy a cluster network, this is needed for the internal communication between your cluster nodes. 
 
@@ -65,16 +63,16 @@ Now deploy a cluster network, this is needed for the internal communication betw
 
 ### 3. Setup Your Kubernetes Worker Nodes
 
-To setup your cluster you can join any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes. 
-After the setup of a new worker node is completed you can join your worker note into your new cluster using the join command from your master node
+To build your cluster you can join any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes. 
+After the basic setup on a new worker node is completed, you can join your worker node into your new cluster using the join command from your master node:
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx  --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
 
-If you do not know the join command run the following command on your master node, this will print out the command you need to join the cluster from yoru worker node:
+If you do not know the join command run the following command on your master node. This command will just print out the command you need to join the cluster from your worker node:
 
 	$ kubeadm token create --print-join-command
  
-To check the status of your master and worker nodes run:
+After a new worker has joined the cluster you can check the status of your master and worker nodes:
 
 	$ kubectl get nodes
 
