@@ -21,6 +21,7 @@ spec:
     spec:
       containers:
       - args:
+        - --api
         - --api.insecure
         #- --api.insecure=false
         - --api.dashboard=true
@@ -36,11 +37,8 @@ spec:
         - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
         - --certificatesresolvers.default.acme.storage=acme.json
         - --ping=true
-        - --providers.kubernetescrd
-        - --providers.kubernetesingress
-
-
-
+        - --providers.kubernetescrd=true
+        - --providers.kubernetesingress=true
         # Use log level= INFO or DEBUG
         - --log.level=INFO
         image: traefik:2.2

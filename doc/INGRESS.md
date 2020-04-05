@@ -11,7 +11,13 @@ To deploy traefik.io within the _Imixs-Cloud_ run:
 
 ## Configuration
 
-The traefik setup consists of three resource yaml files.
+The traefik setup consists of a set of resource yaml files.
+
+ - 001-rbac.yaml - defines the roles needed by traefik
+ - 002-deployment.yaml - defines the traefik deployment object including the Let's Encrypt configuration
+ - 003-services.yaml - defines the services for http/https and dashboard
+ - 004-middleware.yaml - optional definition of middlewares (e.g. HTTPS Redirect)
+ - 005-ingress.yml - optional definition for a ingress to the dashboard
 
 ### 1. The Deployment Configuration
 
