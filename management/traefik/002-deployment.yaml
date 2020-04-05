@@ -37,6 +37,10 @@ spec:
         - --certificatesresolvers.default.acme.storage=acme.json
         - --ping=true
         - --providers.kubernetescrd
+        #- --providers.kubernetesingress # use this provider for intgress configuraiton 
+
+
+
         # Use log level= INFO or DEBUG
         - --log.level=INFO
         image: traefik:2.2
