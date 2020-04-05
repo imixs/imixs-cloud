@@ -1,16 +1,39 @@
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
 metadata:
-  name: longhorn-frontend
+  name: longhorn-ui
   namespace: longhorn-system
-
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    # optional http->https redirect
+    #traefik.ingress.kubernetes.io/router.middlewares: default-https-redirect@kubernetescrd
 spec:
-  entryPoints: 
-    - web
-  routes:
-  - match: Host(`{YOUR-DNS}`) 
-    kind: Rule
-    services:
-    - name: longhorn-frontend
-      port: 80
-      
+  rules:
+  - host: {YOUR-HOST-NAME}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: longhorn-frontend
+          servicePort: 80
+---
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: longhorn-tls
+  namespace: longhorn-system
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    # optional basic authenticator
+    #traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd
+spec:
+  rules:
+  - host: {YOUR-HOST-NAME}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: longhorn-frontend
+          servicePort: 80
