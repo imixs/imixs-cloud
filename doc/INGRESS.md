@@ -45,27 +45,79 @@ After you have configured the resource yaml files you can apply your changes to 
 	$ kubectl apply -f management/traefik/
 
 
-### 4. Define Your Own Ingress Route
+## Ingress 
 
-Now you can define your own Ingress Rout in your POD to gain access from the internet:
+Now you can define your own Ingress within  your POD to gain access from the internet via traefik.
+The following example shows a simple Ingress configuraiton 
 
-	# IngresRoute http
-	---
-	kind: IngressRoute
-	apiVersion: traefik.containo.us/v1alpha1
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
 	metadata:
-	  name: {YOUR-SERVICE}-route
-	  namespace: default
-	
+	  name: myingress
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: web
 	spec:
-	  entryPoints: 
-	    - web
-	  routes:
-	  - match: Host(`{YOUR-DNS-NAME}`) 
-	    kind: Rule
-	    services:
-	    - name: {YOUR-SERVICE}
-	      port: 80
+	  rules:
+	  - host: example.foo.com
+	    http:
+	      paths:
+	      - path: /
+	        backend:
+	          serviceName: whoami
+	          servicePort: 80
+
+
+With the annotation "traefik.ingress.kubernetes.io/router.entrypoints" you define that your service (whami) should be routed by traefik. 
+
+You can control your ingress configuraiton from the traefik web ui:
+
+<img src="images/traefik-ui-ingress.png" />
+
+### HTTP -> HTTPS redirects
+
+You can also define redirects from HTTP to HTTPS. This makes your service more secure as direct access via HTTP is blocked. The following example defines two ingress - one for http with a redirect and the https ingress: 
+
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
+	metadata:
+	  name: myingress
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: web
+	    traefik.ingress.kubernetes.io/router.middlewares: default-https-redirect@kubernetescrd
+	spec:
+	  rules:
+	  - host: example.foo.com
+	    http:
+	      paths:
+	      - path: /
+	        backend:
+	          serviceName: whoami
+	          servicePort: 80
+	
+	---
+	
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
+	metadata:
+	  name: myingress-tsl
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+	    traefik.ingress.kubernetes.io/router.tls: "true"
+	spec:
+	  rules:
+	  - host: example.foo.com
+	    http:
+	      paths:
+	      - path: /
+	        backend:
+	          serviceName: whoami
+	          servicePort: 80
+
+
+
+	
 
 To test your traefik setup you can deploy the 'whoami' service which is part of the _/apps/_ .
 Edit the file /apps/whoami/003-ingress.yaml and apply your configuration:
@@ -73,11 +125,49 @@ Edit the file /apps/whoami/003-ingress.yaml and apply your configuration:
 	$ kubectl apply -f whoami/
 
 
+The next section will explain the middleware components. 
+
+
+
 ## Middleware
 
 With the concept of [middlewares](https://docs.traefik.io/routing/routers/#middlewares) you can refine the routing of a ingress rule. 
 For example you can redirect a HTTP request to HTTPS or your can add a basic authentication to secure your service. 
 
+<img src="images/traefik-ui-middleware.png" />
+
+### HTTP to HTTPS Redirectscheme
+
+The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectscheme/)  is used for a redirection from HTTP to HTTPS:
+
+
+	# Redirect http -> https
+	---
+	apiVersion: traefik.containo.us/v1alpha1
+	kind: Middleware
+	metadata:
+	  name: https-redirect
+	spec:
+	  redirectScheme:
+	    scheme: https
+	    permanent: true
+	    port: 443
+	    
+
+To apply the HTTP->HTTPS Redirectscheme you just need to add the annotation in your ingress objects:
+
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
+	metadata:
+	  name: myingress
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: web
+	    traefik.ingress.kubernetes.io/router.middlewares: default-https-redirect@kubernetescrd
+    ....
+
+
+**Note:** the name of the middelware need to be fraefixed with 'default-' and suffixed with '@kubernetescrd' 
 
 ### Adding Basic Authentication
 
@@ -160,35 +250,6 @@ Now you can use the baicAuth middleware in your own ingress definition. See the 
 
 
 
-
-### HTTP to HTTPS Redirectscheme
-
-The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectscheme/)  is used for a redirection from HTTP to HTTPS:
-
-
-	# Redirect http -> https
-	---
-	apiVersion: traefik.containo.us/v1alpha1
-	kind: Middleware
-	metadata:
-	  name: https-redirect
-	spec:
-	  redirectScheme:
-	    scheme: https
-
-To apply the HTTP->HTTPS Redirectscheme you just need to add the redirect to the routes definition of your ingressRoute:
-
-	...
-	  routes:
-	  - kind: Rule
-	    match: Host(`{YOUR-INTERNET-DNS-NAME}`)
-	    services:
-	    - name: your-service
-	      port: 80
-	    # apply auto redirect
-	    middlewares: 
-	    - name: https-redirect
-    ....
     
 
 ### Middleware Chains
@@ -212,3 +273,38 @@ So for example you can define a Chain Middleware to secure your service and to r
 If you set this middleware in your ingress definition, your service will be secured and redirected form HTTP to HTTPS.
 
 
+
+
+
+
+## IngressRoute
+
+IngresRoute is a specific object defined by traefik. In general you can use kubernetes ingress objects as explained in the section above. But of course you can use also the traefik specific IngressRoute object to define an Ingress if needed. Within the general traefik setup we activated both - the kubernetes-crd provider and the kuberntes-ingress provider.
+
+You can find more about traefik ingressRoute objects [here](https://docs.traefik.io/providers/kubernetes-crd/) 
+
+See the following example defining a traefik Ingres Route for a service:
+
+
+	# IngresRoute http
+	---
+	kind: IngressRoute
+	apiVersion: traefik.containo.us/v1alpha1
+	metadata:
+	  name: whoami-notls
+	  namespace: default
+	
+	spec:
+	  entryPoints: 
+	    - web
+	  routes:
+	  - match: Host(`example.foo.com`) 
+	    kind: Rule
+	    services:
+	    - name: whoami
+	      port: 80
+	    # redirect http to https
+	    #middlewares: 
+	    #- name: https-redirect
+    
+    
