@@ -1,18 +1,7 @@
 #########################################################
 # The Middleware configuration contains middleware componenst
 # for a HTTP->HTTS redirection and a BasicAuth example. 
-#########################################################
 
-# Middleware for Redirect http -> https
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: https-redirect
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
 
 
 # Middleware for basicAuth 
@@ -37,20 +26,5 @@ spec:
 # ------------ Paste your own password file content here --------------
 #    YWRtaW46JGFwcjEkWXdmLkF6Um0kc3owTkpQMi55cy56V2svek43aENtLwoKdXNl
 #    cjokYXByMSRaU2VKQW1pOSRVV1AvcDdsQy9KSzdrbXBIMXdGL28uCgo=
-
-
-
-
----
-# Middleware Chain for basic auth and HTTP->HTTPS Redirect
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: Middleware
-#metadata:
-#  name: secured
-#spec:
-#  chain:
-#    middlewares:
-#    - name: basic-auth
-#    - name: https-redirect
 
 

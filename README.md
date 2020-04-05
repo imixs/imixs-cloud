@@ -20,6 +20,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
  - [Traefik Ingress Integration](./doc/INGRESS.md)
  - [Longhorn Distributed Storage](./doc/STORAGE.md)
  - [Habro Docker Registry](./doc/REGISTRY.md)
+ - [Security Configuration](SECURITY.md) 
 
 **Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
 

@@ -4,6 +4,10 @@
 ### THIS PAGE IS UNDER DEVELOPMENT !! 
 
 
+https://www.replex.io/blog/kubernetes-in-production-the-ultimate-guide-to-monitoring-resource-metrics-with-grafana
+
+
+
 _Imixs-Cloud_ also provides a monitoring feature which allows you to monitor your docker-swarm.
 
 <img src="./imixs-cloud-04.png" />

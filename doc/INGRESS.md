@@ -1,60 +1,75 @@
 # Ingress Configuration with Traefik.io
 
-In general services running in a kubernetes cluster are not visible from outside or the Internet. To gain access from the Internte to a single service or app running inside your cluster you need a so called _Ingress Network_ .   
-_Imixs-Cloud_ provides a Ingress Configuration based on [Traefik.io](http://traefik.io).
-Traefik.io is a reverse proxy and load balancer to be used within a kubernetes cluster. Traefik provides Custom Resource Definitions (CRD) for routing HTTP/HTTPS requests from outside of your cluster to particular services. 
+In general services running in a kubernetes cluster are not visible from outside your cluster or the Internet. To gain access to a service running inside your cluster from the Internet, you need a so called [Ingress Network](https://kubernetes.io/docs/concepts/services-networking/ingress/).   
 
-To deploy traefik.io within the _Imixs-Cloud_ run:
+_Imixs-Cloud_  provides you with a ready to use Ingress Configuration based on [Traefik.io](http://traefik.io) in combination with the ACME provider [Let's Encrypt](https://letsencrypt.org/). This makes it easy to publish services to the Internet in a secure way. 
 
-	$ kubectl apply -f management/traefik/
+The following section describe the setup of the Traefik.io configuration for  _Imixs-Cloud_ .Traefik.io provides a lot of features to route traefik from outside into a specific services running within your Kubernetes cluster. You will find detailed information how to configure traefik.io in the [official documentation](https://docs.traefik.io/)
+
 		
 
 ## Configuration
 
-The traefik setup consists of a set of resource yaml files.
+The traefik setup of  _Imixs-Cloud_  consists of a set of resource yaml files which can be customized and extended.
 
- - 001-rbac.yaml - defines the roles needed by traefik
- - 002-deployment.yaml - defines the traefik deployment object including the Let's Encrypt configuration
- - 003-services.yaml - defines the services for http/https and dashboard
+ - 001-rbac.yaml - defines the roles needed by Traefik.io
+ - 002-deployment.yaml - defines the Traefik.io deployment object including the Let's Encrypt configuration
+ - 003-services.yaml - defines the services for http/https and the dashboard
  - 004-middleware.yaml - optional definition of middlewares (e.g. HTTPS Redirect)
  - 005-ingress.yml - optional definition for a ingress to the dashboard
 
 ### 1. The Deployment Configuration
 
-The file _002-deployment.yaml_ contains the deployment configuration for Traefik.io. This also includes a Let's Encrypt setup to provide SSL certificates. 
+The file _002-deployment.yaml_ contains the deployment configuration for Traefik.io and also the ACME provider [Let's Encrypt](https://letsencrypt.org/).  Before your apply the Traefik.io configuration to your cluster, first edit this file and replace the place holder _{YOUR-E-MAIL}_ with the e-mail address of your organization.
 
-Before your apply the traefik configuration please edit the file _002-deployment.yaml_ and replace the place holder _{YOUR-E-MAIL}_ with the e-mail address of your organization.
-
-Also comment the ACM Staging server from the Let's Encrypt setup after you have tested your cluster setup. The stating setup is just simulating certificates but not creating them. 
+For testing the ACME provider  runs on a staging server. You can comment the ACM Staging server from the Let's Encrypt setup section after you have tested your cluster setup. The staging setup is just simulating certificates but not creating one. 
 
         # comment staging server for production
         - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
         - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
 
 
-### 2. The Ingress Configuration  
+### 2. The Service Configuration  
 
-The file _003-ingressroute.yaml_ contains the ingress configuration for the Taefik.io service.  
+The file _003-service.yaml_ contains the service configuration for the Taefik.io service.  
 The spec defines a external IP address which is used to route external requests to one cluster node. Traffic that ingresses into the cluster with the external IP (as destination IP), on the Service port, will be routed to one of the Service endpoints. External IPs are not managed by Kubernetes and are the responsibility of the cluster administrator. Find more details [here](https://kubernetes.io/docs/concepts/services-networking/service/#external-ips).
 
-So before you apply the traefik configuration please replace the _{MASTER-NODE-IP}_ with the Node IP address of one of your kubernetes cluster nodes used to ingress external traefik. This should typically be the IP address from your master node.
+So before you apply the traefik configuration replace the _{MASTER-NODE-IP}_ with the Node IP address of one of your kubernetes cluster nodes used to ingress external traefik. This should typically be the IP address from your master node.
  
 	spec:
 	  externalIPs:
 	  - {MASTER-NODE-IP} 
 	  
+### 4. The Middleware Configuration
+
+The file _004-middleware.yam_ contains optional middleware configurations. This can be used to secure services (e.g. the Traefik Web Dashboard) with a basic authentication. Read the section [Security](SECURITY.md) for more information.
+
+
+### 5. The Ingress Configuration
+
+In the 'insecure' mode you can open the Traefik.io Web Dashboard from your master node on Port 8100.
+
+After testing you should disable the insecure mode and configure a Ingress Network as explained in the  [Security](SECURITY.md) section. The file _005-ingress.yaml_ proovides you with a template. 
+
 	  
-### 3. Apply Your Configuration
+### 4. Apply Your Configuration
 	  
 After you have configured the resource yaml files you can apply your changes to the kubernetes cluster:
 
 	$ kubectl apply -f management/traefik/
 
 
+You can access the Traefik.io dashboard either in the insecure mode or a Ingress configuration:
+
+	http://{MASTER-NODE-IP}:8100
+	http://{YOUR-TRAEFIK-HOST-NAME} 
+
+
+
 ## Ingress 
 
-Now you can define your own Ingress within  your POD to gain access from the internet via traefik.
-The following example shows a simple Ingress configuraiton 
+Now as you have deployed Traefik.io into your cluster you can define your own Ingress within  your POD to gain access from the Internet.
+The following example shows a simple Ingress configuration 
 
 
 	kind: Ingress
@@ -62,7 +77,7 @@ The following example shows a simple Ingress configuraiton
 	metadata:
 	  name: myingress
 	  annotations:
-	    traefik.ingress.kubernetes.io/router.entrypoints: web
+	    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
 	spec:
 	  rules:
 	  - host: example.foo.com
@@ -73,107 +88,27 @@ The following example shows a simple Ingress configuraiton
 	          serviceName: whoami
 	          servicePort: 80
 
-
-With the annotation "traefik.ingress.kubernetes.io/router.entrypoints" you define that your service (whami) should be routed by traefik. 
-
-You can control your ingress configuraiton from the traefik web ui:
-
-<img src="images/traefik-ui-ingress.png" />
-
-### HTTP -> HTTPS redirects
-
-You can also define redirects from HTTP to HTTPS. This makes your service more secure as direct access via HTTP is blocked. The following example defines two ingress - one for http with a redirect and the https ingress: 
-
-
-	kind: Ingress
-	apiVersion: networking.k8s.io/v1beta1
-	metadata:
-	  name: myingress
-	  annotations:
-	    traefik.ingress.kubernetes.io/router.entrypoints: web
-	    traefik.ingress.kubernetes.io/router.middlewares: default-https-redirect@kubernetescrd
-	spec:
-	  rules:
-	  - host: example.foo.com
-	    http:
-	      paths:
-	      - path: /
-	        backend:
-	          serviceName: whoami
-	          servicePort: 80
-	
-	---
-	
-	kind: Ingress
-	apiVersion: networking.k8s.io/v1beta1
-	metadata:
-	  name: myingress-tsl
-	  annotations:
-	    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-	    traefik.ingress.kubernetes.io/router.tls: "true"
-	spec:
-	  rules:
-	  - host: example.foo.com
-	    http:
-	      paths:
-	      - path: /
-	        backend:
-	          serviceName: whoami
-	          servicePort: 80
-
-
-
-	
+With the annotation "traefik.ingress.kubernetes.io/router.entrypoints" you define that your service  should be routed by traefik. 
+HTTP requests will be automatically forwarded to HTTPS due to the Let's Encrypt configuration. 
 
 To test your traefik setup you can deploy the 'whoami' service which is part of the _/apps/_ .
 Edit the file /apps/whoami/003-ingress.yaml and apply your configuration:
 
 	$ kubectl apply -f whoami/
 
+You can control your ingress configuration from the Traefik.io web ui:
 
-The next section will explain the middleware components. 
+<img src="images/traefik-ui-ingress.png" />
 
 
 
 ## Middleware
 
 With the concept of [middlewares](https://docs.traefik.io/routing/routers/#middlewares) you can refine the routing of a ingress rule. 
-For example you can redirect a HTTP request to HTTPS or your can add a basic authentication to secure your service. 
+For example you can add a basic authentication to secure your service. 
 
 <img src="images/traefik-ui-middleware.png" />
 
-### HTTP to HTTPS Redirectscheme
-
-The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectscheme/)  is used for a redirection from HTTP to HTTPS:
-
-
-	# Redirect http -> https
-	---
-	apiVersion: traefik.containo.us/v1alpha1
-	kind: Middleware
-	metadata:
-	  name: https-redirect
-	spec:
-	  redirectScheme:
-	    scheme: https
-	    permanent: true
-	    port: 443
-	    
-
-To apply the HTTP->HTTPS Redirectscheme you just need to add the annotation in your ingress objects:
-
-
-	kind: Ingress
-	apiVersion: networking.k8s.io/v1beta1
-	metadata:
-	  name: myingress
-	  annotations:
-	    traefik.ingress.kubernetes.io/router.entrypoints: web
-	    traefik.ingress.kubernetes.io/router.middlewares: default-https-redirect@kubernetescrd
-    ....
-
-
-**Note:** the name of the middelware need to be fraefixed with 'default-' and suffixed with '@kubernetescrd' 
 
 ### Adding Basic Authentication
 
@@ -231,53 +166,20 @@ Apply your new basicAuth middleware with:
 
 #### 3. Secure a Service with Basic Authentication
 
-Now you can use the baicAuth middleware in your own ingress definition. See the following example:
+To apply the baicAuth middleware you just need to add the annotation in your ingress objects:
 
-	# IngresRoute http with basicAuth
-	---
-	kind: IngressRoute
-	apiVersion: traefik.containo.us/v1alpha1
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
 	metadata:
-	  name: my-service
-	  namespace: default
-	
-	spec:
-	  entryPoints: 
-	    - web
-	  routes:
-	  - match: Host(`myservice.foo.com`) 
-	    kind: Rule
-	    services:
-	    - name: my-service
-	      port: 80
-	    middlewares: 
-	    - name: basic-auth
+	  name: myingress
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: web
+	    traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd
+    ....
 
 
-
-
-    
-
-### Middleware Chains
-
-The [Middlware Chain](https://docs.traefik.io/middlewares/chain/) enables you to define reusable combinations of middleware.
-So for example you can define a Chain Middleware to secure your service and to redirect HTTP->HTTPS. See the following example:
-
-	# Secure and Redirect...
-	---
-	apiVersion: traefik.containo.us/v1alpha1
-	kind: Middleware
-	metadata:
-	  name: secured
-	spec:
-	  chain:
-	    middlewares:
-	    - name: basic-auth
-	    - name: https-redirect
-
-
-If you set this middleware in your ingress definition, your service will be secured and redirected form HTTP to HTTPS.
-
+**Note:** the name of the middelware need to be praefixed with 'default-' and suffixed with '@kubernetescrd' 
 
 
 
@@ -309,8 +211,8 @@ See the following example defining a traefik Ingres Route for a service:
 	    services:
 	    - name: whoami
 	      port: 80
-	    # redirect http to https
+	    # add basic auth
 	    #middlewares: 
-	    #- name: https-redirect
+	    #- name: basic-auth
     
     
