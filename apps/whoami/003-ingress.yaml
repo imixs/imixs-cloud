@@ -5,28 +5,7 @@ apiVersion: networking.k8s.io/v1beta1
 metadata:
   name: myingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.middlewares: default-https-redirect@kubernetescrd
-spec:
-  rules:
-  - host: {YOUR-HOST-NAME}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: whoami
-          servicePort: 80
-
-
-# IngresRoute httpS
----
-kind: Ingress
-apiVersion: networking.k8s.io/v1beta1
-metadata:
-  name: myingress-tsl
-  annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   rules:
   - host: {YOUR-HOST-NAME}
@@ -36,5 +15,4 @@ spec:
         backend:
           serviceName: whoami
           servicePort: 80
-
 

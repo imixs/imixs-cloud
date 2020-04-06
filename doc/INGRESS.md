@@ -183,6 +183,24 @@ To apply the baicAuth middleware you just need to add the annotation in your ing
 
 
 
+### HTTP to HTTPS Redirectscheme
+
+The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectscheme/)  is used for a redirection from HTTP to HTTPS:
+
+
+	# Redirect http -> https
+	---
+	apiVersion: traefik.containo.us/v1alpha1
+	kind: Middleware
+	metadata:
+	  name: https-redirect
+	spec:
+	  redirectScheme:
+	    scheme: https
+	    permanent: true
+	    port: 443
+	    
+	    
 
 
 ## IngressRoute

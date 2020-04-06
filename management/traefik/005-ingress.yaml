@@ -13,4 +13,7 @@
 #    services:
 #    - name: api@internal
 #      kind: TraefikService
-
+#    # optional: add basic auth
+#    #middlewares: 
+#    #- name: basic-auth
+#    #- name: https-redirect

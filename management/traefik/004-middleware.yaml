@@ -28,3 +28,14 @@
 #    cjokYXByMSRaU2VKQW1pOSRVV1AvcDdsQy9KSzdrbXBIMXdGL28uCgo=
 
 
+# Middleware for HTTP->HTTPS
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: https-redirect
+#spec:
+#  redirectScheme:
+#    scheme: https
+#    permanent: true
+#    port: 443
