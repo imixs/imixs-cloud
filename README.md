@@ -107,7 +107,7 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
  
 ## The Configuration Directory 
  
-The complete infrastructure of a _Imixs-Cloud_ environment is described in one central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to role back changes if something went wrong. You can always start with a new environment by just forking this Github repository. 
+The complete infrastructure of a _Imixs-Cloud_ environment is described in one central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
 
 	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
 

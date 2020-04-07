@@ -53,6 +53,8 @@ _Imixs-Cloud_ is now installed in your home directory:
 	~/imixs-cloud/
 
 
+Find more details about how to fork or clone this repo [here](GIT.md).
+
 ### The Setup Script
 
 In order to ensure that all nodes are running the same software releases run the _Imixs-Cloud_ setup script on all your nodes. The script installs the following tools:
