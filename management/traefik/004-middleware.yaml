@@ -39,3 +39,27 @@
 #    scheme: https
 #    permanent: true
 #    port: 443
+
+
+---
+# Middleware for CORS
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-all
+  namespace: default
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+    accessControlAllowOrigin: "origin-list-or-null"
+    accessControlMaxAge: 100
+    accessControlAllowHeaders:
+      - "Content-Type"
+    addVaryHeader: "true"
+
+
+
