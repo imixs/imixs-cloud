@@ -74,6 +74,10 @@ systemctl daemon-reload
 systemctl restart docker
 # Setup docker daemon - END -
 
+echo "#############################################"
+echo " setup for docker and kubernetes completed."
+echo "#############################################"
+
 
 #####################################################################################
 # Kubernetes is now installed. To setup a new kubernetes cluster with a master node 

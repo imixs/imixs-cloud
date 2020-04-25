@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: office-workflow
+  labels: 
+    app: office-workflow
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: office-workflow  
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: office-workflow
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_CONNECTION
+          value: jdbc:postgresql://db/office
+        - name: POSTGRES_PASSWORD
+          value: offiA111333
+        - name: POSTGRES_USER
+          value: officeAdemo
+        - name: TZ
+          value: Europe/Berlin
+        - name: WILDFLY_PASS
+          value: imixs4.null
+        image: imixs/imixs-office-workflow:latest
+        name: office-workflow
+        # run as root because of cephfs
+        securityContext:
+          runAsUser: 0
+          allowPrivilegeEscalation: false
+
+        ports: 
+          - name: web
+            containerPort: 8080
+          - name: admin
+            containerPort: 9990
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9990
+          initialDelaySeconds: 30
+          periodSeconds: 5
+
+        resources: {}
+        volumeMounts:
+        - mountPath: /home/imixs
+          name: appdata
+      restartPolicy: Always
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: appdata
+
+
+# Services
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: office-workflow
+spec:
+  ports:
+  - protocol: TCP
+    name: web
+    port: 8080
+  selector:
+    app: office-workflow  
+
+
+
+# Persistence Volume Claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: appdata
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 2Gi
+
+
+
+
+          
+          
