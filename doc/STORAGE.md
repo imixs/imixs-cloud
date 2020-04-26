@@ -14,6 +14,8 @@ Within the *Imixs-Cloud* project we support two distributed storage solutions: [
 Due to its simplicity and the very good integration in Kubernetes, [Longhorn](https://longhorn.io/) is a perfect storage solution for small environments. 
 The storage will be distributed over all worker nodes. If you worker nodes have extra large storage devices you can easily connect them to longhorn. 
 
+<img src="images/longhorn-architecture.png" />	
+
 Follow the [Install Guide](LONGHORN.md) to setup longhorn within your kubernetes cluster.
 
 
