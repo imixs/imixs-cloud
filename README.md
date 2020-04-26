@@ -28,8 +28,12 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
 
 ## Quick Start
 
+The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and one or many Kubernetes worker nodes. This basic architecture can be extended in any dimension. 
+
+<img src="./doc/images/imixs-cloud-architecture.png" />
+
 For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
-All configuraiton files and scripts are provided in this git repository. You can clone the repository or just copy what you need. 
+All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You fill find a detailed installation guide in the [setup section](doc/SETUP.md).
 
 ### 1. Install Kubernetes
 
