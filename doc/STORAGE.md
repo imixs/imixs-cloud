@@ -27,6 +27,9 @@ This makes it a powerful storage solution for different scenarios.
 
 In difference to Longhorn, Ceph can be run on separate nodes which is the recommended setup within a *Imixs-Cloud* environment. Ceph is fully complient to Docker for that reason it is now very easy to install as the only thing you need is a server running docker.
 
+
+<img src="images/ceph-architecture.png" />
+
 Follow the [Install Guide](CEPH.md) to setup a ceph cluster to be used from your kubernetes cluster.
 
  
