@@ -14,16 +14,15 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
 
 <p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
 
-#### Features
+#### Topics
 
- - [Easy setup](./doc/SETUP.md)
- - [K9S Terminal Tool](tools/k9s/README.md)
- - [Traefik Ingress Integration](./doc/INGRESS.md)
- - [Longhorn Distributed Storage](./doc/STORAGE.md)
- - [Habor Docker Registry](./doc/REGISTRY.md)
+ - [Setup guide](./doc/SETUP.md)
+ - [Terminal Tool K9S](tools/k9s/README.md)
+ - [Ingress Integration with Traefik](./doc/INGRESS.md)
+ - [Distributed Storage solution](./doc/STORAGE.md)
+ - [Docker Registry Habor](./doc/REGISTRY.md)
  - [Security Configuration](./doc/SECURITY.md) 
 
-**Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
 
 
 ## Quick Start
@@ -236,3 +235,4 @@ _Imixs-Cloud_ is open source and your are sincerely invited to participate in it
 If you want to contribute to this project please [report any issues here](https://github.com/imixs/imixs-cloud/issues). 
 All source are available on [Github](https://github.com/imixs/imixs-cloud).
 
+**Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
