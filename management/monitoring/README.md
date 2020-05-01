@@ -1,6 +1,6 @@
 # Monitoring
 
-This stack provides a Prometheus and a Grafana Service for monitoring the *Imixs-Cloud*. You can find general information about Docker and Prometeus [here](https://docs.docker.com/config/thirdparty/prometheus/). 
+This stack provides a Prometheus and a Grafana Service for monitoring the *Imixs-Cloud*. You can find general information about Imixs-Cloud monitoring [here](../../doc/MONITORING.md). 
 
 
 ## Configuration

@@ -52,7 +52,7 @@ From the left toolbar choose 'Dashboards -> manage' and click on 'import
 
 <img src="./images/monitoring-004.png" />
 
-Past the content of the json file */monitoring/dashboards/cluster-monitoring-json* into the text field and click on load:
+Past the content of the json file */monitoring/dashboards/imixs-cloud.json* into the text field and click on load:
 
 <img src="./images/monitoring-005.png" />
 
