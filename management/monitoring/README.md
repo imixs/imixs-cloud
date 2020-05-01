@@ -1,15 +1,21 @@
 # Monitoring
 
-This stack provides a Prometheus service and a Grafana Service integrated in Docker Swarm. Find general information about Docker and Prometeus [here](https://docs.docker.com/config/thirdparty/prometheus/). 
+This stack provides a Prometheus and a Grafana Service for monitoring the *Imixs-Cloud*. You can find general information about Docker and Prometeus [here](https://docs.docker.com/config/thirdparty/prometheus/). 
 
 
-## How to Start
+## Configuration
 
-The montiroing stack is located in the Imixs-Cloud management node. Find more information how to setup [here](https://github.com/imixs/imixs-cloud/blob/master/doc/MONITORING.md). 
+Before you start edit the file 009-grafana-ingress.yaml and replace 
 
-To start the monitoring service run:
-
-	$ docker stack deploy -c management/monitoring/docker-compose.yml monitoring
+replace *{YOUR-HOST-NAME}* with a Internet name pointing to your Master Node configured in your DNS 
 
 
+## Deployment
 
+Next run:
+
+	$ kubectl apply -f management/monitoring/
+
+to undeploy traefik.io run:
+
+	$ kubectl delete -f management/monitoring/

@@ -1,0 +1,45 @@
+kind: DaemonSet
+apiVersion: apps/v1 
+metadata: 
+  name: node-exporter
+  namespace: monitoring
+spec: 
+  selector: 
+    matchLabels: 
+      daemon: node-exporter
+      grafanak8sapp: "true"
+  template: 
+    metadata: 
+      name: node-exporter
+      labels: 
+        daemon: node-exporter
+        grafanak8sapp: "true"
+    spec: 
+      volumes: 
+      - name: proc
+        hostPath: 
+          path: /proc
+      - name: sys
+        hostPath: 
+          path: /sys
+      containers: 
+      - name: node-exporter
+        image: quay.io/prometheus/node-exporter:v0.15.0
+        args: 
+          - --path.procfs=/proc_host
+          - --path.sysfs=/host_sys
+        ports: 
+          - name: node-exporter
+            hostPort: 9100
+            containerPort: 9100
+        volumeMounts: 
+          - name: sys
+            readOnly: true
+            mountPath: /host_sys
+          - name: proc
+            readOnly: true
+            mountPath: /proc_host
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      hostNetwork: true
+      hostPID: true

@@ -22,6 +22,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
  - [Distributed Storage solution](./doc/STORAGE.md)
  - [Docker Registry Habor](./doc/REGISTRY.md)
  - [Security Configuration](./doc/SECURITY.md) 
+ - [Monitoriing](./doc/MONITORING.md)
 
 
 

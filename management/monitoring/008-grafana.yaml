@@ -1,0 +1,45 @@
+
+
+---
+###################################################
+# Grafana Deployment
+###################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+
+  template:
+    metadata:
+     labels:
+       app: grafana
+
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        env:
+        - name: GF_SERVER_HTTP_PORT
+          value: "3000"
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-kubernetes-app"
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+      volumes:
+      - name: grafana-storage
+        emptyDir: {}
+
+
+
