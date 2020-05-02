@@ -1,6 +1,9 @@
-# Longhorn-UI
+# Longhorn
 
-To run the Longhorn-UI frontend via traefik.io it is necessary to replace the hostname wir your own Internet name and to activate a CORS middleware for the Ingress:
+## Ingress Configuration
+
+To run the Longhorn-UI frontend via traefik.io it is necessary to replace the hostname in the file 002.ingress.yaml.
+Replace {YOUR-HOST-NAME} with your own Internet name:
 
 	kind: Ingress
 	apiVersion: networking.k8s.io/v1beta1
@@ -20,6 +23,8 @@ To run the Longhorn-UI frontend via traefik.io it is necessary to replace the ho
 	        backend:
 	          serviceName: longhorn-frontend
 	          servicePort: 80
+
+Activate a CORS middleware for the Ingress.
 
 The CORS middleware is configured in the traefik object 004-middleware.yaml:
 
@@ -43,4 +48,11 @@ The CORS middleware is configured in the traefik object 004-middleware.yaml:
 	      - "Content-Type"
 	    addVaryHeader: "true"
     
-   
+## Deployment
+
+To deploy Longhorn into your cluster run:
+
+	$ kubectl apply -f management/longhorn/
+
+The deployment may take some minutes. Corresponding to your ingress configuration you can open the Longhorn Web UI to administrate your cluster.
+      
