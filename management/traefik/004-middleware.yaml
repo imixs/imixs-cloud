@@ -55,7 +55,8 @@ spec:
       - "OPTIONS"
       - "PUT"
       - "POST"
-    accessControlAllowOrigin: "origin-list-or-null"
+    accessControlAllowOriginList: 
+      - "origin-list-or-null"
     accessControlMaxAge: 100
     accessControlAllowHeaders:
       - "Content-Type"

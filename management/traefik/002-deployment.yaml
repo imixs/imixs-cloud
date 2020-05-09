@@ -39,7 +39,7 @@ spec:
         # Let's Encrypt Configurtion:
         # Please note that this is the staging Let's Encrypt server configuration.
         # Once you get things working, you should remove that following line.
-        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/dire
+        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
         - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
         - --certificatesresolvers.default.acme.storage=acme.json
         - --certificatesresolvers.default.acme.tlschallenge

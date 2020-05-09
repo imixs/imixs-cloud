@@ -29,16 +29,31 @@ The Harbor Helm chart comes with a lot of parameters which can be applied during
 
 The following command installs harbor into the _Imixs-Cloud_. 
 	
+	$ kubectl create namespace harbor
 	$ helm install registry harbor/harbor --set persistence.enabled=false\
+	  --namespace harbor\
 	  --set expose.type=nodePort --set expose.tls.enabled=true\
 	  --set externalURL=https://{MASTER-NODE}:30003\
 	  --set expose.tls.commonName={MASTER-NODE}
 
-replace the `{MASTER-NODE}` with the DNS name of your master node. 
-
 After a few seconds you can access harbor from your web browser via https:
 
 	https://{MASTER-NODE}:30003
+	  
+	  
+### Using Ingresss / Traefik for public Internet Domain
+
+To access harbor via a public Internet domain via [traefik](./INGRESS.md) you can use the following install command:
+
+	helm install registry harbor/harbor --set persistence.enabled=false\
+	    -n harbor --namespace harbor\
+	    --set expose.ingress.annotations.'traefik\.ingress\.kubernetes\.io/router\.entrypoints'=websecure \
+	    --set expose.ingress.hosts.core={YOUR-DOMAIN-NAME} \
+	    --set externalURL=https://{YOUR-DOMAIN-NAME} \
+	    --set notary.enabled=false
+
+replace the `{MASTER-NODE}` with the DNS name of your master node. 
+
 	
 The default User/Password is:
 
@@ -50,7 +65,7 @@ The default User/Password is:
 
 To uninstall/delete the registry deployment:
 
-	$ helm uninstall registry
+	$ helm uninstall registry --namespace harbor
 
 	
 
@@ -69,9 +84,9 @@ replace {MASTER-NODE} with your cluster master node name.
 
 now create a new directly in your local docker/certs.d directory and copy the certificate:
 
-	$ mkdir -p /etc/docker/certs.d/{MASTER-NODE}:30003
-	$ cp ca.crt /etc/docker/certs.d/{MASTER-NODE}:30003/ca.crt
-	$ service docker restart
+	$ sudo mkdir -p /etc/docker/certs.d/{MASTER-NODE}:30003
+	$ sudo mv ca.crt /etc/docker/certs.d/{MASTER-NODE}:30003/ca.crt
+	$ sudo service docker restart
 	
 Now you need to first login to your registry with docker:
 
