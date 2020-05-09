@@ -50,7 +50,7 @@ spec:
 
         # Use log level= INFO or DEBUG
         - --log.level=INFO
-        image: traefik:2.2
+        image: traefik:2.2.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3

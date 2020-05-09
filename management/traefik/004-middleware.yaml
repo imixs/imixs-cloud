@@ -38,7 +38,7 @@
 #  redirectScheme:
 #    scheme: https
 #    permanent: true
-#    port: 443
+#    #port: 443 - port should be disabled!
 
 
 ---
@@ -59,7 +59,7 @@ spec:
     accessControlMaxAge: 100
     accessControlAllowHeaders:
       - "Content-Type"
-    addVaryHeader: "true"
+    addVaryHeader: true
 
 
 
