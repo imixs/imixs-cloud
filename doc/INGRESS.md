@@ -14,7 +14,7 @@ The traefik setup of  _Imixs-Cloud_  consists of a set of resource yaml files wh
 
  - 001-crd_rbac.yaml - defines the custom resources and roles needed by Traefik.io
  - 002-deployment.yaml - defines the Traefik.io deployment object including the Let's Encrypt configuration and middleware components
- - 005-ingress.yml - optional definition for a ingress to the dashboard
+ - 003-ingress.yml - optional definition for a ingress to the dashboard
 
 ### The Deployment Configuration
 
@@ -47,9 +47,9 @@ Let’s Encrypt provides rate limits to register domains. If you register more t
 
 
 
-### The Middleware Configuration
+#### The Middleware Configuration
 
-The file *002-deployment.yaml* contains also optional middleware configurations. This can be used to secure services (e.g. the Traefik Web Dashboard) with a basic authentication. You can edit this file to customize the middleware configuration. Read the section [Security](SECURITY.md) for more information.
+The file *002-deployment.yaml* contains also optional middleware configurations. This configuration is be used for example to secure services (e.g. the Traefik Web Dashboard) with a basic authentication. See the section [Middleware](#middleware) below.
 
 
 ### The Traefik Web Dashboard
