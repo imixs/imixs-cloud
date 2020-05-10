@@ -12,56 +12,82 @@ The following section describe the setup of the Traefik.io configuration for  _I
 
 The traefik setup of  _Imixs-Cloud_  consists of a set of resource yaml files which can be customized and extended.
 
- - 001-rbac.yaml - defines the roles needed by Traefik.io
- - 002-deployment.yaml - defines the Traefik.io deployment object including the Let's Encrypt configuration
- - 003-services.yaml - defines the services for http/https and the dashboard
- - 004-middleware.yaml - optional definition of middlewares (e.g. HTTPS Redirect)
+ - 001-crd_rbac.yaml - defines the custom resources and roles needed by Traefik.io
+ - 002-deployment.yaml - defines the Traefik.io deployment object including the Let's Encrypt configuration and middleware components
  - 005-ingress.yml - optional definition for a ingress to the dashboard
 
-### 1. The Deployment Configuration
+### The Deployment Configuration
 
-The file _002-deployment.yaml_ contains the deployment configuration for Traefik.io and also the ACME provider [Let's Encrypt](https://letsencrypt.org/).  Before your apply the Traefik.io configuration to your cluster, first edit this file and replace the place holder _{YOUR-E-MAIL}_ with the e-mail address of your organization.
-
-For testing the ACME provider  runs on a staging server. You can comment the ACM Staging server from the Let's Encrypt setup section after you have tested your cluster setup. The staging setup is just simulating certificates but not creating one. 
-
-        # comment staging server for production
-        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-        - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
-
-
-### 2. The Service Configuration  
-
-The file _003-service.yaml_ contains the service configuration for the Taefik.io service.  
+The file _002-deployment.yaml_ contains the deployment configuration for Traefik.io and also the ACME provider [Let's Encrypt](https://letsencrypt.org/). Before your apply the Traefik.io configuration to your cluster, first edit this file.
+ 
 The spec defines a external IP address which is used to route external requests to one cluster node. Traffic that ingresses into the cluster with the external IP (as destination IP), on the Service port, will be routed to one of the Service endpoints. External IPs are not managed by Kubernetes and are the responsibility of the cluster administrator. Find more details [here](https://kubernetes.io/docs/concepts/services-networking/service/#external-ips).
 
-So before you apply the traefik configuration replace the _{MASTER-NODE-IP}_ with the Node IP address of one of your kubernetes cluster nodes used to ingress external traefik. This should typically be the IP address from your master node.
+Replace the *{MASTER-NODE-IP}* with the Node IP address of one of your kubernetes cluster nodes used to ingress external traefik. This should typically be the IP address from your master node.
  
 	spec:
 	  externalIPs:
 	  - {MASTER-NODE-IP} 
+ 
+#### Let's Encrypt 
+ 
+For the Let's Encrypt setup replace the place holder _{YOUR-E-MAIL}_ with the e-mail address of your organization.
+
+        # comment staging server for production
+        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+        - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
+        
+**NOTE:**	  
+For testing the ACME provider runs on a staging server.
+
+	https://acme-staging-v02.api.letsencrypt.org/directory
+
+You can comment the ACM Staging server from the Let's Encrypt setup section after you have tested your cluster setup. The staging setup is just simulating certificates but not creating one. It is recommended that you first simulate your configuration via the staging server. If you are sure that everything works fine comment the line defining the staging server.
+
+Let’s Encrypt provides rate limits to register domains. If you register more than 50 domains per week - which can happen during testing - your server will be blocked for one week. Find details about the rate limits [here](https://letsencrypt.org/docs/rate-limits/)
+
+
+
+### The Middleware Configuration
+
+The file *002-deployment.yaml* contains also optional middleware configurations. This can be used to secure services (e.g. the Traefik Web Dashboard) with a basic authentication. You can edit this file to customize the middleware configuration. Read the section [Security](SECURITY.md) for more information.
+
+
+### The Traefik Web Dashboard
+
+In the file file *002-deployment.yaml* the 'insecure' mode is set to true per default. This means you can open the Traefik.io Web Dashboard from your master node on Port 8100.
+
+        - --api.insecure=false
+
+After testing you should disable the insecure mode and configure a Ingress Network as explained in the  [Security](SECURITY.md) section. The file _003-ingress.yaml_ provides you with a template. Replace the place holder *{YOUR-HOST-NAME}* with the internet name for your traefik dashboard. 
+
 	  
-### 4. The Middleware Configuration
-
-The file _004-middleware.yam_ contains optional middleware configurations. This can be used to secure services (e.g. the Traefik Web Dashboard) with a basic authentication. Read the section [Security](SECURITY.md) for more information.
-
-
-### 5. The Ingress Configuration
-
-In the 'insecure' mode you can open the Traefik.io Web Dashboard from your master node on Port 8100.
-
-After testing you should disable the insecure mode and configure a Ingress Network as explained in the  [Security](SECURITY.md) section. The file _005-ingress.yaml_ proovides you with a template. 
-
+## Deployment
 	  
-### 4. Apply Your Configuration
-	  
-After you have configured the resource yaml files you can apply your changes to the kubernetes cluster:
+After you have configured the resource yaml files you can apply setup traefik into your kubernetes cluster.
 
-	$ kubectl apply -f management/traefik/
+First create the Customer Resource objects and roles:
+
+	$ kubectl create -f management/traefik/001-crd_rbac.yaml
+	
+Next you can deploy traefik:
+
+	$ kubectl apply -f management/traefik/002-deployment.yaml
 
 
-You can access the Traefik.io dashboard either in the insecure mode or a Ingress configuration:
+You can access the Traefik.io dashboard now in the insecure mode
 
 	http://{MASTER-NODE-IP}:8100
+
+**Note:** You can disable the dashboard in the 002-deployment.yaml file if you set
+  
+    - --api.dashboard=false
+
+For the ingress configuration edit the file 003-ingress.yaml and apply your configuration with:
+
+	$ kubectl apply -f management/traefik/003-ingress.yaml
+
+You can than access the traefik dashboard from 
+
 	http://{YOUR-TRAEFIK-HOST-NAME} 
 
 

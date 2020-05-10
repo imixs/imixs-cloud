@@ -1,3 +1,17 @@
+###############################
+# ServiceAccount
+###############################
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+  namespace: kube-system
+
+###############################
+# Deployment
+###############################
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,10 +35,10 @@ spec:
     spec:
       containers:
       - args:
-
         - --api
-        #- --api.insecure
-        - --api.insecure=false
+        - --api.insecure=true
+        # Set insecure to fals to enable basic auth
+        #- --api.insecure=false
         - --api.dashboard=true
         - --accesslog
         - --global.checknewversion=true
@@ -93,3 +107,119 @@ spec:
       serviceAccount: traefik
       serviceAccountName: traefik
       terminationGracePeriodSeconds: 60
+
+
+###############################
+# Service
+###############################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: traefik
+    release: traefik
+  name: traefik
+  namespace: kube-system
+spec:
+  externalIPs:
+  - {MASTER-NODE-IP}
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: websecure
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: admin
+    port: 8100
+    protocol: TCP
+    targetPort: 8100
+  selector:
+    app: traefik
+    release: traefik
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+
+
+
+
+
+
+#########################################################
+# The Middleware configuration contains middleware componenst
+# for a HTTP->HTTS redirection and a BasicAuth example. 
+#########################################################
+
+
+
+###############################
+# Middleware for basicAuth 
+###############################
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-auth
+spec:
+  basicAuth:
+    secret: authsecret
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authsecret
+  namespace: default
+
+#------------ Paste your own password file content here --------------
+data:
+  users: |2
+    YWRtaW46JGFwcjEkWXdmLkF6Um0kc3owTkpQMi55cy56V2svek43aENtLwoKdXNl
+    cjokYXByMSRaU2VKQW1pOSRVV1AvcDdsQy9KSzdrbXBIMXdGL28uCgo=
+
+
+###############################
+# Middleware for HTTP->HTTPS
+###############################
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: https-redirect
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+    #port: 443
+
+
+###############################
+# Middleware for CORS
+###############################
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-all
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+    accessControlAllowOriginList: 
+      - "origin-list-or-null"
+    accessControlMaxAge: 100
+    accessControlAllowHeaders:
+      - "Content-Type"
+    addVaryHeader: true
+
+
+
