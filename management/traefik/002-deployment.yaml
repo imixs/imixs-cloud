@@ -186,17 +186,19 @@ data:
 
 ###############################
 # Middleware for HTTP->HTTPS
+# This middleware is not needed in case of: 
+#      entrypoints.web.http.redirections.entryPoint.to=websecure
 ###############################
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: https-redirect
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
-    #port: 443
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: Middleware
+#metadata:
+#  name: https-redirect
+#spec:
+#  redirectScheme:
+#    scheme: https
+#    permanent: true
+#    #port: 443
 
 
 ###############################

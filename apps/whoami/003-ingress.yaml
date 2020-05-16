@@ -4,8 +4,6 @@ kind: Ingress
 apiVersion: networking.k8s.io/v1beta1
 metadata:
   name: myingress
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   rules:
   - host: {YOUR-HOST-NAME}

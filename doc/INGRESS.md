@@ -200,7 +200,6 @@ To apply the baicAuth middleware you just need to add the annotation in your ing
 	metadata:
 	  name: myingress
 	  annotations:
-	    traefik.ingress.kubernetes.io/router.entrypoints: web
 	    traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd
     ....
 
@@ -211,7 +210,14 @@ To apply the baicAuth middleware you just need to add the annotation in your ing
 
 ### HTTP to HTTPS Redirectscheme
 
-The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectscheme/)  is used for a redirection from HTTP to HTTPS:
+The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectscheme/) can be used for a redirection from HTTP to HTTPS.
+But per default configuration this is not needed if you have the following traefik api setting in your deployment
+
+        - --entrypoints.web.http.redirections.entryPoint.to=websecure
+
+This setting enables a permanent redirecting of all requests on http (80) to https (443) managed by traefik internally.
+
+If for some reasons you can not use the internal http-https redirect, you can also define a separate middleware configuration:
 
 
 	# Redirect http -> https
@@ -226,7 +232,40 @@ The [Middleware RedirectScheme](https://docs.traefik.io/middlewares/redirectsche
 	    permanent: true
 	    port: 443
 	    
-	    
+To use this middleware in a ingress configuration use the treafik annotations like in the following example:
+
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
+	metadata:
+	  name: ...
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+	spec:
+	  rules:
+	  - host:......
+  
+
+
+## Entrypoints
+
+In Imixs-Cloud traefik is the default ingress router. For some configuration it may be needed to define custom entry points for your ingress provided by your services. In this case you can use the traefik annotation *router.entrypoints*:
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
+	metadata:
+	  name: myingress
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+	spec:
+	  rules:
+	  - host: example.foo.com
+	    http:
+	      paths:
+	      - path: /
+	        backend:
+	          serviceName: whoami
+	          servicePort: 80	    
 
 
 ## IngressRoute

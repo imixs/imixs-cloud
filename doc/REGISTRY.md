@@ -80,7 +80,9 @@ You can download the Harbor certificate from the Habor web frontend from your we
 
 	$ wget -O ca.crt --no-check-certificate https://{MASTER-NODE}:30003/api/systeminfo/getcert
 
-replace {MASTER-NODE} with your cluster master node name.
+replace *{MASTER-NODE}* with your cluster master node name.
+
+**Note:** In case you have configured a ingress with a public Internet Domain name, than you do not need to add the port number 30003!
 
 now create a new directly in your local docker/certs.d directory and copy the certificate:
 
@@ -90,7 +92,12 @@ now create a new directly in your local docker/certs.d directory and copy the ce
 	
 Now you need to first login to your registry with docker:
 
-	$ docker login -u admin {MASTER-NODE}:30003
+	$ sudo docker login -u admin {MASTER-NODE}:30003
+
+
+## How to grant a Worker Node
+
+To allow your worker nodes in your Kubernetes Cluster to access the registry too, you need to repeat the login procedure for the local Docker Client on each worker node separately!	
 	
 
 # Push a local docker image
@@ -105,4 +112,5 @@ next you can push the image:
 
 
 	$ docker push {MASTER-NODE}:30003/library/IMAGE[:TAG]	
+	
 	
