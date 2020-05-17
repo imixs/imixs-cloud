@@ -56,7 +56,7 @@ spec:
         - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
         - --certificatesresolvers.default.acme.email={YOUR-E-MAIL}
         - --certificatesresolvers.default.acme.storage=acme.json
-        - --certificatesresolvers.default.acme.tlschallenge
+        - --certificatesresolvers.default.acme.tlschallenge=true
 
         - --ping=true
         - --providers.kubernetescrd=true
@@ -87,6 +87,13 @@ spec:
         - containerPort: 443
           name: websecure
           protocol: TCP
+
+        # optional storage 
+        # enable this option only in case you have defined a persistence volume claim
+        #volumeMounts:
+        #- name: traefik-data
+        #  mountPath: /var/lib/traefik
+
         readinessProbe:
           failureThreshold: 1
           httpGet:
@@ -107,6 +114,14 @@ spec:
       serviceAccount: traefik
       serviceAccountName: traefik
       terminationGracePeriodSeconds: 60
+      
+      # optional storage
+      # enable this option only in case you have defined a persistence volume claim
+      #volumes:
+      #  - name: traefik-data
+      #    persistentVolumeClaim:
+      #      claimName: traefik-data
+
 
 
 ###############################

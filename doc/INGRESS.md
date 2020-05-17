@@ -45,6 +45,9 @@ You can comment the ACM Staging server from the Let's Encrypt setup section afte
 
 Let’s Encrypt provides rate limits to register domains. If you register more than 50 domains per week - which can happen during testing - your server will be blocked for one week. Find details about the rate limits [here](https://letsencrypt.org/docs/rate-limits/)
 
+Optional you can install a durable persistence volume to store the acme.json file. You need to create a longorn data volume and uncomment the volumeMounts in the 002-deployment.yaml. Than you can apply the optional 004-persistencevolume.yaml file. Find details [here](../management/traefik/README.md).
+
+ 
 
 
 #### The Middleware Configuration

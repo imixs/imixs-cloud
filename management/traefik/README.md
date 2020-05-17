@@ -33,3 +33,32 @@ to undeploy traefik.io run:
 
 For further information reed the documentation section [Ingress Configuration with Traefik.io](../../INGRESS.md)
 
+## Persistence Volume for acme.json 
+
+Optional you can add a persistence volume for the acme.json file. This is recommended to avoid running into the rate limits from let's Encrypt. The persistence volume is durability even if you delete/recreate the traefik deployment
+
+To apply the persistence volume you first need to create a volume named 'traefik-data' in longhorn 
+
+Next uncomment the volumeMounts in the 002-deployment.yaml file
+
+	.....
+        # optional storage 
+        # enable this option only in case you have defined a persistence volume claim
+        volumeMounts:
+        - name: traefik-data
+          mountPath: /var/lib/traefik
+        ....
+      ....
+      # optional storage
+      # enable this option only in case you have defined a persistence volume claim
+      volumes:
+        - name: traefik-data
+          persistentVolumeClaim:
+            claimName: traefik-data  
+      .....      
+        	
+Finally you can apply the persitence volume
+
+	$ kubectl apply -f management/traefik/004-persistencevolume.yaml
+	$ kubectl apply -f management/traefik/002-deployment.yaml
+	

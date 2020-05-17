@@ -1,0 +1,43 @@
+###############################
+# acme.json storage
+# This configuration obejct is optional and can be used to store the traefik acme.json file 
+# in a longhorn persistence volume named 'traefik-data'
+# To enable the persistence storage you need to uncomment the volumeMouns in the 002-deployment.yml file. 
+###############################
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: traefik-data
+  namespace: kube-system
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: kube-system
+    name: traefik-data
+  csi:
+    driver: io.rancher.longhorn 
+    fsType: ext4
+    volumeHandle: traefik-data
+  storageClassName: longhorn-durable
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-data
+  namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-durable
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: "traefik-data"
+
+
+
