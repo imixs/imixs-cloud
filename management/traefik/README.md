@@ -33,6 +33,15 @@ to undeploy traefik.io run:
 
 For further information reed the documentation section [Ingress Configuration with Traefik.io](../../INGRESS.md)
 
+
+## The Let's Encrypt Stating Servier
+
+For testing the ACME provider runs on a staging server.
+
+	https://acme-staging-v02.api.letsencrypt.org/directory
+
+You can comment the ACM Staging server from the Let's Encrypt setup section in the file *002-deployment.yaml* after you have tested your cluster setup. 
+
 ## Persistence Volume for acme.json 
 
 Optional you can add a persistence volume for the acme.json file. This is recommended to avoid running into the rate limits from let's Encrypt. The persistence volume is durability even if you delete/recreate the traefik deployment
@@ -61,4 +70,6 @@ Finally you can apply the persitence volume
 
 	$ kubectl apply -f management/traefik/004-persistencevolume.yaml
 	$ kubectl apply -f management/traefik/002-deployment.yaml
-	
+
+
+**Note:** The Longhorn UI depends on Traefik. So you should first disable the persistence volume and start with the Let's Encrypt Staging provider. From this point you can create the persistence volume for traefik in the longhorn-ui. After that you an activate the persistence volume for traefik. Otherwise the deployment will fail because treafik is unable to resolove the volume-claim defined in the *004-persistencevolume.yaml* file.
