@@ -23,9 +23,9 @@ replace *{YOUR-HOST-NAME}* with a Internet name pointing to your Master Node con
 
 To deploy traefik into your Kubernetes Cluster run:
 
-	$ kubectl apply -f management/traefik/001-crd_rbac.yaml
-	$ kubectl apply -f management/traefik/002-deployment.yaml
-	$ kubectl apply -f management/traefik/003-ingress.yaml
+	$ kubectl apply -f management/traefik/010-crd_rbac.yaml
+	$ kubectl apply -f management/traefik/020-deployment.yaml
+	$ kubectl apply -f management/traefik/030-ingress.yaml
 	
 to undeploy traefik.io run:
 
@@ -68,8 +68,8 @@ Next uncomment the volumeMounts in the 002-deployment.yaml file
         	
 Finally you can apply the persitence volume
 
-	$ kubectl apply -f management/traefik/004-persistencevolume.yaml
-	$ kubectl apply -f management/traefik/002-deployment.yaml
+	$ kubectl apply -f management/traefik/011-persistencevolume.yaml
+	$ kubectl apply -f management/traefik/020-deployment.yaml
 
 
 **Note:** The Longhorn UI depends on Traefik. So you should first disable the persistence volume and start with the Let's Encrypt Staging provider. From this point you can create the persistence volume for traefik in the longhorn-ui. After that you an activate the persistence volume for traefik. Otherwise the deployment will fail because treafik is unable to resolove the volume-claim defined in the *004-persistencevolume.yaml* file.
