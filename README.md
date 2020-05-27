@@ -224,7 +224,7 @@ You can find a detailed description how to install and setup the Harbor registry
 
 ## Monitoring
 
-_Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your docker-swarm.
+_Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your Kubernetes cluster.
 
 <img src="./doc/images/grafana.png" />  
   
