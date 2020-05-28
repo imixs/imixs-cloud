@@ -16,7 +16,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
 
 #### Topics
 
- - [Setup guide](./doc/SETUP.md)
+ - [Setup & Upgrade guide](./doc/SETUP.md)
  - [Terminal Tool K9S](tools/k9s/README.md)
  - [Ingress Integration with Traefik](./doc/INGRESS.md)
  - [Distributed Storage solution](./doc/STORAGE.md)

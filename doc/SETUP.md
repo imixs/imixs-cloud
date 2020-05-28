@@ -1,11 +1,12 @@
 # How to setup the Imixs-Cloud
 
-The following section describes the setup procedure of _Imixs-Cloud_ to run a kubernetes cluster into a productive environment for small and medium organizations.
+The following section describes the setup procedure of *Imixs-Cloud* to run a kubernetes cluster into a productive environment for small and medium organizations. 
+If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below.
 
 
 ## The Cluster Nodes
 
-A _Imixs-Cloud_ consists of a minimum of two nodes.
+A *Imixs-Cloud* consists of a minimum of two nodes.
 
 * The master node is the kubernetes api server
 * The worker nodes are serving the applications (pods). 
@@ -19,7 +20,7 @@ To enable communication between your cluster nodes using short names, make sure 
 ## The Cluster-User
 
 ** Note:**
-In _Imixs-Cloud_ you should always work with a non-root, sudo privileged cluster user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
+In *Imixs-Cloud* you should always work with a non-root, sudo privileged cluster user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
 
 To create a cluster-user follow the next steps and replace '{username}' with the name of our cluster user you have choosen. 
 
@@ -29,11 +30,11 @@ To create a cluster-user follow the next steps and replace '{username}' with the
  
 ## Install the Master Node 
  
-_Imixs-Cloud_ provides a install script for Debain and Fedora/CentOS linux distributes. You can copy the setup script from the /scritps/ directory. But we recommend to clone the _Imixs-Cloud_ git repo so you have all scripts and configuration files in one place. You can also fork the _Imixs-Cloud_ project to customize your environment individually to your needs. 
+*Imixs-Cloud* provides a install script for Debain and Fedora/CentOS linux distributes. You can copy the setup script from the /scritps/ directory. But we recommend to clone the *Imixs-Cloud* git repo so you have all scripts and configuration files in one place. You can also fork the *Imixs-Cloud* project to customize your environment individually to your needs. 
  
 ### Install Git
  
-For a easy setup install git and clone the _Imixs-Cloud_ repository on your master node:
+For a easy setup install git and clone the *Imixs-Cloud* repository on your master node:
 
 For Debian 10 run:
 
@@ -43,12 +44,12 @@ For CentOS 7 run:
 	
 	$ sudo yum install -y git
 
-Next you can clone the repo or your personal fork of _Imixs-Cloud_ ....
+Next you can clone the repo or your personal fork of *Imixs-Cloud* ....
 
 	$ cd
 	$ git clone https://github.com/imixs/imixs-cloud.git
 
-_Imixs-Cloud_ is now installed in your home directory:
+*Imixs-Cloud* is now installed in your home directory:
 
 	~/imixs-cloud/
 
@@ -57,7 +58,7 @@ Find more details about how to fork or clone this repo [here](GIT.md).
 
 ### The Setup Script
 
-In order to ensure that all nodes are running the same software releases run the _Imixs-Cloud_ setup script on all your nodes. The script installs the following tools:
+In order to ensure that all nodes are running the same software releases run the *Imixs-Cloud* setup script on all your nodes. The script installs the following tools:
 
  - docker-ce (the docker engine)
  - docker-ce-cli (the docker command line interface)
@@ -148,9 +149,70 @@ In order to get kubectl talking to your cluster, you can again copy the content 
 
 
 
+# Upgrade
+
+You can verify the status of your kubernets cluster by the following command:
+
+	$ kubectl get nodes
+	NAME              STATUS   ROLES    AGE   VERSION
+	ixchel-master-1   Ready    master   28d   v1.18.2
+	ixchel-worker-1   Ready    <none>   28d   v1.18.2
+	ixchel-worker-2   Ready    <none>   28d   v1.18.2
+	ixchel-worker-3   Ready    <none>   28d   v1.18.2
+
+This will show you the current version of kubernetes running on each node
+
+To check the status of docker run the following command on each node:
+
+	$ sudo docker version
+	Client: Docker Engine - Community
+	 Version:           19.03.8
+	 API version:       1.40
+	 Go version:        go1.12.17
+	 Git commit:        afacb8b7f0
+	 Built:             Wed Mar 11 01:25:56 2020
+	 OS/Arch:           linux/amd64
+	 Experimental:      false
+	
+	Server: Docker Engine - Community
+	 Engine:
+	  Version:          19.03.8
+	  API version:      1.40 (minimum version 1.12)
+	  Go version:       go1.12.17
+	  Git commit:       afacb8b7f0
+	  Built:            Wed Mar 11 01:24:28 2020
+	  OS/Arch:          linux/amd64
+	  Experimental:     false
+	 containerd:
+	  Version:          1.2.13
+	  GitCommit:        7ad184331fa3e5
+	 runc:
+	  Version:          1.0.0-rc10
+	  GitCommit:        dc9208a3303fee
+	 docker-init:
+	  Version:          0.18.0
+	  GitCommit:        fec3683
 
 
+To upgrade you existing *Imixs-Cloud* environment follow these steps:
 
+**1. Create a snapshot**
+
+Before your start upgrading a worker node or your master node it's a good idea to make a snapshot or backup from your node so you can roll back in case something went wrong.
+
+**2. apt upate**
+
+To update your worker or master node run the following commands on a debian platform:
+
+	$ sudo apt update
+	$ sudo apt upgrade
+
+**3. Reboot your node **
+
+After an upgrade kubernetes will automatically reschedule the node pods. 
+Optional you can also reboot your node to make sure docker deamon and kubernets is restarted correctly.
+
+	$ sudo reboot
 
 
 
