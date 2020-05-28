@@ -20,7 +20,7 @@ spec:
     namespace: kube-system
     name: traefik-data
   csi:
-    driver: io.rancher.longhorn 
+    driver: driver.longhorn.io
     fsType: ext4
     volumeHandle: traefik-data
   storageClassName: longhorn-durable

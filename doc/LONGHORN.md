@@ -154,7 +154,7 @@ To use a PV also in this scenario you need to define a durable persistence volum
 	    namespace: default
 	    name: mysql-pvc
 	  csi:
-	    driver: io.rancher.longhorn 
+	    driver: driver.longhorn.io
 	    fsType: ext4
 	    volumeHandle: mysql-0
 	  storageClassName: longhorn-durable
@@ -236,8 +236,8 @@ Example output:
 
 Remove remaining components:
 
-	kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
-	kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
+	$ kubectl delete -f management/longhorn/
+	$ kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/master/uninstall/uninstall.yaml
 
 
 
