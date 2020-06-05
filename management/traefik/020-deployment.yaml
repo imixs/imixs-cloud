@@ -237,6 +237,8 @@ spec:
     accessControlAllowHeaders:
       - "Content-Type"
     addVaryHeader: true
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
 
 
 
