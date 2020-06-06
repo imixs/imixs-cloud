@@ -192,7 +192,7 @@ metadata:
   name: authsecret
   namespace: default
 
-#------------ Paste your own password file content here --------------
+#------------ Paste your own password file content here (default user/password=admin/adminadmin)--------------
 data:
   users: |2
     YWRtaW46JGFwcjEkWXdmLkF6Um0kc3owTkpQMi55cy56V2svek43aENtLwoKdXNl
