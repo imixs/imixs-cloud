@@ -45,11 +45,11 @@ After a few seconds you can access harbor from your web browser via https:
 
 To access harbor via a public Internet domain via [traefik](./INGRESS.md) you can use the following install command:
 
-	helm install registry harbor/harbor --set persistence.enabled=false\
+	$ helm install registry harbor/harbor --set persistence.enabled=false\
 	    -n harbor --namespace harbor\
-	    --set expose.ingress.annotations.'traefik\.ingress\.kubernetes\.io/router\.entrypoints'=websecure \
 	    --set expose.ingress.hosts.core={YOUR-DOMAIN-NAME} \
 	    --set externalURL=https://{YOUR-DOMAIN-NAME} \
+	    --set expose.tls.enabled=false\
 	    --set notary.enabled=false
 
 replace the `{MASTER-NODE}` with the DNS name of your master node. 
@@ -60,6 +60,24 @@ The default User/Password is:
 	admin/Harbor12345
 	
 <img src="./images/harbor.png" />
+
+
+### Disable Scanners
+
+The harbor scanners are useful to scan docker images for vulnerability. But these services also generates a lot of CPU load. If you want to start Harbor with a minimum of features you can disable the scanners on startup:
+
+
+	$ helm install registry harbor/harbor --set persistence.enabled=false\
+	    -n harbor --namespace harbor\
+	    --set expose.ingress.hosts.core={YOUR-DOMAIN-NAME} \
+	    --set externalURL=https://{YOUR-DOMAIN-NAME} \
+	    --set expose.tls.enabled=false\
+	    --set notary.enabled=false \
+	    --set trivy.enabled=false\
+	    --set clair.enabled=false\
+	    --set chartmuseum.enabled=false
+
+
 	
 ### Uninstall Harbor	
 
@@ -74,25 +92,11 @@ To uninstall/delete the registry deployment:
 
 After you setup the harbor registry you can upload custom Docker images to be used by services running in the Imixs-Cloud. 
 
-To  be allowed to push/pull images from the private docker registry hosted in your Imixs-Cloud, a copy of the certificate need to be copied into the docker certs.d directory of your local client and the docker service must be restarted once:
+To  be allowed to push/pull images from the private docker registry hosted in your Imixs-Cloud you first need to login Docker to your new registry:
 
-You can download the Harbor certificate from the Habor web frontend from your web browser or via command line :
+	$ sudo docker login -u admin {YOUR-DOMAIN-NAME}
 
-	$ wget -O ca.crt --no-check-certificate https://{MASTER-NODE}:30003/api/systeminfo/getcert
-
-replace *{MASTER-NODE}* with your cluster master node name.
-
-**Note:** In case you have configured a ingress with a public Internet Domain name, than you do not need to add the port number 30003!
-
-now create a new directly in your local docker/certs.d directory and copy the certificate:
-
-	$ sudo mkdir -p /etc/docker/certs.d/{MASTER-NODE}:30003
-	$ sudo mv ca.crt /etc/docker/certs.d/{MASTER-NODE}:30003/ca.crt
-	$ sudo service docker restart
-	
-Now you need to first login to your registry with docker:
-
-	$ sudo docker login -u admin {MASTER-NODE}:30003
+As you run Harbor with ingres and traefik, there is no deed to deal with the TLS certificate. 
 
 
 ## How to grant a Worker Node
@@ -104,13 +108,13 @@ To allow your worker nodes in your Kubernetes Cluster to access the registry too
 
 To push a local docker image into the registry you first need to tag the image with the repository uri
 
-	$ docker tag SOURCE_IMAGE[:TAG] {MASTER-NODE}:30003/library/IMAGE[:TAG]
+	$ docker tag SOURCE_IMAGE[:TAG] {YOUR-DOMAIN-NAME}/library/IMAGE[:TAG]
 
 **Note:** '/library/' is the project library name defined in Harbor!
 
 next you can push the image:
 
 
-	$ docker push {MASTER-NODE}:30003/library/IMAGE[:TAG]	
+	$ docker push {YOUR-DOMAIN-NAME}/library/IMAGE[:TAG]	
 	
 	
