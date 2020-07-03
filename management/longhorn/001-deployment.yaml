@@ -218,6 +218,11 @@ data:
     backupstore-poll-interval:
     taint-toleration:
     registry-secret:
+    auto-salvage:
+    disable-scheduling-on-cordoned-node:
+    replica-zone-soft-anti-affinity:
+    volume-attachment-recovery-policy:
+    mkfs-ext4-parameters:
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -348,6 +353,8 @@ spec:
       - name: longhorn-ui
         image: longhornio/longhorn-ui:v1.0.0
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 0
         ports:
         - containerPort: 8000
           name: http
@@ -436,7 +443,10 @@ spec:
           # Manually specify number of CSI provisioner replicas
           #- name: CSI_PROVISIONER_REPLICA_COUNT
           #  value: "3"
+          #- name: CSI_RESIZER_REPLICA_COUNT
+          #  value: "3"
       #imagePullSecrets:
       #- name:
       serviceAccountName: longhorn-service-account
-
+      securityContext:
+        runAsUser: 0
