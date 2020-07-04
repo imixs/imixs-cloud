@@ -39,11 +39,10 @@ The following command installs harbor into the _Imixs-Cloud_.
 After a few seconds you can access harbor from your web browser via https:
 
 	https://{MASTER-NODE}:30003
-	  
-	  
+
 ### Using Ingresss / Traefik for public Internet Domain
 
-To access harbor via a public Internet domain via [traefik](./INGRESS.md) you can use the following install command:
+To make things easier it is recommended to use traefik in combination with Let's Encrypt to  access harbor via a public Internet domain. (see also the [section ingress](./INGRESS.md). To start Harbor with ingress you can use the following install command:
 
 	$ helm install registry harbor/harbor --set persistence.enabled=false\
 	    -n harbor --namespace harbor\
@@ -52,16 +51,23 @@ To access harbor via a public Internet domain via [traefik](./INGRESS.md) you ca
 	    --set expose.tls.enabled=false\
 	    --set notary.enabled=false
 
-replace the `{MASTER-NODE}` with the DNS name of your master node. 
+replace the `{MASTER-NODE}` with the DNS name of your master node. The option ``--set expose.tls.enabled=false`` disables the internal tls support.
 
-	
-The default User/Password is:
+### The Web UI
 
-	admin/Harbor12345
+Now you can access the Harbor Web UI form your defined Internet Domain or IP address.
+
+	https://{YOUR-DOMAIN-NAME}
 	
 <img src="./images/harbor.png" />
 
+	
+For the first login the default User/Password is:
 
+	admin/Harbor12345
+
+You can change the admin password and create additonal users. 
+	
 ### Disable Scanners
 
 The harbor scanners are useful to scan docker images for vulnerability. But these services also generates a lot of CPU load. If you want to start Harbor with a minimum of features you can disable the scanners on startup:
@@ -88,23 +94,44 @@ To uninstall/delete the registry deployment:
 	
 
 
-# How to grant a Docker Client
+## How to grant a Docker Client
 
 After you setup the harbor registry you can upload custom Docker images to be used by services running in the Imixs-Cloud. 
 
-To  be allowed to push/pull images from the private docker registry hosted in your Imixs-Cloud you first need to login Docker to your new registry:
+To  be allowed to push/pull images from your new private docker registry you first need to login Docker with the userid and password from the Harbor web ui:
 
 	$ sudo docker login -u admin {YOUR-DOMAIN-NAME}
 
-As you run Harbor with ingres and traefik, there is no deed to deal with the TLS certificate. 
+**Note:** In case you run Harbor with ingress and traefik, there is no need to deal with the TLS certificate because traefik provides you with a Let's Encrypt certificate. See the section below how to deal with a self-signed certificate.
 
 
-## How to grant a Worker Node
+### How to grant a Worker Node
 
-To allow your worker nodes in your Kubernetes Cluster to access the registry too, you need to repeat the login procedure for the local Docker Client on each worker node separately!	
+To allow your worker nodes in your Kubernetes Cluster to access the registry, you need to repeat the login procedure for the local Docker Client on each worker node too! Just login to the shell of each worker node and run:	
+	
+	node-1$ sudo docker login -u admin {YOUR-DOMAIN-NAME}
+
+### Working with a Self-Signed Certificate
+
+In case you run Harbor with a self-signed certificate with the option ``--set expose.tls.enabled=true``  than  you need to download the certificate from Harbor first to be able to login your docker demon. The certificate need to be copied into the docker certs.d directory of your local client and the docker service must be restarted once. You can download the Harbor certificate from the Habor web frontend from your web browser or via command line :
+
+	$ wget -O ca.crt --no-check-certificate https://{MASTER-NODE}:30003/api/v2.0/systeminfo/getcert
+
+replace *{MASTER-NODE}* with your cluster master node name.
+
+Next create a new directly in your local docker/certs.d directory with the name and port number of your registry and copy the certificate:
+
+	$ sudo mkdir -p /etc/docker/certs.d/{MASTER-NODE}:30003
+	$ sudo mv ca.crt /etc/docker/certs.d/{MASTER-NODE}:30003/ca.crt
+	$ sudo service docker restart
+	
+Now you can login the docker demon into your registry using the the self-signed certificate from Harbor:
+
+	$ sudo docker login -u admin {MASTER-NODE}:30003
+
 	
 
-# Push a local docker image
+## Push a local docker image
 
 To push a local docker image into the registry you first need to tag the image with the repository uri
 
