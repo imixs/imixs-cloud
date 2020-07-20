@@ -27,7 +27,7 @@ spec:
         - name: TZ
           value: Europe/Berlin
         - name: WILDFLY_PASS
-          value: imixs4.null
+          value: my-password
         image: imixs/imixs-office-workflow:latest
         name: office-workflow
         # run as root because of cephfs
