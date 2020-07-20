@@ -3,7 +3,7 @@
 Continuous Integration (CI) and Continuous Delivery (CD) are important building blocks for a cloud environment.
 The open source project [Concourse](https://concourse-ci.org/) provides a simple mechanic to manage resources, tasks, and jobs and presents a general approach to automation.
 
-
+<img src="images/img cicd-001.png" />
 
 ## Installation
 
