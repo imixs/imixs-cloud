@@ -1,0 +1,21 @@
+
+---
+###################################################
+# Ingress
+###################################################
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: concourse-tls
+  namespace: cicd
+spec:
+  rules:
+  - host: {YOUR-HOST-NAME}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: concourse-web
+          servicePort: 8080
+

@@ -1,0 +1,240 @@
+###################################################
+# Namespace cicd
+###################################################
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cicd
+
+---
+###################################################
+# DB
+###################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: concourse-db
+  namespace: cicd
+  labels: 
+    app: concourse-db
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: concourse-db
+  template:
+    metadata:
+      labels:
+        app: concourse-db
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: concourse
+        - name: POSTGRES_PASSWORD
+          value: postgrespassword
+        - name: POSTGRES_USER
+          value: concourse_user
+        image: postgres
+        name: concourse-db
+
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: concourse-dbdata
+          subPath: postgres
+      restartPolicy: Always
+      volumes:
+      - name: concourse-dbdata
+        persistentVolumeClaim:
+          claimName: concourse-dbdata-pvc
+
+
+---
+###################################################
+# Concourse Web
+###################################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: concourse-web
+  namespace: cicd
+  labels: 
+    app: concourse-web
+
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: concourse-web
+
+
+  template:
+    metadata:
+      labels:
+        app: concourse-web
+    spec:
+      containers:
+      - args:
+        - web
+        env:
+        - name: CONCOURSE_EXTERNAL_URL
+          value: {YOUR-HOST-NAME}
+        - name: CONCOURSE_POSTGRES_HOST
+          value: concourse-db
+        - name: CONCOURSE_POSTGRES_DATABASE
+          value: concourse
+        - name: CONCOURSE_POSTGRES_USER
+          value: concourse_user
+        - name: CONCOURSE_POSTGRES_PASSWORD
+          value: postgrespassword
+        - name: CONCOURSE_ADD_LOCAL_USER
+          value: test:test
+        - name: CONCOURSE_MAIN_TEAM_LOCAL_USER
+          value: test
+        - name: CONCOURSE_CLUSTER_NAME
+          value: "imixs-cloud ci/cd"
+        image: concourse/concourse
+        name: concourse-web
+
+        volumeMounts:
+        - name: concourse-configmap-volume
+          mountPath: /concourse-keys
+
+        ports:
+        - containerPort: 8080
+        securityContext:
+          privileged: true
+      restartPolicy: Always
+
+      volumes:
+      - name: concourse-configmap-volume
+        configMap:
+          name: concourse-config
+     
+
+---
+###################################################
+# Concourse Worker
+###################################################
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: concourse-worker
+  namespace: cicd
+  labels: 
+    app: concourse-worker
+
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: concourse-worker
+
+
+  template:
+    metadata:
+      labels:
+        app: concourse-worker
+    spec:
+      containers:
+      - args:
+        - web
+        env:
+        - name: CONCOURSE_TSA_HOST
+          value: "web:2222"
+        image: concourse/concourse
+        name: concourse-worker
+
+        volumeMounts:
+        - name: concourse-configmap-volume
+          mountPath: /concourse-keys
+
+        ports:
+        - containerPort: 8080
+        securityContext:
+          privileged: true
+      restartPolicy: Always
+
+      volumes:
+      - name: concourse-configmap-volume
+        configMap:
+          name: concourse-config
+
+
+
+---
+###################################################
+# Persistence Volume Claim
+###################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: concourse-dbdata-pvc
+  namespace: cicd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+###################################################
+# Service db
+###################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: concourse-db
+  namespace: cicd
+  labels: 
+    app: concourse-db
+spec:
+  ports:
+    - name: tcp
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: concourse-db
+
+---
+###################################################
+# Service web
+###################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: concourse-web
+  namespace: cicd
+spec:
+  ports:
+  - protocol: TCP
+    name: web
+    port: 8080
+  selector:
+    app: concourse-web
+
+---
+###################################################
+# Service worker
+###################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: concourse-worker
+  namespace: cicd
+spec:
+  ports:
+  - protocol: TCP
+    name: worker
+    port: 2222
+  selector:
+    app: concourse-worker
+
+
+
