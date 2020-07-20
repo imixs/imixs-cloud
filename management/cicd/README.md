@@ -2,7 +2,7 @@
 
 ## Generate Keys
 
-Concourse needs a set of key files to securly exchange data between the client and the worker nodes.
+Concourse needs a set of key files to securely exchange data between the client and the worker nodes.
 You can create the keys using the official concourse Docker containers. 
 
 	

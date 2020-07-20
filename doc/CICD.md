@@ -1,13 +1,13 @@
 # Imixs-Cloud - CI/CD
 
-Continous Integration (CI) and Continous Delivery (CD) are important building blocks for a cloud environment.
+Continuous Integration (CI) and Continuous Delivery (CD) are important building blocks for a cloud environment.
 The open source project [Concourse](https://concourse-ci.org/) provides a simple mechanic to manage resources, tasks, and jobs and presents a general approach to automation.
 
 
 
 ## Installation
 
-The installation constist of two parts. 
+The installation consists of two parts. 
 
  - Installation of the concourse server and worker nodes
  - Installation of the command line tool fly
