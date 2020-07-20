@@ -1,13 +1,4 @@
 ###################################################
-# Namespace cicd
-###################################################
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cicd
-
----
-###################################################
 # DB
 ###################################################
 apiVersion: apps/v1
@@ -80,7 +71,7 @@ spec:
         - web
         env:
         - name: CONCOURSE_EXTERNAL_URL
-          value: {YOUR-HOST-NAME}
+          value: "https://{YOUR-HOST-NAME}"
         - name: CONCOURSE_POSTGRES_HOST
           value: concourse-db
         - name: CONCOURSE_POSTGRES_DATABASE
@@ -142,10 +133,10 @@ spec:
     spec:
       containers:
       - args:
-        - web
+        - worker
         env:
         - name: CONCOURSE_TSA_HOST
-          value: "web:2222"
+          value: "concourse-web:2222"
         image: concourse/concourse
         name: concourse-worker
 
@@ -153,8 +144,6 @@ spec:
         - name: concourse-configmap-volume
           mountPath: /concourse-keys
 
-        ports:
-        - containerPort: 8080
         securityContext:
           privileged: true
       restartPolicy: Always
@@ -216,25 +205,14 @@ spec:
   - protocol: TCP
     name: web
     port: 8080
+
+  - protocol: TCP
+    name: tsa
+    port: 2222
+
   selector:
     app: concourse-web
 
----
-###################################################
-# Service worker
-###################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: concourse-worker
-  namespace: cicd
-spec:
-  ports:
-  - protocol: TCP
-    name: worker
-    port: 2222
-  selector:
-    app: concourse-worker
 
 
 

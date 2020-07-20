@@ -13,14 +13,14 @@ Use the contents of the keys directory with kubectl to create configmap concours
 
 
 	$ kubectl create namespace cicd
-	$ kubectl create configmap concourse-config --from-file=./management/cicd/keys -n cicd
+	$ kubectl create configmap concourse-config --from-file=./keys -n cicd
 	
 This config map will be mounted in the concourse deployment.yaml file
 
 
 ## Deployment: 
 
-	$ kubectl apply -f management/cicd.imixs.com/
+	$ kubectl apply -f management/cicd/
 	
 	
 ## Fly
