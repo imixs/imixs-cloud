@@ -30,17 +30,17 @@ Each overlay is defined by a custom sub-folder like /apps/my-app/prod/ containin
 	
 	# The base directory
 	bases:
-	- ../my-app
+	- ../../my-app
 
 The kustomization.yaml file defines a new namespace for your new custom deployment and points into the base directory with the origin configuration. Now you have the following directory structure:
 
 	.
-	├── my-app
+	├── my-app/
 	│   ├── 010-deployment.yaml
 	│   ├── 020-service.yaml
-	│   └── kustomization.yaml
-	└── prod
-	    └── kustomization.yaml
+	│   ├── kustomization.yaml
+	│   ├── prod/
+	│   │   └── kustomization.yaml
 
 To deploy your overlay run:
 

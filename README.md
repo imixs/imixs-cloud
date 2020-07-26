@@ -181,7 +181,7 @@ If you want to remove an already deployed service or object just use the delete 
 *Kustomize* is integrated in the kubectl command-line-tool of Kubernetes and no extra installation is needed to use it. 
 For the core service configuration of Imixs-Cloud we do not use *Kustomize* as you should not run the core services in different configurations. For that reason we advice you to directly edit the configuration of the core-services to your individual needs. The documentation explains how to do this for each core service.
 
-However, we recommend to use *Kustomize* for you own applications if you plan to run different versions of a service. For example if you plan to run a production and test version of a service. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
+However, we recommend to use *Kustomize* for your own applications if you plan to run different versions of a service. For example if you plan to run a production and test version of a service. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
 
 ## Manage your Cluster using K9S
