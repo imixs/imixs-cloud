@@ -151,7 +151,7 @@ You can define your own services within the /apps/ directory. Each application h
 
 	 |+ apps/
 	    |+ MY-APP/
-	       |  001-deployment.yaml
+	       |  020-deployment.yaml
 
 Using the _kubectl apply_ command you can easily create or delete your services and objects defined within a apps/ or management/ sub-directory:
 
@@ -164,15 +164,24 @@ For example to deploy the traefik configuration you just need to call:
 In kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which your objects should be created.
 
 	 |+ traefik/
-	    |- 001.crd-rbac.yaml
-	    |- 002.deployment.yaml
-	    |- 003.service.yaml
+	    |- 010.crd-rbac.yaml
+	    |- 020.deployment.yaml
+	    |- 030.service.yaml
 
 
 If you want to remove an already deployed service or object just use the delete command:
 
 	$ kubectl delete -f management/traefik/
 
+
+
+### Using Kustomize to Manage Custom Configurations
+
+[Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) is a tool that allows you to customize Kubernetes resources through a *kustomization.yaml* file and overlay folders. 
+*Kustomize* is integrated in the kubectl command-line-tool of Kubernetes and no extra installation is needed to use it. 
+For the core service configuration of Imixs-Cloud we do not use *Kustomize* as you should not run the core services in different configurations. For that reason we advice you to directly edit the configuration of the core-services to your individual needs. The documentation explains how to do this for each core service.
+
+However, we recommend to use *Kustomize* for you own applications if you plan to run different versions of a service. For example if you plan to run a production and test version of a service. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
 
 ## Manage your Cluster using K9S
