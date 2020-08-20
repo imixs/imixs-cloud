@@ -1,8 +1,11 @@
-# How to setup the Imixs-Cloud
+# How to Setup the Imixs-Cloud
 
-The following section describes the setup procedure of *Imixs-Cloud* to run a kubernetes cluster into a productive environment for small and medium organizations. 
+The following section describes the setup procedure of *Imixs-Cloud* for small and medium organizations. 
+This setup guide shows how to install a kubernetes cluster into a productive environment consisting of several Internet nodes. 
+
 If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below.
 
+In the [Maintenance section](#maintenance) you will find useful information how to maintain a running *Imixs-Cloud* cluster environment. 
 
 ## The Cluster Nodes
 
@@ -11,30 +14,31 @@ A *Imixs-Cloud* consists of a minimum of two nodes.
 * The master node is the kubernetes api server
 * The worker nodes are serving the applications (pods). 
 
-A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. 
+A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. So you also can connect your worker nodes with a private network if you like. 
 
-To enable communication between your cluster nodes using short names, make sure that on each node the short host names a listed in the /etc/hosts with the public or private IP addresses.
+To enable communication between your cluster nodes using short names, make sure that on each node the short host names are listed in the /etc/hosts with the public or private IP addresses.
 
 
 
 ## The Cluster-User
 
-** Note:**
-In *Imixs-Cloud* you should always work with a non-root, sudo privileged cluster user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
+**Note:**
+In *Imixs-Cloud* you should always work with a non-root, sudo privileged cluster user. This protects yourself from doing nasty things with the root user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
 
-To create a cluster-user follow the next steps and replace '{username}' with the name of our cluster user you have choosen. 
+To create a cluster-user follow the next steps and replace '{username}' with the name of our cluster user you have chosen. 
 
 	$ useradd -m {username} -s /bin/bash
 	$ passwd {username}
 
+Make sure that your cluster-user has also *sudo* rights!
  
 ## Install the Master Node 
  
-*Imixs-Cloud* provides a install script for Debain and Fedora/CentOS linux distributes. You can copy the setup script from the /scritps/ directory. But we recommend to clone the *Imixs-Cloud* git repo so you have all scripts and configuration files in one place. You can also fork the *Imixs-Cloud* project to customize your environment individually to your needs. 
+*Imixs-Cloud* provides a install script for Debain and Fedora/CentOS linux distributions. You can copy the setup script from the /scritps/ directory. But we recommend to clone the *Imixs-Cloud* git repo so you have all scripts and configuration files in one place. You can also fork the *Imixs-Cloud* project to customize your environment individually to your needs. 
  
 ### Install Git
  
-For a easy setup install git and clone the *Imixs-Cloud* repository on your master node:
+For a easy setup install git on your master node and clone the *Imixs-Cloud* repository or a fork:
 
 For Debian 10 run:
 
@@ -68,7 +72,7 @@ In order to ensure that all nodes are running the same software releases run the
  - kubectl (the kubernetes command line interface)
 
 
-The install script can be found in the script directory /scripts/. We provide the install script for Debian/Ubuntu and Fedora/CentOS. Run the setup script as sudo:
+The install script can be found in the script directory /scripts/. The install script is available for Debian/Ubuntu and Fedora/CentOS. Run the setup script as sudo:
 
 For Debian 10
 
@@ -93,24 +97,27 @@ You will see a detailed protocol showing what happens behind the scene. If somet
 
 	$ sudo kubeadm reset
 
-The last output form the protocol shows you the join token needed to setup a worker node. If you forgot to note the join token run:
+The last output form the protocol shows you the join token needed to setup a worker node. If you forgot to note the join token you can run the following command:
 
 	$ sudo kubeadm token create --print-join-command
 
 ### Setup kubectl on a Server
 
-To make kubectl work for your non-root user, run these commands, which are also part of the kubeadm init output:
+*kubectl* is the commandline tool of kubernetes. We use *kubectl* to administration *Imixs-Cloud* and to create, update or delete resources and applications into the cluster.
+
+To make kubectl work for your non-root user, run these commands on your master node. (These commands are also part of the kubeadm init output):
 
 	$ mkdir -p $HOME/.kube
 	$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 	$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-This will copy the configuration of your master node into the kubernetes config directory ./kube of your home directory.
+This will copy the configuration of your master node into the kubernetes config directory ./kube of your home directory. Now you can administrate your kubernetes cluster as a non-root user.
 
 
 ### Setup a flannel network
 
-Next, deploy the flannel network to the kubernetes cluster using the kubectl command.
+Befor your start to setup your first worker node you first need to install a kubernetes cluster network. 
+To deploy the flannel network to the kubernetes cluster run the following kubectl command:
 
 	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
@@ -122,22 +129,33 @@ The flannel network will been deployed to the Kubernetes cluster. After some sec
 
 ## Install Worker Nodes
 
-Now you can run the same script used to install the master node on each of your worker nodes. This will install the docker runtime and kubernetes tools. To add the new node to your cluster created in the previous step run the join command from the master setup. If you do not know the join command you can run the following command on your master node frist:
+Now you can run the same script used to install the master node on each of your worker nodes. 
 
-	$ kubeadm token create --print-join-command
+	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
 
-Run the output as a root user on your worker node:
+This will install the docker runtime and kubernetes tools. 
+
+### Adding a Worker Node to your Cluster
+
+To add the new node to your cluster you need to run the join command from the master setup:
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx     --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-and list all nodes with:
+If you do not know the join command you can run the following command on your master node first:
+
+	$ kubeadm token create --print-join-command
+
+Check your new cluster status on your master node:
 
 	$ kubectl get nodes
 	
-## Controlling Your Cluster From your Workstation
+## Controlling your Cluster From your Workstation
 
-In different to docker-swarm, a kubernetes cluster can be administrated remote from your workstation. The tool ‘kubectl’ is the kubernetes command line tool used to manage your cluster via the kubernetes api either from your server or from a workstatio..
-Setup kubectl on Your Workstation
+In different to docker-swarm, a kubernetes cluster can be administrated remote from your workstation. The tool ‘kubectl’ is the kubernetes command line tool used to manage your cluster via the kubernetes api either from your server or from a workstation.
+
+For security reasons we recommend to run kubectl in smaller environments only from your master-node. 
+
+### Setup kubectl on Your Workstation
 
 To run kubectl from your workstation you need first to install it. You will find the official install guide here. Note: you install only the kubectl tool, not a full kubernetes server as in the section before.
 
@@ -151,14 +169,18 @@ In order to get kubectl talking to your cluster, you can again copy the content 
 
 # Upgrade
 
-You can verify the status of your kubernets cluster by the following command:
+After you have successfull installed your Imixs-Cloud cluster you may want to verfify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
+
+## Verify your Cluster Status
+
+You can verify the status of your kubernets cluster with the following command:
 
 	$ kubectl get nodes
 	NAME              STATUS   ROLES    AGE   VERSION
-	ixchel-master-1   Ready    master   28d   v1.18.2
-	ixchel-worker-1   Ready    <none>   28d   v1.18.2
-	ixchel-worker-2   Ready    <none>   28d   v1.18.2
-	ixchel-worker-3   Ready    <none>   28d   v1.18.2
+	master-1   Ready    master   28d   v1.18.3
+	worker-1   Ready    <none>   28d   v1.18.3
+	worker-2   Ready    <none>   28d   v1.18.3
+	worker-3   Ready    <none>   28d   v1.18.3
 
 This will show you the current version of kubernetes running on each node
 
@@ -194,7 +216,9 @@ To check the status of docker run the following command on each node:
 	  GitCommit:        fec3683
 
 
-To upgrade you existing *Imixs-Cloud* environment follow these steps:
+## Upgrade a Cluster Node
+
+To upgrade you existing *Imixs-Cloud* environment follow these steps on each node:
 
 **1. Create a snapshot**
 
@@ -207,7 +231,8 @@ To update your worker or master node run the following commands on a debian plat
 	$ sudo apt update
 	$ sudo apt upgrade
 
-**3. Reboot your node **
+ 
+**3. Reboot your node**
 
 After an upgrade kubernetes will automatically reschedule the node pods. 
 Optional you can also reboot your node to make sure docker deamon and kubernets is restarted correctly.
@@ -221,12 +246,51 @@ Optional you can also reboot your node to make sure docker deamon and kubernets 
 
 
 
+# Maintenance
+
+The following section contains some maintenance tips for a running environment. 
+
+See also the section [Monitoring](MONITORING.md) to learn how you can monitor your cluster and its metrics with a modern dashboard. 
+
+## Clean Up Disk Space
+
+After some time, the disk space on a worker node may run low. This is often independent from how much disk space each application needs. The reason is, that Docker itself consumes much disk space for docker images and data volumes. Many of these images and volumes are no longer needed because, for example, your are using newer versions of a particular container. In this situation, it may be helpful to remove such objects. 
 
 
+To check the disk space available on a worker node run:
+
+	$ df -h
+
+To remove unused docker images run:
+
+	$ sudo docker system  prune
+	WARNING! This will remove:
+	  - all stopped containers
+	  - all networks not used by at least one container
+	  - all dangling images
+	  - all dangling build cache
+	
+	Are you sure you want to continue? [y/N] 
+
+This command is not so critical as kubernetes will download docker images need to run a application automatically. 
+
+If you also want to remove unused docker volumes you can run the following command. NOTE: volumes can not be restored with this options as volumes for stopped containers will also be removed. 
+
+	$ sudo docker system  prune --volumes
+	WARNING! This will remove:
+	  - all stopped containers
+	  - all networks not used by at least one container
+	  - all volumes not used by at least one container
+	  - all dangling images
+	  - all dangling build cache
+	
+	Are you sure you want to continue? [y/N] 
 
 
+To remove onyl unused Docker images you can also run:
 
-
-
+	$ sudo docker image prune -a
+	WARNING! This will remove all images without at least one container associated to them.
+	Are you sure you want to continue? [y/N] 
 
 

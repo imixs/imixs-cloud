@@ -14,8 +14,6 @@ In difference to a fork a clone can be the starting point to build you own envir
 
 To create you private clone you can use the clone command form git. To 
 
-
-
 	# create a local copy 
 	$ git clone https://github.com/imixs/imixs-cloud.git
 	# disconnect your repo from github
