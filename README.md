@@ -24,7 +24,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
  - [Security Configuration](./doc/SECURITY.md) 
  - [Monitoriing](./doc/MONITORING.md)
  - [Continuous Integration CI/CD](./doc/CICD.md)
-
+ - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
 
 
 ## Quick Start
