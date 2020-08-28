@@ -209,7 +209,43 @@ In such a case you just need to add a subPath
 See more details [here](https://stackoverflow.com/questions/51168558/how-to-mount-a-postgresql-volume-using-aws-ebs-in-kubernete/51174380).
 
 
-### How to Uninstall Longhorn
+### AttachVolume.Attach failed
+
+In some cases it may happen that you can not deploy because of a error message like this:
+
+	AttachVolume.Attach failed for volume "xxxx" : rpc error: code = FailedPrecondition desc = The volume xxx cannot be attached to the node node-x since it is already attached to the node node-y   
+  
+In this case you can solve the problem as followed:
+
+  
+1.) Deelte your deployment as usual
+
+	$ kubectl delete -f apps/my-app....
+
+2.) Verify if the volume in question was deleted
+
+	$ kubectl get pv
+
+If not, you may see that the persistence volume is in status 'terminating'. To get rid of this situation run:
+
+	$ kubectl patch pv [PV-NAME] -p '{"metadata":{"finalizers":null}}'
+	
+	# replace [PV-NAME] with the name of your persistence volume
+	
+
+3.) Detach the volume manually via the Longohorn UI 
+  
+  Within the Longhorn UI you can verify if the volume is now in status 'detached'. If not, you can detach is via the volume options.
+  
+  
+4.) Re-Apply your Deployment
+
+Finally you can re-deploy your application:
+
+	$ kubectl apply -f apps/my-app....
+
+
+## How to Uninstall Longhorn
 
 To prevent damaging the Kubernetes cluster, it is recommended deleting all Kubernetes workloads using Longhorn volumes (PersistentVolume, PersistentVolumeClaim, StorageClass, Deployment, StatefulSet, DaemonSet, etc) first.
 
@@ -245,7 +281,7 @@ Find details about the uninstall process also [here](https://github.com/longhorn
 	
 
 
-#### Delete namespace 'longhorn-system'
+### Delete namespace 'longhorn-system'
 
 To remove the longhorn-system namespace you can run the following command:
 
@@ -254,4 +290,3 @@ To remove the longhorn-system namespace you can run the following command:
 	  | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
 	  | kubectl replace --raw /api/v1/namespaces/longhorn-system/finalize -f -
   
-

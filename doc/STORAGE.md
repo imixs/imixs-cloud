@@ -67,6 +67,30 @@ Finally you can delete the pod:
 
 
 
+### Deleting terminatign PVs 
+
+If you can not get rid of this issue you need to manually editing the pv and then removing the finalizers which looked something like this:
+
+e.g
+
+	$ kubectl patch pv pv_name -p '{"metadata":{"finalizers":null}}'
+
+
+This can alos be done for all existing PVs with a one liner (BE CAREFULL!!!)
+
+	$ kubectl get pv | tail -n+2 | awk '{print $1}' | xargs -I{} kubectl patch pv {} -p '{"metadata":{"finalizers": null}}'
+
+
+Find details here: https://github.com/kubernetes/kubernetes/issues/77258
+
+
+
+
+
+
+
+
+
 
 
 
