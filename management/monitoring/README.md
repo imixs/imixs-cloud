@@ -1,21 +1,44 @@
 # Monitoring
 
-This stack provides a Prometheus and a Grafana Service for monitoring the *Imixs-Cloud*. You can find general information about Imixs-Cloud monitoring [here](../../doc/MONITORING.md). 
+The *Imixs-Cloud* monitoring is based on the [Prometheus Operator project](https://github.com/prometheus-operator/prometheus-operator).
+All metrics collected form the Imixs-Cloud kubernetes cluster can be monitored in a [Grafana](https://grafana.com/) dashboard.
 
+## The Prometheus Operator
 
-## Configuration
+The [Prometheus Operator project](https://github.com/prometheus-operator/prometheus-operator) provides Kubernetes native deployment and management of Prometheus and related monitoring components. The purpose of the project is to simplify and automate the configuration of a Prometheus based monitoring stack for Kubernetes clusters.
 
-Before you start edit the file 009-grafana-ingress.yaml and replace 
+## Kube Prometheus
 
-replace *{YOUR-HOST-NAME}* with a Internet name pointing to your Master Node configured in your DNS 
+Based on Prometheus Operator the project [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) provides example configurations for a complete cluster monitoring stack. 
+The goal of *kube prometheus* is to simplify the deployment and configuration of Prometheus, Alertmanager, and related monitoring components. 
+The *Imixs-Cloud* monitoring is based on the latest version of the *kube-prometheus* so no additional configuration is need here.
+
 
 
 ## Deployment
 
-Next run:
+*kube prometheus* is intended to be used as a library. So all you need to do is to checkout the project form github on your master-node.
 
-	$ kubectl apply -f management/monitoring/
+	
+	# Checkout the project form Github
+	$ cd
+	$ git clone https://github.com/prometheus-operator/kube-prometheus.git
+	$ cd kube-prometheus
+	# Create the namespace and CRDs, and then wait for them to be availble before creating the remaining resources
+	$ kubectl create -f manifests/setup
+	$ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
+	$ kubectl create -f manifests/
 
-to undeploy traefik.io run:
 
-	$ kubectl delete -f management/monitoring/
+
+## Ingress
+
+To access the grafana dashboard from your Internet domain you can use the traefik reverse proxy configured in *Imixs-Cloud*. Just edit the file *imixs-cloud-ingress.yaml* and replace [YOUR-DNS-NAME] whit the name of you monitoring Internet domain name. 
+
+To apply the ingress configuration run:
+
+	$ kubectl apply -f imixs-cloud-ingress.yaml
+
+## Grafana Boards
+
+The  *kube prometheus*  project provide a large number of Grafana dashboards which can be access from the dashboard configuration page.

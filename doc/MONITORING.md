@@ -4,25 +4,39 @@
 
 <img src="./images/monitoring-001.png" />
 
-The Monitoring setup is based on [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/). You have various ways to customize the monitoring to your individual needs. 
+
+The *Imixs-Cloud* monitoring is based on the [Prometheus Operator project](https://github.com/prometheus-operator/prometheus-operator).
+All metrics collected form the Imixs-Cloud kubernetes cluster can be monitored in a [Grafana](https://grafana.com/) dashboard.
+
 
 Follow the [Deployment Guide](../management/monitoring/README.md) to setup the monitoring services. 
+
+
+## The Prometheus Operator
+
+The [Prometheus Operator project](https://github.com/prometheus-operator/prometheus-operator) provides Kubernetes native deployment and management of Prometheus and related monitoring components. The purpose of the project is to simplify and automate the configuration of a Prometheus based monitoring stack for Kubernetes clusters.
+
+## Kube Prometheus
+
+Based on Prometheus Operator the project [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) provides example configurations for a complete cluster monitoring stack. 
+The goal of *kube prometheus* is to simplify the deployment and configuration of Prometheus, Alertmanager, and related monitoring components. 
+The *Imixs-Cloud* monitoring is based on the latest version of the *kube-prometheus* so no additional configuration is need here.
 
 
 ## Prometheus
 
 [Prometheus](https://prometheus.io/) is an open-source systems monitoring and alerting toolkit. 
-The Prometheus service is database used for collecting the metric data. The *Prometheus Node exporter* is responsible for collecting the hardware and OS metrics exposed by *NIX kernels on each node. The *kube-state-metrics* service listens to the Kubernetes API server and generates metrics about the state of the objects deployed on your Kubernetes Cluster.
+The Prometheus service is the database used for collecting the metric data. The Prometheus server is only internal and not accessible from outside of your cluster. The internal address for data access is:
 
-The Prometheus server is only internal and not accessible from outside of your cluster. But for later configuration you need to know the internal address for data access:
-
-	http://prometheus:9090
+	http://prometheus-k8s.monitoring.svc:9090
 
 
 ## Grafana
 
 The [Grafana](https://grafana.com/) service is the front-end application used to visualize the data collected by Prometheus. 
 The grafana service provides a web interface with rich functionality for monitoring and alerting. 
+
+To access grafana you need ot setup a Ingress route. See the [Deployment Guide](../management/monitoring/README.md) for details.
  
 ### First Login
 
@@ -32,32 +46,25 @@ For the first login use the userid 'admin' and the password 'admin'. You will be
  
 ### Setup the Prometheus Database
 
-After your first login you will be asked to add a data source. Choose the data source type 'prometheus'
-
-Enter the prometheus url 'http://prometheus:9090'. 
+The prometheus database is automatically configured by *kube prometheus*. You can verify the configuraiton on the grafana configuration page:
 
 <img src="./images/monitoring-003.png" />
 
 You don't need to add or change additional data.
 
 
+## The Dashboards
 
-## Install a Dashboard
 
-Now you can import a new Dashbaord. Dashboards are a discription how to visualize the data provided form the prometheus data source. There are a lot of community dashboards available in the public [Grafana Dashboard repository](https://grafana.com/grafana/dashboards?direction=asc&orderBy=name&search=kubernetes).
-
-You can import the dashboard available in the *Imixs-Cloud* project located in /monitoring/dashboards/
-
-From the left toolbar choose 'Dashboards -> manage' and click on 'import
+The  *kube prometheus*  project provide a large number of Grafana dashboards which can be access from the dashboard configuration page.
+You can access the dashboard from the dashbard management plane:
 
 <img src="./images/monitoring-004.png" />
 
-Past the content of the json file */monitoring/dashboards/imixs-cloud.json* into the text field and click on load:
+You can also import additional Dashboards as JSON or by a Dashboard id:
 
 <img src="./images/monitoring-005.png" />
 
 
-Thant's it.
-
-<img src="./images/monitoring-001.png" />
+<img src="./images/monitoring-006.png" />
 
