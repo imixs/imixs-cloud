@@ -68,3 +68,13 @@ You can also import additional Dashboards as JSON or by a Dashboard id:
 
 <img src="./images/monitoring-006.png" />
 
+
+
+Here is a list of usefull dashboards which can be used in Imixs-Cloud monitoring:
+
+
+ - https://grafana.com/grafana/dashboards/12919
+ - https://grafana.com/grafana/dashboards/11074
+ - https://grafana.com/grafana/dashboards/8171
+ 
+ 
