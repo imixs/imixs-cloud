@@ -66,7 +66,7 @@ You can also import additional Dashboards as JSON or by a Dashboard id:
 <img src="./images/monitoring-005.png" />
 
 
-<img src="./images/monitoring-006.png" />
+<img src="./images/monitoring-001.png" />
 
 
 

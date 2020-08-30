@@ -236,7 +236,7 @@ You can find a detailed description how to install and setup the Harbor registry
 
 _Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your Kubernetes cluster.
 
-<img src="./doc/images/monitoring-006.png" />  
+<img src="./doc/images/monitoring-001.png" />  
   
 The monitoring is based on [Prometheus](https://prometheus.io/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to montor your kubernetes cluster but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
   
