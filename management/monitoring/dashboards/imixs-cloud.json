@@ -17,8 +17,23 @@
   "gnetId": 11074,
   "graphTooltip": 0,
   "id": 42,
-  "iteration": 1598774006161,
+  "iteration": 1598806277961,
   "links": [
+    {
+      "icon": "dashboard",
+      "tags": [],
+      "title": "Kubernetes / Compute Resources / Cluster",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://monitoring.ixchel.imixs.com/d/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster"
+    },
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "tags": [],
+      "title": "All Dashboards",
+      "type": "dashboards"
+    },
     {
       "icon": "external link",
       "tags": [],
@@ -324,7 +339,7 @@
           {
             "evaluator": {
               "params": [
-                0.6
+                0.8
               ],
               "type": "gt"
             },
@@ -349,8 +364,8 @@
         "for": "5m",
         "frequency": "1m",
         "handler": 1,
-        "message": "disk arlarm!",
-        "name": "Disk Space Utilisation alert",
+        "message": "Disk full!",
+        "name": "Panel Title alert",
         "noDataState": "no_data",
         "notifications": [
           {
@@ -378,7 +393,7 @@
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 207,
+      "id": 233,
       "legend": {
         "avg": false,
         "current": false,
@@ -390,11 +405,10 @@
       },
       "lines": true,
       "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null as zero",
+      "nullPointMode": "null",
       "percentage": false,
       "pluginVersion": "7.1.0",
-      "pointradius": 5,
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -403,13 +417,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without (device) (\n  max without (fstype, mountpoint) (\n    node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\"} - node_filesystem_avail_bytes{job=\"node-exporter\", fstype!=\"\"}\n  )\n) \n/ scalar(sum(max without (fstype, mountpoint) (node_filesystem_size_bytes{job=\"node-exporter\", fstype!=\"\"})))\n",
-          "format": "time_series",
-          "intervalFactor": 2,
+          "expr": "avg((node_filesystem_size_bytes{fstype=~\"ext.*|xfs\"} - node_filesystem_free_bytes{fstype=~\"ext.*|xfs\"})\n/\n(node_filesystem_size_bytes{fstype=~\"ext.*|xfs\"} )) by (instance)",
+          "interval": "",
           "legendFormat": "{{instance}}",
-          "legendLink": "/dashboard/file/node-rsrc-use.json",
-          "refId": "A",
-          "step": 10
+          "refId": "A"
         }
       ],
       "thresholds": [
@@ -418,13 +429,13 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0.6
+          "value": 0.8
         }
       ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Disk Space Utilisation",
+      "title": "Disk Usage",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -443,8 +454,8 @@
           "format": "percentunit",
           "label": null,
           "logBase": 1,
-          "max": 1,
-          "min": 0,
+          "max": null,
+          "min": null,
           "show": true
         },
         {
@@ -453,7 +464,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": false
+          "show": true
         }
       ],
       "yaxis": {
@@ -1025,401 +1036,352 @@
       "valueName": "current"
     },
     {
-      "columns": [],
       "datasource": "prometheus",
-      "description": "Partition utilization, disk read, disk write, download bandwidth, upload bandwidth,",
+      "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "align": "center",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU Usage"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 369
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Node"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 144
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Link to Details",
+                    "url": "/d/202008/imixs-cloud?orgId=1&var-job=${job}&var-hostname=All&var-node=${__data.fields[instance]}&var-device=All"
+                  }
+                ]
+              },
+              {
+                "id": "custom.align",
+                "value": null
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              },
+              {
+                "id": "custom.width",
+                "value": 109
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "OS Version"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 211
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Docker Version"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 109
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory Usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "custom.width",
+                "value": 356
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk Usage"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Uptime"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 83
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Node (link to details)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 168
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Cores"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 77
+              }
+            ]
+          }
+        ]
       },
-      "fontSize": "100%",
       "gridPos": {
         "h": 7,
         "w": 24,
         "x": 0,
         "y": 6
       },
-      "id": 185,
-      "pageSize": 10,
-      "showHeader": true,
-      "sort": {
-        "col": 15,
-        "desc": true
+      "id": 237,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Node"
+          }
+        ]
       },
-      "styles": [
-        {
-          "alias": "Hostname",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 1,
-          "link": false,
-          "linkTooltip": "",
-          "linkUrl": "",
-          "mappingType": 1,
-          "pattern": "nodename",
-          "thresholds": [],
-          "type": "string",
-          "unit": "bytes"
-        },
-        {
-          "alias": "IP（Link to details）",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": true,
-          "linkTargetBlank": false,
-          "linkTooltip": "Browse host details",
-          "linkUrl": "/d/202008/imixs-cloud?orgId=1&var-job=${job}&var-hostname=All&var-node=${__cell}&var-device=All",
-          "mappingType": 1,
-          "pattern": "instance",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "Memory",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": false,
-          "mappingType": 1,
-          "pattern": "Value #B",
-          "thresholds": [],
-          "type": "number",
-          "unit": "bytes"
-        },
-        {
-          "alias": "CPU Cores",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": null,
-          "mappingType": 1,
-          "pattern": "Value #C",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "Uptime",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #D",
-          "thresholds": [],
-          "type": "number",
-          "unit": "s"
-        },
-        {
-          "alias": "Partition used%*",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #E",
-          "thresholds": [
-            "70",
-            "85"
-          ],
-          "type": "number",
-          "unit": "percent"
-        },
-        {
-          "alias": "CPU used%",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #F",
-          "thresholds": [
-            "70",
-            "85"
-          ],
-          "type": "number",
-          "unit": "percent"
-        },
-        {
-          "alias": "Memory used%",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #G",
-          "thresholds": [
-            "70",
-            "85"
-          ],
-          "type": "number",
-          "unit": "percent"
-        },
-        {
-          "alias": "Disk read*",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #H",
-          "thresholds": [
-            "10485760",
-            "20485760"
-          ],
-          "type": "number",
-          "unit": "Bps"
-        },
-        {
-          "alias": "Disk write*",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #I",
-          "thresholds": [
-            "10485760",
-            "20485760"
-          ],
-          "type": "number",
-          "unit": "Bps"
-        },
-        {
-          "alias": "Download*",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #J",
-          "thresholds": [
-            "30485760",
-            "104857600"
-          ],
-          "type": "number",
-          "unit": "bps"
-        },
-        {
-          "alias": "Upload*",
-          "align": "auto",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #K",
-          "thresholds": [
-            "30485760",
-            "104857600"
-          ],
-          "type": "number",
-          "unit": "bps"
-        },
-        {
-          "alias": "5m load",
-          "align": "auto",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "mappingType": 1,
-          "pattern": "Value #L",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "align": "right",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "/.*/",
-          "thresholds": [],
-          "type": "hidden",
-          "unit": "short"
-        }
-      ],
+      "pluginVersion": "7.1.0",
       "targets": [
         {
-          "expr": "sum(time() - node_boot_time_seconds{job=~\"$job\"})by(instance)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "运行时间",
-          "refId": "D"
-        },
-        {
-          "expr": "node_memory_MemTotal_bytes{job=~\"$job\"} - 0",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "总内存",
-          "refId": "B"
-        },
-        {
-          "expr": "count(node_cpu_seconds_total{job=~\"$job\",mode='system'}) by (instance)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "总核数",
-          "refId": "C"
-        },
-        {
-          "expr": "node_load5{job=~\"$job\"}",
+          "expr": "label_replace(\ncadvisor_version_info{job=\"kubelet\", service=\"kubelet\"},\n\"instance\",\"$1\",\"node\", \"(.+)\"\n)",
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "5分钟负载",
-          "refId": "L"
+          "legendFormat": "",
+          "refId": "A"
         },
         {
           "expr": "(1 - avg(irate(node_cpu_seconds_total{job=~\"$job\",mode=\"idle\"}[5m])) by (instance)) * 100",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "CPU使用率",
-          "refId": "F"
+          "legendFormat": "CPU Usage",
+          "refId": "B"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=~\"$job\"}",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Total Memory",
+          "refId": "C"
         },
         {
           "expr": "(1 - (node_memory_MemAvailable_bytes{job=~\"$job\"} / (node_memory_MemTotal_bytes{job=~\"$job\"})))* 100",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "内存使用率",
-          "refId": "G"
+          "legendFormat": "Memory Usage",
+          "refId": "D"
         },
         {
           "expr": "max((node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes {job=~\"$job\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=~\"$job\",fstype=~\"ext.?|xfs\"})))by(instance)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "分区使用率",
+          "legendFormat": "Disk Usage",
           "refId": "E"
         },
         {
-          "expr": "max(irate(node_disk_read_bytes_total{job=~\"$job\"}[5m])) by (instance)",
+          "expr": "sum(time() - node_boot_time_seconds{job=~\"$job\"})by(instance)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "最大读取",
-          "refId": "H"
+          "legendFormat": "Up Time",
+          "refId": "F"
         },
         {
-          "expr": "max(irate(node_disk_written_bytes_total{job=~\"$job\"}[5m])) by (instance)",
+          "expr": "count(node_cpu_seconds_total{job=~\"$job\",mode='system'}) by (instance)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "最大写入",
-          "refId": "I"
-        },
-        {
-          "expr": "max(irate(node_network_receive_bytes_total{job=~\"$job\"}[5m])*8) by (instance)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "下载带宽",
-          "refId": "J"
-        },
-        {
-          "expr": "max(irate(node_network_transmit_bytes_total{job=~\"$job\"}[5m])*8) by (instance)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "上传带宽",
-          "refId": "K"
+          "legendFormat": "Cores",
+          "refId": "G"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Server Resource Overview",
-      "transform": "table",
-      "type": "table-old"
+      "title": "Node Resources Overview",
+      "transformations": [
+        {
+          "id": "seriesToColumns",
+          "options": {
+            "byField": "instance"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value #A": true,
+              "__name__": true,
+              "container": true,
+              "endpoint": true,
+              "job": true,
+              "kernelVersion": true,
+              "metrics_path": true,
+              "namespace": true,
+              "node": true,
+              "pod": true,
+              "service": true
+            },
+            "indexByName": {
+              "Time": 9,
+              "Value #A": 18,
+              "Value #B": 6,
+              "Value #C": 3,
+              "Value #D": 7,
+              "Value #E": 8,
+              "Value #F": 1,
+              "Value #G": 2,
+              "__name__": 10,
+              "container": 19,
+              "dockerVersion": 5,
+              "endpoint": 11,
+              "instance": 0,
+              "job": 12,
+              "kernelVersion": 13,
+              "metrics_path": 14,
+              "namespace": 15,
+              "node": 16,
+              "osVersion": 4,
+              "pod": 20,
+              "service": 17
+            },
+            "renameByName": {
+              "Time": "",
+              "Value #B": "CPU Usage",
+              "Value #C": "Memory",
+              "Value #D": "Memory Usage",
+              "Value #E": "Disk Usage",
+              "Value #F": "Uptime",
+              "Value #G": "Cores",
+              "container": "",
+              "dockerVersion": "Docker Version",
+              "instance": "Node",
+              "osVersion": "OS Version"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
       "collapsed": false,
@@ -3681,8 +3643,10 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "ixchel-master-1",
-          "value": "ixchel-master-1"
+          "text": "ixchel-worker-2",
+          "value": [
+            "ixchel-worker-2"
+          ]
         },
         "datasource": "prometheus",
         "definition": "label_values(node_uname_info{job=~\"$job\",nodename=~\"$hostname\"},instance)",
@@ -3762,8 +3726,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "ixchel-master-1",
-          "value": "ixchel-master-1"
+          "text": "ixchel-worker-2",
+          "value": "ixchel-worker-2"
         },
         "datasource": "prometheus",
         "definition": "label_values(node_uname_info{job=~\"$job\",instance=~\"$node\"}, nodename)",
@@ -3816,5 +3780,5 @@
   "timezone": "browser",
   "title": "Imixs-Cloud",
   "uid": "202008",
-  "version": 33
+  "version": 49
 }
