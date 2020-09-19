@@ -252,6 +252,35 @@ The following section contains some maintenance tips for a running environment.
 
 See also the section [Monitoring](MONITORING.md) to learn how you can monitor your cluster and its metrics with a modern dashboard. 
 
+## Rescale a Node
+
+To rescale a node first mark the node as unschedulable:
+
+	$ kubectl cordon node-x
+
+next you can shuthown the node and rescal / maintainance the node. After the node is up again run uncordon to join again the scheduler.
+
+	$ kubectl uncordon node-x
+	
+
+## Remove a Node
+
+In order to remove a node form the cluster you can first call:
+
+	$ kubectl drain <node name>
+
+This will safely evict all pods from a node before you perform maintenance on the node (e.g. kernel upgrade, hardware maintenance, etc.). Safe evictions allow the pod's containers to gracefully terminate and will respect the PodDisruptionBudgets you have specified.
+
+To delete the node from the cluster:
+
+	$ kubectl delete node <node-name>
+	
+Finally connect to the specific worker node an run:
+
+	# ATTENTION: MAKE SURE YOU ARE ON THE NODE TO BE REMOVED!!!
+	$ sudo kubeadm reset
+	
+
 ## Clean Up Disk Space
 
 After some time, the disk space on a worker node may run low. This is often independent from how much disk space each application needs. The reason is, that Docker itself consumes much disk space for docker images and data volumes. Many of these images and volumes are no longer needed because, for example, your are using newer versions of a particular container. In this situation, it may be helpful to remove such objects. 
