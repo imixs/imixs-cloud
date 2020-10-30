@@ -26,7 +26,7 @@ You can also get the data of a singel POD:
 	traefik-797d34bc7d-l7k8j   22m          50Mi      
 
 
-The [k9s tool](../tools/k9s/README.md) provides the core functionallity to display metrics of the cluster and for each namespace. With the :pulse view you can see node dashboard.
+The [k9s tool](../tools/k9s/README.md) provides the core functionality to display metrics of the cluster and for each namespace. With the :pulse view you can see node dashboard.
 
 
 <img src="./images/monitoring-008.png" />
@@ -49,13 +49,7 @@ The grafana service provides a web interface with rich functionality for monitor
 To access grafana you need ot setup a Ingress route. See the [Deployment Guide](../management/monitoring/README.md) for details.
  
 
-
-
-
 <img src="./images/monitoring-001.png" />
-
-
-
 
 
 See the install guides for [metrics-server](../management/monitoring/metrics-server/README.md) and [kube-prometheus](../management/monitoring/kube-prometheus/README.md) for further details.
