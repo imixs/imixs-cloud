@@ -5,8 +5,8 @@ To get better insights of your Imixs-Cloud* project you can install a monitoring
 The *Imixs-Cloud* monitoring provides different setups to install a monitoring solution. 
 
 
- * [metrics-server](METRICS_SERVER.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
- * [kube-prometheus](KUBE_PROMETHEUS.md) provides a configuration setup for a complete cluster monitoring stack. 
+ * [metrics-server](../management/monitoring/metrics-server/README.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+ * [kube-prometheus](../management/monitoring/kube-prometheus/README.md) provides a configuration setup for a complete cluster monitoring stack. 
 
 After a metric server was installed you can monitor your Kubernetes cluster from the commandline tool **kubectl top**:
 
@@ -58,7 +58,7 @@ To access grafana you need ot setup a Ingress route. See the [Deployment Guide](
 
 
 
-See the install guides for [metrics-server](METRICS_SERVER.md) and [kube-prometheus](KUBE_PROMETHEUS.md) for further details.
+See the install guides for [metrics-server](../management/monitoring/metrics-server/README.md) and [kube-prometheus](../management/monitoring/kube-prometheus/README.md) for further details.
 
 
 
