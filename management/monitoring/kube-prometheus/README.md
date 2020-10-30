@@ -48,13 +48,13 @@ kubectl create -f manifests/
 
 For the first login use the userid 'admin' and the password 'admin'. You will be force to change the admin password first.
 
-<img src="./../images/monitoring-002.png" />
+<img src="../../../doc/images/monitoring-002.png" />
  
 ### Setup the Prometheus Database
 
 The prometheus database is automatically configured by *kube prometheus*. You can verify the configuraiton on the grafana configuration page:
 
-<img src="./../images/monitoring-003.png" />
+<img src="../../../doc/images/monitoring-003.png" />
 
 You don't need to add or change additional data.
 
@@ -65,14 +65,14 @@ You don't need to add or change additional data.
 The  *kube prometheus*  project provide a large number of Grafana dashboards which can be access from the dashboard configuration page.
 You can access the dashboard from the dashbard management plane:
 
-<img src="./../images/monitoring-004.png" />
+<img src="../../../doc/images/monitoring-004.png" />
 
 You can also import additional Dashboards as JSON or by a Dashboard id:
 
-<img src="./../images/monitoring-005.png" />
+<img src="../../../doc/images/monitoring-005.png" />
 
 
-<img src="./../images/monitoring-001.png" />
+<img src="../../../doc/images/monitoring-001.png" />
 
 
 

@@ -37,4 +37,4 @@ The [k9s tool](../../tools/k9s/README.md) provides the core functionality to dis
 
 
 	
-See the install guides for [metrics-server](metrics-server/README.md) and [kube-prometheus](kube-prometheus.README.md) for further details.
+See the install guides for [metrics-server](metrics-server/README.md) and [kube-prometheus](kube-prometheus/README.md) for further details.
