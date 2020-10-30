@@ -28,7 +28,13 @@ You can also get the data of a singel POD:
 	traefik-797d34bc7d-l7k8j   22m          50Mi      
 
 
-The [k9s tool](../
+
+The [k9s tool](../../tools/k9s/README.md) provides the core functionality to display metrics of the cluster and for each namespace. With the :pulse view you can see node dashboard.
+
+
+<img src="./images/monitoring-008.png" />
+
+
 
 	
-See the install guides for [metrics-server](METRICS_SERVER.md) and [kube-prometheus](KUBE_PROMETHEUS.md) for further details.
+See the install guides for [metrics-server](metrics-server/README.md) and [kube-prometheus](kube-prometheus.README.md) for further details.

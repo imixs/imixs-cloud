@@ -1,6 +1,6 @@
 # How to Monitor Imixs-Cloud
 
-To get better insights of your Imixs-Cloud* project you can install a monitoring service. Kubernetes provides several ways to collect and monitor cluster metrics like the memory or CPU usage of cluster nodes or pods. Kubernetes makes these data available through the Metrics API. These metrics can be accessed either directly by the user with the kubectl top command, or by a controller in the cluster, for example Horizontal Pod Autoscaler, to make decisions.
+To get better insights of your *Imixs-Cloud* project you can install a monitoring service. Kubernetes provides several ways to collect and monitor cluster metrics like the memory or CPU usage of cluster nodes or pods. Kubernetes makes these data available through the Metrics API. These metrics can be accessed either directly by the user with the kubectl top command, or by a controller in the cluster, for example Horizontal Pod Autoscaler, to make decisions.
 
 The *Imixs-Cloud* monitoring provides different setups to install a monitoring solution. 
 
