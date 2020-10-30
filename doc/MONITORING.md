@@ -1,34 +1,44 @@
 # How to Monitor Imixs-Cloud
 
-*Imixs-Cloud* also provides a monitoring feature which allows you to monitor your Kubernetes cluster.
+To get better insights of your Imixs-Cloud* project you can install a monitoring service. Kubernetes provides several ways to collect and monitor cluster metrics like the memory or CPU usage of cluster nodes or pods. Kubernetes makes these data available through the Metrics API. These metrics can be accessed either directly by the user with the kubectl top command, or by a controller in the cluster, for example Horizontal Pod Autoscaler, to make decisions.
 
-<img src="./images/monitoring-001.png" />
-
-
-The *Imixs-Cloud* monitoring is based on the [Prometheus Operator project](https://github.com/prometheus-operator/prometheus-operator).
-All metrics collected form the Imixs-Cloud kubernetes cluster can be monitored in a [Grafana](https://grafana.com/) dashboard.
+The *Imixs-Cloud* monitoring provides different setups to install a monitoring solution. 
 
 
-Follow the [Deployment Guide](../management/monitoring/README.md) to setup the monitoring services. 
+ * [metrics-server](METRICS_SERVER.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+ * [kube-prometheus](KUBE_PROMETHEUS.md) provides a configuration setup for a complete cluster monitoring stack. 
+
+After a metric server was installed you can monitor your Kubernetes cluster from the commandline tool **kubectl top**:
 
 
-## The Prometheus Operator
+	$ kubectl top nodes
+	NAME       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+	master-1   297m         14%    1358Mi          36%       
+	worker-1   1424m        35%    13913Mi         89%       
+	worker-2   1258m        31%    11278Mi         72%       
+	worker-3   1133m        28%    9956Mi          63%       
 
-The [Prometheus Operator project](https://github.com/prometheus-operator/prometheus-operator) provides Kubernetes native deployment and management of Prometheus and related monitoring components. The purpose of the project is to simplify and automate the configuration of a Prometheus based monitoring stack for Kubernetes clusters.
+	
+You can also get the data of a singel POD:
 
-## Kube Prometheus
+	$ kubectl top pod traefik-797d34bc7d-l7k8j -n kube-system
+	NAME                       CPU(cores)   MEMORY(bytes)   
+	traefik-797d34bc7d-l7k8j   22m          50Mi      
 
-Based on Prometheus Operator the project [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus) provides example configurations for a complete cluster monitoring stack. 
-The goal of *kube prometheus* is to simplify the deployment and configuration of Prometheus, Alertmanager, and related monitoring components. 
-The *Imixs-Cloud* monitoring is based on the latest version of the *kube-prometheus* so no additional configuration is need here.
+
+The [k9s tool](../tools/k9s/README.md) provides the core functionallity to display metrics of the cluster and for each namespace. With the :pulse view you can see node dashboard.
+
+
+<img src="./images/monitoring-008.png" />
+
 
 
 ## Prometheus
 
 [Prometheus](https://prometheus.io/) is an open-source systems monitoring and alerting toolkit. 
-The Prometheus service is the database used for collecting the metric data. The Prometheus server is only internal and not accessible from outside of your cluster. The internal address for data access is:
+The Prometheus service is the database used for collecting the metric data. The Prometheus server is typically only used internal to grab data from the metric api and not accessible from outside of your cluster. The internal address for data access is:
 
-	http://prometheus-k8s.monitoring.svc:9090
+	http://prometheus:9090
 
 
 ## Grafana
@@ -38,43 +48,17 @@ The grafana service provides a web interface with rich functionality for monitor
 
 To access grafana you need ot setup a Ingress route. See the [Deployment Guide](../management/monitoring/README.md) for details.
  
-### First Login
-
-For the first login use the userid 'admin' and the password 'admin'. You will be force to change the admin password first.
-
-<img src="./images/monitoring-002.png" />
- 
-### Setup the Prometheus Database
-
-The prometheus database is automatically configured by *kube prometheus*. You can verify the configuraiton on the grafana configuration page:
-
-<img src="./images/monitoring-003.png" />
-
-You don't need to add or change additional data.
 
 
-## The Dashboards
-
-
-The  *kube prometheus*  project provide a large number of Grafana dashboards which can be access from the dashboard configuration page.
-You can access the dashboard from the dashbard management plane:
-
-<img src="./images/monitoring-004.png" />
-
-You can also import additional Dashboards as JSON or by a Dashboard id:
-
-<img src="./images/monitoring-005.png" />
 
 
 <img src="./images/monitoring-001.png" />
 
 
 
-Here is a list of usefull dashboards which can be used in Imixs-Cloud monitoring:
 
 
- - https://grafana.com/grafana/dashboards/12919
- - https://grafana.com/grafana/dashboards/11074
- - https://grafana.com/grafana/dashboards/8171
- 
- 
+See the install guides for [metrics-server](METRICS_SERVER.md) and [kube-prometheus](KUBE_PROMETHEUS.md) for further details.
+
+
+
