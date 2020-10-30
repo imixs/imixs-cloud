@@ -32,7 +32,7 @@ You can also get the data of a singel POD:
 The [k9s tool](../../tools/k9s/README.md) provides the core functionality to display metrics of the cluster and for each namespace. With the :pulse view you can see node dashboard.
 
 
-<img src="./images/monitoring-008.png" />
+<img src="../../doc/images/monitoring-008.png" />
 
 
 
