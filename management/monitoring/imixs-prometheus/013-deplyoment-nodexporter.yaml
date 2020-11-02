@@ -1,0 +1,69 @@
+###################################
+# DaemonSet
+###################################
+---
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  annotations:
+      seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+      name: node-exporter
+    spec:
+      #hostNetwork: true
+      #hostPID: true
+      #nodeSelector:
+      #  kubernetes.io/os: linux
+      containers:
+      # v0.18.1
+      - image: quay.io/prometheus/node-exporter:v1.0.1
+        name: node-exporter
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+          name: scrape
+        resources:
+          requests:
+            memory: 30Mi
+            cpu: 100m
+          limits:
+            memory: 50Mi
+            cpu: 200m
+        volumeMounts:
+        - name: proc
+          readOnly:  true
+          mountPath: /host/proc
+        - name: sys
+          readOnly: true
+          mountPath: /host/sys
+        - name: rootfs
+          readOnly: true
+          mountPath: /rootfs
+      # schedule node exporter on all nodes including master
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: rootfs
+        hostPath:
+          path: /
+
+
+

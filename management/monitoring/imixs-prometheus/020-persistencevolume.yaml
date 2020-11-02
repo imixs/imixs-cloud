@@ -1,0 +1,82 @@
+###############################
+# Prometheus storage 10Gi
+###############################
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: prometheus-data
+  namespace: monitoring
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: monitoring
+    name: prometheus-data
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: monitoring-prometheus-data
+  storageClassName: longhorn-durable
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-data
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-durable
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: "prometheus-data"
+
+
+
+###############################
+# Grafana storage 1Gi
+###############################
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: grafana-data
+  namespace: monitoring
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: monitoring
+    name: grafana-data
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: monitoring-grafana-data
+  storageClassName: longhorn-durable
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-durable
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: "grafana-data"
+
+
+

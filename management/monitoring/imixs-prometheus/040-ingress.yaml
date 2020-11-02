@@ -1,0 +1,46 @@
+
+
+
+###################################
+# Ingress Grafana
+###################################
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: grafana-tls
+  namespace: monitoring
+spec:
+  rules:
+  - host: [YOUR-INTERNET-NAME]
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 3000
+
+
+
+###################################
+# Ingress Prometheus with baisc auth
+# uncomment these lines to enable prmetheus internet access
+###################################
+#---
+#kind: Ingress
+#apiVersion: networking.k8s.io/v1beta1
+#metadata:
+#  name: prometheus-ui
+#  namespace: monitoring
+#  annotations:
+#    traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
+#
+#spec:
+#  rules:
+#  - host: [YOUR-INTERNET-NAME]
+#    http:
+#      paths:
+#      - path: /
+#        backend:
+#          serviceName: prometheus
+#          servicePort: 9090
