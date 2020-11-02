@@ -4,12 +4,11 @@ To get better insights of your *Imixs-Cloud* project you can install a monitorin
 
 The *Imixs-Cloud* monitoring provides different setups to install a monitoring solution. 
 
- * [metrics-server](../management/metrics-server-README.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+ * [metrics-server](../management/monitoring/metrics-server/README.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
  * [imixs-prometheus](../management/monitoring/imixs-prometheus/README.md) is the recommended monitoring dashboard for *Imixs-Cloud*
  * [kube-prometheus](../management/monitoring/kube-prometheus/README.md) provides a configuration setup for a complete cluster monitoring stack based on the  Prometheus Operator project. 
 
-
-After a metric server was installed you can monitor your Kubernetes cluster from the commandline tool **kubectl top**:
+After the metrics server was installed you can monitor your Kubernetes cluster from the commandline tool **kubectl top**:
 
 
 	$ kubectl top nodes

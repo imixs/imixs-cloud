@@ -7,7 +7,7 @@ Kubernetes provides several ways to collect and monitor cluster metrics like the
 The *Imixs-Cloud* monitoring provides different setups to install a monitoring solution. 
 
 
- * [metrics-server](../metrics-server-README.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
+ * [metrics-server](metrics-server/README.md) is a scalable, efficient source of container resource metrics for Kubernetes built-in autoscaling pipelines.
  * [imixs-prometheus](imixs-prometheus/README.md) is the recommended monitoring dashboard for *Imixs-Cloud*
  * [kube-prometheus](kube-prometheus/README.md) provides a configuration setup for a complete cluster monitoring stack based on the  Prometheus Operator project. 
 
