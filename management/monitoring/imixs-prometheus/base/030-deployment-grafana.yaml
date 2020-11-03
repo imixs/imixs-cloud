@@ -65,11 +65,11 @@ spec:
             memory: "1Gi"
             cpu: "500m"
         volumeMounts:
-          - mountPath: /var/lib/grafana
-            name: grafana-data
           - mountPath: /etc/grafana/provisioning/datasources
             name: grafana-datasources
             #readOnly: false
+          - mountPath: /var/lib/grafana
+            name: grafana-data
       volumes:
       - name: grafana-datasources
         configMap:
