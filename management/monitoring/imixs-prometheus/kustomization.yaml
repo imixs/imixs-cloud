@@ -1,0 +1,14 @@
+namespace: monitoring
+
+bases:
+- ../base/
+
+# Patch Resources
+patchesStrategicMerge:
+- 010-patch-volumes.yaml
+
+
+# Additional Resoruces
+resources:
+- 050-persistencevolume.yaml
+- 060-ingress.yaml

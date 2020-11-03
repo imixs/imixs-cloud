@@ -103,16 +103,9 @@ spec:
         configMap:
           name: prometheus-config
       - name: prometheus-data
-        persistentVolumeClaim:
-          claimName: prometheus-data
-        #emptyDir: {}
+        emptyDir: {}
 
   
-
-
-
-
-
 
 
 

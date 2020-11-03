@@ -1,0 +1,6 @@
+resources:
+  - 010-deployment-prometheus.yaml
+  - 020-deployment-nodexporter.yaml
+  - 021-deployment-kube-state-metrics.yaml
+  - 030-deployment-grafana.yaml
+  - 040-services.yaml

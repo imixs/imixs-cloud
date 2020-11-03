@@ -71,20 +71,12 @@ spec:
             name: grafana-datasources
             #readOnly: false
       volumes:
-        - name: grafana-data
-          persistentVolumeClaim:
-            claimName: grafana-data
-        - name: grafana-datasources
-          configMap:
-              defaultMode: 420
-              name: grafana-datasources
-
-
-
-
-
-
-
+      - name: grafana-datasources
+        configMap:
+            defaultMode: 420
+            name: grafana-datasources
+      - name: grafana-data
+      emptyDir: {}     
 
 
 
