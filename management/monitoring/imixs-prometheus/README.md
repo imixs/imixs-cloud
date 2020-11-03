@@ -36,29 +36,32 @@ The [Prometheus node-exporter](https://github.com/prometheus/node_exporter) is a
 
 ## The Installation
 
-*imixs-prometheus* is based on *kustomize* that allows you to change every details in an easy way.
+*imixs-prometheus* is based on *kustomize* which allows you easy deployment and allows to change every detail of the configuration in an easy way.
+
+### The Prometheus Configuration
+
+The configuration details how prometheus scrap the metric data form the different metric APIs is defined in the config file *config/prometheus.yaml*. You can use this file to customizes the different jobs or add new jobs for you own business applications. 
+
+The configuration is provided as a config map which need to be generated before you can start the deployment. To create the config map run:
+
+	$ kubectl create namespace monitoring
+	$ kubectl create configmap prometheus-config --from-file=./management/monitoring/metrics-server/config/prometheus.yml -n monitoring
+
 
 
 ### Deployment
 
-The prometheus configuration how to scrap the metric data form the different metric APIs is defined in the config file so you can change these settings later easily:
-
-	/config/prometheus.yml 
-
-The configuraiton is provided as a config map. To create the config map run:
-
-	$ kubectl create namespace monitoring
-	$ kubectl create configmap prometheus-config --from-file=./management/monitoring/metrics-server/config/prometheus.yml -n monitoring
 	
 A basic deployment can be run via kubectl and the base kustomize setup hosted on github:
 
 	$ kubectl apply -k https://github.com/imixs/imixs-cloud/management/monitoring/imixs-prometheus/base
 
 If you have already cloned this repo you can also use your local manifest files:
-
 	
 	$ kubectl apply -k management/monitoring/imixs-prometheus/base
 	
+
+### Undeploy the Monitoring stack
 
 To undeploy the monitoring stack run:
 
@@ -67,18 +70,12 @@ To undeploy the monitoring stack run:
 	$ kubectl delete configmap prometheus-config -n monitoring
 	$ kubectl delete namespace monitoring
 	
-	
-	
-### Create a Storage Volume
 
-The monitoring stack needs some durable storage volumes to persist data. We use the volume 'grafana-data' to persist the grafana settings like plugins, users and dashbords. So first create the following new Storage volumes:
+## Customizing Imixs-Prometheus
 
-	monitoring-grafana-data   1G
-	monitoring-prometheus-data   10G
+As the *Imixs-Cloud* monitoring stack is based on *kustomize* you can easily apply additional resources or apply configuration patches in your own kustomize.yaml file. 
 
-If you do not have installed a storage solution like longhorn or ceph you can use an 'emtypy-dir' but this will lot your settings after a redeployment. For testing purpose this can be sufficient. 
-
-To add the new volume configuration just create your own kustomize.yml file to adapt the deployment base deployment
+The following example shows how to apply custom patches and resources in a kustomize.yaml file:
 
 	namespace: monitoring
 	
@@ -88,12 +85,83 @@ To add the new volume configuration just create your own kustomize.yml file to a
 	
 	resources:
 	- 050-persistencevolume.yaml
-	#- 060-ingress.yaml
+	- 060-ingress.yaml
 	
 	patchesStrategicMerge:
 	- 010-patch-volumes.yaml
+	- 030-patch-grafana-env.yaml
 
 
-To run your custom deployment:
+To apply a custom deployment run:
 
 	$ kubectl apply -k management/monitoring/imixs-prometheus
+	
+In the following section some of the custom configuration patches are explained:
+
+
+### Ingress Configuration
+
+Prometheus and Grafana can both be configured with an additional ingress network so you can access the Dashboards  form your public Internet address. The file 060-ingress.yaml shows an example setup where you need to replace [YOUR-INTERNET-NAME] with an valid Internet domain name. 	
+
+	# Grafana Ingeres Config
+	---
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
+	metadata:
+	  name: grafana-tls
+	  namespace: monitoring
+	spec:
+	  rules:
+	  - host: [YOUR-INTERNET-NAME]
+	    http:
+	      paths:
+	      - path: /
+	        backend:
+	          serviceName: grafana
+	          servicePort: 3000
+	
+### Create a Storage Volumes
+
+Monitoring your cluster over a long period of time the stack needs some durable storage volumes to persist prometeus-data and grafana configuration. Otherwise the collected information is lost when you redeploy your monitoring stack the next time. 
+
+To persist the data in a storage volume you can provide longhorn data volumes to be used by the *Imixs-Cloud* monitoring stack.
+
+First create the following new Storage volumes:
+
+	monitoring-grafana-data   1G
+	monitoring-prometheus-data   10G
+
+To add the new volume configuration just add a *patchesStrategicMerge* and *resoruces* into your own *kustomize.yml* file. You can find an example in the files
+
+ - 050-persistencevolume.yaml
+ - 010-patch-volumes.yaml
+
+
+### Grafana Configuration
+
+To apply additional configurations to grafana you can provide most of the configuration settings via environment variables. With kustomize you can easily apply additional parameters for example to set an email server config. An example is included in the file 030-patch-grafana-env.yaml
+
+
+	---
+	###################################################
+	# Grafana SMTP Config
+	###################################################
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: grafana
+	  namespace: monitoring
+	spec:
+	  template:
+	    spec:
+	      containers:
+	      - name: grafana
+	        env:
+	          - name: GF_SMTP_ENABLED
+	            value: "true"
+	          - name: GF_SMTP_HOST
+	            value: "my-mailgateway.kube-system:25"
+	          - name: GF_SMTP_FROM_ADDRESS
+	            value: "info@foo.com"
+            
+ 

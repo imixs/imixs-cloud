@@ -1,0 +1,21 @@
+---
+###################################################
+# Grafana SMTP Config
+###################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  template:
+    spec:
+      containers:
+      - name: grafana
+        env:
+          - name: GF_SMTP_ENABLED
+            value: "true"
+          - name: GF_SMTP_HOST
+            value: "my-mailgateway.kube-system:25"
+          - name: GF_SMTP_FROM_ADDRESS
+            value: "info@foo.com"

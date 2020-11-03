@@ -10,6 +10,7 @@ resources:
 
 patchesStrategicMerge:
 - 010-patch-volumes.yaml
+- 030-patch-grafana-env.yaml
 
 
       
