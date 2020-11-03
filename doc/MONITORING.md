@@ -52,7 +52,7 @@ To access grafana you need ot setup a Ingress route. See the [Deployment Guide](
 <img src="./images/monitoring-001.png" />
 
 
-See the install guides for [metrics-server](../management/monitoring/metrics-server/README.md) and [kube-prometheus](../management/monitoring/kube-prometheus/README.md) for further details.
+For further details see the install guides for the [metrics-server](../management/monitoring/metrics-server/README.md) and [imixs-prometheus](../management/monitoring/imixs-prometheus/README.md).
 
 
 
