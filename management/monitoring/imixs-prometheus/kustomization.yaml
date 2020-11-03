@@ -1,14 +1,15 @@
 namespace: monitoring
 
 bases:
-- ../base/
+- https://github.com/imixs/imixs-cloud/management/monitoring/imixs-prometheus/base
+#- ../base/
 
-# Patch Resources
+resources:
+- 050-persistencevolume.yaml
+- 060-ingress.yaml
+
 patchesStrategicMerge:
 - 010-patch-volumes.yaml
 
 
-# Additional Resoruces
-resources:
-- 050-persistencevolume.yaml
-- 060-ingress.yaml
+      

@@ -7,14 +7,15 @@ kind: Deployment
 metadata:
   name: prometheus
   namespace: monitoring
-
 spec:
   template:
     spec:
+      containers:
+      - name: prometheus
+        volumeMounts:
+        - name: prometheus-data
+          mountPath: /prometheus
       volumes:
-      - name: config-volume
-        configMap:
-          name: prometheus-config
       - name: prometheus-data
         persistentVolumeClaim:
           claimName: prometheus-data
@@ -32,8 +33,13 @@ metadata:
 spec:
   template:
     spec:
+      containers:
+      - name: grafana
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-data
       volumes:
-        - name: grafana-data
-          persistentVolumeClaim:
-            claimName: grafana-data
+      - name: grafana-data
+        persistentVolumeClaim:
+          claimName: grafana-data
   

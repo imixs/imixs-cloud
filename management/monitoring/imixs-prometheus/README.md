@@ -1,6 +1,6 @@
 # Monitoring
 
-The Core metrics collected by the metrics-server are stored in memory. To collect and monitor the core metrics over time an additional mechanism for aggregating this data needed. As all the Kubernetes internal metrics is exposed using the the Prometheus exposition format, a Prometheus service can be used to aggregate metrics not only from the metric-server but also from other components as also from individual business applications. The following section shows how to setup a Monitoring with Promethus and Grafana.
+The Core metrics collected by the metrics-server are stored in memory. To collect and monitor the core metrics over time an additional mechanism for aggregating this data needed. As all the Kubernetes internal metrics is exposed using the the Prometheus exposition format, a Prometheus service can be used to aggregate metrics not only from the metric-server but also from other components as also from individual business applications. The following section shows how to setup a Monitoring with Prometheus and Grafana.
 
 ## kube-state-metrics
 
@@ -41,5 +41,14 @@ Now you can deploy the monitoring stack:
 
 
 
+To undeploy the monitoring stack run:
+
+
+	$ kubectl delete -f management/monitoring/metrics-server/
+	$ kubectl delete configmap prometheus-config -n monitoring
+	$ kubectl delete namespace monitoring
+	
+	
+	
 
 
