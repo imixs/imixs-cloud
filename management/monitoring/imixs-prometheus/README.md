@@ -37,7 +37,7 @@ We use the config map providing prometheus with the necessary settings. You can 
 	
 Now you can deploy the monitoring stack:
 
-	$ kubectl apply -f management/monitoring/metrics-server/
+	$ kubectl apply -k management/monitoring/imixs-prometheus/
 
 
 
