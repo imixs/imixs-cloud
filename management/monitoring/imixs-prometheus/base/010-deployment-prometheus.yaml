@@ -96,14 +96,14 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/prometheus
-        - name: prometheus-data
-          mountPath: /prometheus
+        #- name: prometheus-data
+        #  mountPath: /prometheus
       volumes:
       - name: config-volume
         configMap:
           name: prometheus-config
-      - name: prometheus-data
-        emptyDir: {}
+      #- name: prometheus-data
+      #  emptyDir: {}
 
 
 
