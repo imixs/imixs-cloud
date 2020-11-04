@@ -49,24 +49,23 @@ scrape_configs:
   - action: labelmap
     regex: __meta_kubernetes_node_label_(.+)
 
-# NEU:...
-  - target_label: __scheme__
-    replacement: https
-  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
-    target_label: instance
 
 
 
-
-
-
-
-
-
-
-
-
-
+# Scrape cAdvisor (container level information)
+#
+# The kubelet only provides information about itself and not the containers. 
+# To receive information from the container level, we need to use an exporter. 
+# The cAdvisor is already embedded and only needs a metrics_path: /metrics/cadvisor 
+- job_name: 'cadvisor'
+  kubernetes_sd_configs:
+  - role: node
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  metrics_path: /metrics/cadvisor
 
 
 # Scrape config for Node Exporter
@@ -78,7 +77,6 @@ scrape_configs:
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
-
   relabel_configs:
   # select pod by application label 
   - source_labels: [__meta_kubernetes_pod_label_app]
@@ -86,13 +84,10 @@ scrape_configs:
     regex: (node-exporter)
     replacement: $1
     action: keep
-
   # replace instnace name (IP) with host name
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: instance
 
-
-#  relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     separator: ;
     regex: node-exporter
@@ -151,18 +146,6 @@ scrape_configs:
     regex: (kube-state-metrics);8080
     replacement: $1
     action: keep
-
-  # We remove the portnumber from the instance name...
-  #- source_labels: [__address__]
-  #  regex: "([^:]+):\\d+"
-  #  target_label: instance
-
-  # replace instnace name (IP) with host name
-#  - source_labels: [__meta_kubernetes_pod_node_name]
-#    target_label: instance
-
-
-
   - action: labelmap
     regex: __meta_kubernetes_pod_label_(.+)
   - source_labels: [__meta_kubernetes_namespace]

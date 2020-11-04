@@ -45,7 +45,7 @@ The configuration details how prometheus scrapes the metric data form the differ
 The configuration is provided as a config map which need to be generated before you can start the deployment. To create the config map run:
 
 	$ kubectl create namespace monitoring
-	$ kubectl create configmap prometheus-config --from-file=./management/monitoring/metrics-server/config/prometheus.yml -n monitoring
+	$ kubectl create configmap prometheus-config --from-file=./management/monitoring/imixs-prometheus/config/prometheus.yml -n monitoring
 
 
 
