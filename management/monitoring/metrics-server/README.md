@@ -6,20 +6,15 @@ The Kubernetes Metrics Server is collecting and aggregating these core metrics i
 
 ## How to Install
 
-To install the metrics-server follow these steps:
+To install the metrics-server run:
 
-Create a deployment directory
 
-	$ mkdir metrics-server
-	$ cd metrics-server
-	
-Copy the latest component.yaml file from github:
+	$ kubectl apply -f monitoring/metrics-server/
+
+The server will be installed into the namespace 'kube-system'.  The latest version of the deplyoment yaml file can be downloaded form the github project as well:
 
 	$ wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
 	
-Start the metric server with:
-
-	$ kubectl apply -f components.yaml
 
 The metrics-server will start grabbing the node metrics. Until the first data is available it may take some seconds. 
 

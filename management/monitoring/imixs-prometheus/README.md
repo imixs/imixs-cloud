@@ -1,8 +1,8 @@
 # Monitoring
 
-The Core metrics collected by the metrics-server are stored in memory. To collect and monitor the core metrics over time an additional mechanism for aggregating this data needed. As all the Kubernetes internal metrics is exposed using the the Prometheus exposition format, a Prometheus service can be used to aggregate metrics not only from the metric-server but also from other components as also from individual business applications. 
+The Core metrics collected by the metrics-server are stored in memory. To collect and monitor the core metrics over time an additional mechanism for aggregating this data is needed. As all the Kubernetes internal metrics is exposed using the Prometheus exposition format, a Prometheus service can be used to aggregate metrics not only from the metric-server but also from other components as also from individual business applications. 
 
-The imixs-prometheus stack is a deployment stack including all necessary services to monitor a kuberentes cluster. This part is independent fom the *Imixs-Cloud* project and can also be applied to other kubernetes setups. The imixs-prometheus stack is based on kustomize which allows you to get better insights how the stack is build and also a convenient way for customizing the stack for individual needs. 
+The imixs-prometheus stack is a deployment stack including all necessary services to monitor a kuberentes cluster. This part is independent from the *Imixs-Cloud* project and can also be applied to other kubernetes setups. The imixs-prometheus stack is based on kustomize which allows you to get better insights how the stack is build and also a convenient way for customizing the stack for individual needs. 
 
 The following section shows how to setup a Monitoring with Prometheus and Grafana.
 
@@ -40,7 +40,7 @@ The [Prometheus node-exporter](https://github.com/prometheus/node_exporter) is a
 
 ### The Prometheus Configuration
 
-The configuration details how prometheus scrap the metric data form the different metric APIs is defined in the config file *config/prometheus.yaml*. You can use this file to customizes the different jobs or add new jobs for you own business applications. 
+The configuration details how prometheus scrapes the metric data form the different metric APIs is defined in the config file *config/prometheus.yaml*. You can use this file to customizes the different jobs or add new jobs for you own business applications. 
 
 The configuration is provided as a config map which need to be generated before you can start the deployment. To create the config map run:
 
@@ -70,6 +70,42 @@ To undeploy the monitoring stack run:
 	$ kubectl delete configmap prometheus-config -n monitoring
 	$ kubectl delete namespace monitoring
 	
+
+
+
+
+
+## First Login
+
+For the first login use the userid 'admin' and the password 'admin'. You will be force to change the admin password first.
+
+<img src="../../../doc/images/monitoring-002.png" />
+ 
+### Setup the Prometheus Database
+
+The Prometheus database is automatically configured by *imixs-prometheus*. You can verify the configuration on the Grafana configuration page:
+
+<img src="../../../doc/images/monitoring-003.png" />
+
+You don't need to add or change additional data.
+
+
+### The Dashboards
+
+
+The  *imixs prometheus*  project provides already a Grafana dashboard which can be imported  from the dashbard management plane:
+
+You can import the Dashboard simply by the Dashboard id 12919 or by importing the dashboard json file located under /dashboards/imixs-cloud.json. 
+
+<img src="../../../doc/images/monitoring-005.png" />
+
+You can add the dashboard to your profile.
+
+
+<img src="../../../doc/images/monitoring-001.png" />
+
+
+
 
 ## Customizing Imixs-Prometheus
 
