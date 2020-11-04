@@ -33,7 +33,6 @@ rules:
   - nodes
   - pods
   - services
-  #- ingresses
   - resourcequotas
   - replicationcontrollers
   - limitranges
@@ -50,7 +49,7 @@ rules:
   - daemonsets
   - deployments
   - replicasets
-  #- ingresses
+  - ingresses
   verbs:
   - list
   - watch
@@ -98,13 +97,13 @@ rules:
   verbs:
   - list
   - watch
-#- apiGroups:
-#  - certificates.k8s.io
-#  resources:
-#  - certificatesigningrequests
-#  verbs:
-#  - list
-#  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - list
+  - watch
 - apiGroups:
   - storage.k8s.io
   resources:
@@ -125,7 +124,7 @@ rules:
   - networking.k8s.io
   resources:
   - networkpolicies
-#  - ingresses
+  - ingresses
   verbs:
   - list
   - watch
