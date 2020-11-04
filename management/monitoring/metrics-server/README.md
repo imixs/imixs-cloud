@@ -9,7 +9,7 @@ The Kubernetes Metrics Server is collecting and aggregating these core metrics i
 To install the metrics-server run:
 
 
-	$ kubectl apply -f monitoring/metrics-server/
+	$ kubectl apply -f management/monitoring/metrics-server/
 
 The server will be installed into the namespace 'kube-system'.  The latest version of the deplyoment yaml file can be downloaded form the github project as well:
 
