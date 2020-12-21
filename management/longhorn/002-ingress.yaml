@@ -5,7 +5,7 @@ metadata:
   namespace: longhorn-system
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: default-cors-all@kubernetescrd
-    # optional basic-auth
+    # optional cors with basic-auth
     #traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
 
 spec:

@@ -47,25 +47,38 @@ The startup can take a while. You can monitor the startup with the [K9s tool](..
 
 ### The Longhorn-UI
 
-Longhorn comes with a UI web interface to monitor and administrate the cluster. To access the UI from you _Imixs-Cloud_ setup you have to create a ingress for the Longhorn UI with a traefik ingress route. Just edit the file management/longhorn/030-ingress.yAml and replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route:
+Longhorn comes with a UI web interface to monitor and administrate the cluster. To access the UI from *Imixs-Cloud* you have to create a ingress for the Longhorn UI using the [traefik service](https://github.com/imixs/imixs-cloud/blob/master/doc/INGRESS.md). Just edit the file management/longhorn/002-ingress.yaml and replace {YOUR-HOST-NAME} with a DNS name pointing to your cluster:
 
 
-	apiVersion: traefik.containo.us/v1alpha1
-	kind: IngressRoute
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1beta1
 	metadata:
-	  name: traefik-dashboard
+	  name: longhorn-ui
+	  namespace: longhorn-system
+	  annotations:
+	    traefik.ingress.kubernetes.io/router.middlewares: default-cors-all@kubernetescrd
+	    # optional cors with basic-auth
+	    #traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
+	
 	spec:
-	  routes:
-	  - match: Host(`{YOUR-HOST-NAME}`)
-	    kind: Rule
-	    services:
-	    - name: api@internal
-	      kind: TraefikService
-	    # optional: add basic auth
-	    #middlewares: 
-	    #- name: basic-auth
+	  rules:
+	  - host: {YOUR-HOST-NAME}
+	    http:
+	      paths:
+	      - path: /
+	        backend:
+	          serviceName: longhorn-frontend
+	          servicePort: 80
     
-The traefik middleware configuation 'basic-auth' should be used to protect the web ui for administrative access only. See the section [Traefik Middleware](https://github.com/imixs/imixs-cloud/blob/master/doc/INGRESS.md#middleware) for more details.  
+Apply the ingress route:
+
+	$ kubectl apply -f management/longhorn/002-ingress.yaml
+    
+**Note:** The traefik middleware configuration 'basic-auth' should be used to protect the Longhorn-UI for administrative access only. If you already have configured a basic-auth middleware you can use the traefik middlewares:
+
+	traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
+	
+See the section [Traefik Middleware](https://github.com/imixs/imixs-cloud/blob/master/doc/INGRESS.md#middleware) for more details.  
 
 ## Create Longhorn Volumes
 
