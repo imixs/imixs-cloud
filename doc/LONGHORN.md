@@ -47,31 +47,29 @@ The startup can take a while. You can monitor the startup with the [K9s tool](..
 
 ### The Longhorn-UI
 
-Longhorn comes with a UI web interface to monitor and administrate the cluster. To access the UI from you _Imixs-Cloud_ setup you have to create a ingress for the Longhorn UI with a traefik ingress route. Just edit the file management/longhorn/002-ingress.yml and replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route:
+Longhorn comes with a UI web interface to monitor and administrate the cluster. To access the UI from you _Imixs-Cloud_ setup you have to create a ingress for the Longhorn UI with a traefik ingress route. Just edit the file management/longhorn/030-ingress.yAml and replace {YOUR-DNS} with a DNS name pointing to your cluster and apply the ingress route:
 
 
-	kind: IngressRoute
 	apiVersion: traefik.containo.us/v1alpha1
+	kind: IngressRoute
 	metadata:
-	  name: longhorn-frontend
-	  namespace: longhorn-system
-	
+	  name: traefik-dashboard
 	spec:
-	  entryPoints: 
-	    - web
 	  routes:
-	  - match: Host(`{YOUR-DNS}`) 
+	  - match: Host(`{YOUR-HOST-NAME}`)
 	    kind: Rule
 	    services:
-	    - name: longhorn-frontend
-	      port: 8000
-	    
-
-
+	    - name: api@internal
+	      kind: TraefikService
+	    # optional: add basic auth
+	    #middlewares: 
+	    #- name: basic-auth
+    
+The traefik middleware configuation 'basic-auth' should be used to protect the web ui for administrative access only. See the section [Traefik Middleware](https://github.com/imixs/imixs-cloud/blob/master/doc/INGRESS.md#middleware) for more details.  
 
 ## Create Longhorn Volumes
 
-Before you can create Kubernetes volumes within Longhorn, you must first provide a storage class. _Imixs-Cloud_ is already providing a default StorageClass for longhorn in the file /longhonr/003-storageclass.yaml
+Before you can create Kubernetes volumes within Longhorn, you must first provide a storage class. _Imixs-Cloud_ is already providing a default StorageClass for longhorn in the file /longhorn/003-storageclass.yaml
 
 
 	kind: StorageClass
