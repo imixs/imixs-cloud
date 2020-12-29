@@ -41,38 +41,43 @@ deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 
 
-echo " switch to legacy versions..."
-# ensure legacy binaries are installed - this is required for Debian 10
-apt install -y iptables arptables ebtables
 
-# switch to legacy versions
-update-alternatives --set iptables /usr/sbin/iptables-legacy
-update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-update-alternatives --set arptables /usr/sbin/arptables-legacy
-update-alternatives --set ebtables /usr/sbin/ebtables-legacy
+echo "...letting iptables see bridged traffic..."
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+
+# Setup required sysctl params, these persist across reboots.
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+# Apply sysctl params without reboot
+sudo sysctl --system
 
 
 echo "#############################################"
-echo " installing docker and kubernetes...."
+echo " installing kubernetes...."
 echo "#############################################"
 apt update
-apt install -y docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl open-iscsi apache2-utils
+apt install -y containerd kubelet kubeadm kubectl open-iscsi apache2-utils
 
-# Setup docker daemon with systemd (only used for debian).
-cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
-mkdir -p /etc/systemd/system/docker.service.d
-systemctl daemon-reload
-systemctl restart docker
-# Setup docker daemon - END -
+
+echo "...setup containerd..."
+#sudo apt-get update && sudo apt-get install -y containerd.io
+# Configure containerd
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+# Restart containerd
+sudo systemctl restart containerd
+
+
 
 echo "#############################################"
 echo " setup for docker and kubernetes completed."

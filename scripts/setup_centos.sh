@@ -21,9 +21,28 @@ if [ "$EUID" -ne 0 ]
 fi
 
 
+echo "...letting iptables see bridged traffic..."
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+
+# Setup required sysctl params, these persist across reboots.
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+# Apply sysctl params without reboot
+sudo sysctl --system
+
 
 echo "#############################################"
-echo " install docker-ce"
+echo " install container.io"
 echo "#############################################"
 
 yum install -y yum-utils \
@@ -33,12 +52,15 @@ yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
     
-  
-yum install -y docker-ce docker-ce-cli containerd.io
+## Install containerd
+yum update -y && yum install -y containerd.io
 
-# Enable docker
-systemctl start docker && systemctl enable docker
 
+## Configure containerd
+mkdir -p /etc/containerd
+containerd config default > /etc/containerd/config.toml
+# Restart containerd
+systemctl restart containerd
 
 echo "#############################################"
 echo " installing kubernetes...."
