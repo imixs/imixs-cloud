@@ -64,9 +64,7 @@ Find more details about how to fork or clone this repo [here](GIT.md).
 
 In order to ensure that all nodes are running the same software releases run the *Imixs-Cloud* setup script on all your nodes. The script installs the following tools:
 
- - docker-ce (the docker engine)
- - docker-ce-cli (the docker command line interface)
- - containerd.io (the container runtime)
+ - containerd (the container runtime)
  - kubelet (the kubernetes node agent)
  - kubeadm (the kubernetes cluster tool)
  - kubectl (the kubernetes command line interface)
@@ -83,15 +81,17 @@ For CentOS 7
 	$ sudo ~/imixs-cloud/scripts/setup_centos.sh
 	
 
+### Hostnames and Network Addresses
 
+In case you are running your cluster in a private network, make sure that all hostnames of the cluster nodes are listed in the */etc/hosts* with the IP addresses of you private network. Otherwise your cluster nodes will probably communicate via the public Internet IPs which is what you want to avoid. 
 
 ## Setup the Cluster
 
-After you have installed the necessary libraries you can initialize the Kubernetes cluster using the following kubeadm command:
+After you have installed the setup script and checked you network IP addresses, you can initialize the Kubernetes cluster using the following kubeadm command:
 
 	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS]
 
-Replace [NODE\_IP\_ADDRESS] with your servers public IP address.
+Replace [NODE\_IP\_ADDRESS] with your servers private IP address.
 
 You will see a detailed protocol showing what happens behind the scene. If something went wrong you can easily roll back everything with the command:
 
@@ -184,37 +184,6 @@ You can verify the status of your kubernets cluster with the following command:
 
 This will show you the current version of kubernetes running on each node
 
-To check the status of docker run the following command on each node:
-
-	$ sudo docker version
-	Client: Docker Engine - Community
-	 Version:           19.03.8
-	 API version:       1.40
-	 Go version:        go1.12.17
-	 Git commit:        afacb8b7f0
-	 Built:             Wed Mar 11 01:25:56 2020
-	 OS/Arch:           linux/amd64
-	 Experimental:      false
-	
-	Server: Docker Engine - Community
-	 Engine:
-	  Version:          19.03.8
-	  API version:      1.40 (minimum version 1.12)
-	  Go version:       go1.12.17
-	  Git commit:       afacb8b7f0
-	  Built:            Wed Mar 11 01:24:28 2020
-	  OS/Arch:          linux/amd64
-	  Experimental:     false
-	 containerd:
-	  Version:          1.2.13
-	  GitCommit:        7ad184331fa3e5
-	 runc:
-	  Version:          1.0.0-rc10
-	  GitCommit:        dc9208a3303fee
-	 docker-init:
-	  Version:          0.18.0
-	  GitCommit:        fec3683
-
 
 ## Upgrade a Cluster Node
 
@@ -235,7 +204,7 @@ To update your worker or master node run the following commands on a debian plat
 **3. Reboot your node**
 
 After an upgrade kubernetes will automatically reschedule the node pods. 
-Optional you can also reboot your node to make sure docker deamon and kubernets is restarted correctly.
+Optional you can also reboot your node to make sure kubernetes is restarted correctly.
 
 	$ sudo reboot
 
