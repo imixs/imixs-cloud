@@ -48,4 +48,47 @@ Setup 2nd master:
 	
  - The --control-plane flag tells kubeadm join to create a new control plane.
  - The --certificate-key ... will cause the control plane certificates to be downloaded from the kubeadm-certs Secret in the cluster and be decrypted using the given key.
+
+
+
+### Add master to existing cluster
+
+https://stackoverflow.com/questions/49887597/add-a-second-master-node-for-high-availabity-in-kubernetes
+	
+https://stackoverflow.com/questions/55867216/adding-master-to-kubernetes-cluster-cluster-doesnt-have-a-stable-controlplanee
+	
+
+1) copy the K8s CA cert from kubemaster01.
+
+
+	scp root@<kubemaster01-ip-address>:/etc/kubernetes/pki/* /etc/kubernetes/pki
+
+
+2) For bootstrapping create a config.yaml:
+
+
+	apiVersion: kubeadm.k8s.io/v1beta1
+	kind: ClusterConfiguration
+	api:
+	  advertiseAddress: <private-ip>
+	etcd:
+	  endpoints:
+	 - https://<your-ectd-ip>:2379
+	  caFile: /etc/kubernetes/pki/etcd/ca.pem
+	  certFile: /etc/kubernetes/pki/etcd/client.pem
+	  keyFile: /etc/kubernetes/pki/etcd/client-key.pem
+	networking:
+	  podSubnet: <podCIDR>
+	apiServerCertSANs:
+	- <load-balancer-ip>  
+	apiServerExtraArgs:
+	  apiserver-count: "2"
+	
+Ensure that the following placeholders are replaced:
+
+ - your-ectd-ip the IP address your etcd
+ - private-ip it with the private IPv4 of the master server.
+ - <podCIDR> with your Pod CIDR
+ - load-balancer-ip endpoint to connect your masters
+	
 	

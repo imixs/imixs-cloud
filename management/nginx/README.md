@@ -4,11 +4,26 @@ The [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx)  is 
 The NGINX Ingress Controller is maintained by the Kubernetes community.
 
 
-## Deployment
+## Deployment cert-manager
 
-The deployment is based on kustzomize. In this way you can control and customize the deployment in an easy way. The deployment is based on the official cloud provider configuration maintained on Github. The origin deployment template can be found [here](https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.43.0/deploy/static/provider/cloud/deploy.yaml)
+The deployment configuration in *Imixs-Cloud* contains already a setup for TLS certificates issued by Let’s Encrypt. So there is no further configuration needed to use Let’s Encrypt. To support certificates the 'cert-manager' is needed. This service can be deployed from the cert-manager repo on Github:
 
-To deploy, first edit the file *020-service.yaml* and replace {YOUR_CLUSTER_IP} with the ip address of your master node
+	$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+
+Verify installation with:
+
+	$ kubectl get pods --namespace cert-manager
+
+
+## Deployment NGINX
+
+The deployment of the NGINX Ingress Controller is based on kustzomize. In this way you can control and customize the deployment in an easy way. The deployment is based on the official cloud provider configuration maintained on Github. The origin deployment template can be found [here](https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.43.0/deploy/static/provider/cloud/deploy.yaml)
+
+Before you deploy just edit the file *020-service.yaml* and replace {YOUR_CLUSTER_IP} with the ip address of your master node
+
+In the file *030-cluster-issuer.yaml* replace the email address with a valid address from your organization. This email address will become the issuer for the  Let’s Encrypt certificates.
+
+
 
 Next you can start the deployment using kustomize:
 
@@ -24,44 +39,13 @@ The deployment may take some seconds. You can verify the deployment process with
 	...
 	pod/ingress-nginx-controller-56c75d774d-rm27c condition met
 
-The deployment configuration contains already a setup for TLS certificates issued by Let’s Encrypt. So there is no further configuration needed to use Let’s Encrypt. See the next section for more details.
-
-
-	
-
 
 
 # Let's Encrypt
 
-https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes
+The Let's Encrypt integration is configured in the file 030-cluster-issuer.yaml. This file defines separate configuration for staging and production
 
-
-
-## 1. Install  cert-manager
-
-	$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
-
-Verify installation with:
-
-	$ kubectl get pods --namespace cert-manager
-
-
-
-
-### Staging Certificates
-
-To issue a staging TLS certificate for your domains, we’ll annotate echo_ingress.yaml with the ClusterIssuer created in Step 4. This will use ingress-shim to automatically create and issue certificates for the domains specified in the Ingress manifest.
-
-Open up echo_ingress.yaml in your favorite editor:
-
-
-
-
-
-
-### Production Certificates
- 
- 
+The Let’s Encrypt staging server has no rate-limits for requests made against it, so for testing purposes you should use the staging configuration. If everything works fine you can change to the production cluster-issuer.
  
  
 ## Ingress
@@ -100,16 +84,11 @@ To apply the update of the ingress configuration run:
 
 
 
-## Testing
-
-
-
-
-Open up echo_ingress.yaml in your favorite editor:
+## Testing Ingress and Certificates
 
 You can track the state of the Ingress:
 
-    kubectl describe ingress
+    $ kubectl describe ingress
 
 Once the certificate has been successfully created, you can run a describe for further information:
 
@@ -125,6 +104,7 @@ Once the certificate has been successfully created, you can run a describe for f
 	
 # More info:
 
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes
 
 https://www.linuxtechi.com/setup-nginx-ingress-controller-in-kubernetes/
 
