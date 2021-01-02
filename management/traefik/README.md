@@ -9,13 +9,13 @@
 
 To deploy traefik.io within the imixs-cloud first edit the following files 
 
-#### management/traefik/002-deployment.yaml
+#### management/traefik/020-deployment.yaml
 
 replace *{YOUR-E-MAIL}* with a valid email address 
 
 replace *{MASTER-NODE-IP}* with the ip address of your master node.
 
-#### management/traefik/003-ingress.yaml
+#### management/traefik/030-ingress.yaml
  
 replace *{YOUR-HOST-NAME}* with a Internet name pointing to your Master Node configured in your DNS 
 
