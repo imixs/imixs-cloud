@@ -34,6 +34,14 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: IngressRouteTCP
     plural: ingressroutetcps
@@ -51,6 +59,14 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: Middleware
     plural: middlewares
@@ -68,6 +84,14 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: TLSOption
     plural: tlsoptions
@@ -86,6 +110,14 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: TraefikService
     plural: traefikservices
@@ -103,6 +135,14 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: TLSStore
     plural: tlsstores
@@ -121,14 +161,19 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: IngressRouteUDP
     plural: ingressrouteudps
     singular: ingressrouteudp
   scope: Namespaced
-
-
-
 
 
 
