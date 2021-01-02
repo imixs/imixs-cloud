@@ -1,0 +1,48 @@
+###################################################
+# ClusterIssuer - Let's Encrypt staging  
+###################################################
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+ name: letsencrypt-staging
+ namespace: cert-manager
+spec:
+ acme:
+   # Let's Encrypt staging server 
+   server: https://acme-staging-v02.api.letsencrypt.org/directory
+   email: info@foo.com
+   # Name of a secret used to store the ACME account private key
+   privateKeySecretRef:
+     name: letsencrypt-staging
+   solvers:
+   - http01:
+       ingress:
+         class: nginx
+
+
+###################################################
+# ClusterIssuer - Let's Encrypt production  
+###################################################
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+spec:
+  acme:
+    # Let's Encrypt ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: info@foo.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+
+
+

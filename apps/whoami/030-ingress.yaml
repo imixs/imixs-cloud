@@ -3,14 +3,22 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: myingress
+  name: whoami
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
+  tls:
+  - hosts:
+    - {YOUR-DOMAIN-NAME}
+    secretName: whoami-tls
   rules:
-  - host: {YOUR-HOST-NAME}
+  - host: {YOUR-DOMAIN-NAME}
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: whoami
-          servicePort: 80
-
+          service:
+            name: whoami
+            port:
+              number: 80
