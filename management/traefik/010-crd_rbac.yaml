@@ -9,6 +9,14 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          host:
+            type: string
+          port:
+            type: string
   names:
     kind: IngressRoute
     plural: ingressroutes
@@ -126,10 +134,9 @@ spec:
 
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
-
 rules:
   - apiGroups:
       - ""
@@ -174,7 +181,7 @@ rules:
 
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
 roleRef:
