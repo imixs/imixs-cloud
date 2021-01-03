@@ -10,7 +10,7 @@ spec:
   tls:
   - hosts:
     - {YOUR-DOMAIN-NAME}
-    secretName: whoami-tls
+    secretName: tls-whoami
   rules:
   - host: {YOUR-DOMAIN-NAME}
     http:
