@@ -2,57 +2,99 @@
 
 ## Ingress Configuration
 
-To run the Longhorn-UI frontend via traefik.io it is necessary to replace the hostname in the file 002.ingress.yaml.
-Replace {YOUR-HOST-NAME} with your own Internet name:
+To run the Longhorn-UI frontend via traefik.io it is necessary to replace the hostname in the file 030-ingress.yaml.
+Replace {YOUR-DOMAIN-NAME} with your own Internet name:
 
 	kind: Ingress
-	apiVersion: networking.k8s.io/v1beta1
+	apiVersion: networking.k8s.io/v1
 	metadata:
-	  name: longhorn-ui
+	  name: longhorn-frontend
 	  namespace: longhorn-system
 	  annotations:
-	    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-		traefik.ingress.kubernetes.io/router.middlewares: default-cors-all@kubernetescrd
-	
+	    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 	spec:
+	  tls:
+	  - hosts:
+	    - {YOUR-DOMAIN-NAME}
+	    secretName: tls-longhorn-frontend
 	  rules:
-	  - host: {YOUR-HOST-NAME}
+	  - host: {YOUR-DOMAIN-NAME}
 	    http:
 	      paths:
 	      - path: /
+	        pathType: Prefix
 	        backend:
-	          serviceName: longhorn-frontend
-	          servicePort: 80
+	          service:
+	            name: longhorn-frontend
+	            port:
+	              number: 80
 
-Activate a CORS middleware for the Ingress.
+## Deploy
 
-The CORS middleware is configured in the traefik object 004-middleware.yaml:
+To deploy the longhorn system run:
 
-	---
-	# Middleware for CORS
-	apiVersion: traefik.containo.us/v1alpha1
-	kind: Middleware
-	metadata:
-	  name: cors-all
-	  namespace: default
-	spec:
-	  headers:
-	    accessControlAllowMethods:
-	      - "GET"
-	      - "OPTIONS"
-	      - "PUT"
-	      - "POST"
-	    accessControlAllowOrigin: "origin-list-or-null"
-	    accessControlMaxAge: 100
-	    accessControlAllowHeaders:
-	      - "Content-Type"
-	    addVaryHeader: "true"
-    
-## Deployment
-
-To deploy Longhorn into your cluster run:
-
-	$ kubectl apply -f management/longhorn/
+	$ kubectl apply -f management/longhorn
 
 The deployment may take some minutes. Corresponding to your ingress configuration you can open the Longhorn Web UI to administrate your cluster.
-      
+
+
+## Authentication
+
+Authentication is not enabled by default. This means anonymous can access the longhorn UI form Internet. To protect you UI follow these steps:
+
+**1. Create a basic auth file**
+
+Using openssl you can create a auth file for basic authentication on your master node.
+
+It’s important the file generated is named 'auth' (actually - that the secret has a key data.auth), otherwise the ingress-controller returns a 503.
+
+	$ USER=<USERNAME_HERE>; PASSWORD=<PASSWORD_HERE>; echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
+
+**2. Create a secret:**
+
+Next you can create a secet in the longhonr-system namespace named 'basic-auth'
+
+	$ kubectl -n longhorn-system create secret generic basic-auth --from-file=auth
+
+
+**3. Update the NGINX Ingress**
+
+Now you can update the Ingress manifest longhorn-ingress.yml :
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1
+	metadata:
+	  name: longhorn-frontend
+	  namespace: longhorn-system
+	  annotations:
+	    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+	    # type of authentication
+	    nginx.ingress.kubernetes.io/auth-type: basic
+	    # prevent the controller from redirecting (308) to HTTPS
+	    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+	    # name of the secret that contains the user/password definitions
+	    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+	    # message to display with an appropriate context why the authentication is required
+	    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
+	spec:
+	  tls:
+	  - hosts:
+	    - {YOUR-DOMAIN-NAME}
+	    secretName: tls-longhorn-frontend
+	  rules:
+	  - host: {YOUR-DOMAIN-NAME}
+	    http:
+	      paths:
+	      - path: /
+	        pathType: Prefix
+	        backend:
+	          service:
+	            name: longhorn-frontend
+	            port:
+	              number: 80
+
+Finally apply you changes
+
+	$ kubectl apply -f management/longhorn/030-ingress.yaml
+
+Further infromation can be found [here](https://longhorn.io/docs/1.0.0/deploy/accessing-the-ui/longhorn-ingress/)

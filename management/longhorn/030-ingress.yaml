@@ -1,0 +1,34 @@
+# IngresRoute http
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: longhorn-frontend
+  namespace: longhorn-system
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    # type of authentication
+    #nginx.ingress.kubernetes.io/auth-type: basic
+    # prevent the controller from redirecting (308) to HTTPS
+    #nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    # name of the secret that contains the user/password definitions
+    #nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    # message to display with an appropriate context why the authentication is required
+    #nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
+spec:
+  tls:
+  - hosts:
+    - {YOUR-DOMAIN-NAME}
+    secretName: tls-longhorn-frontend
+  rules:
+  - host: {YOUR-DOMAIN-NAME}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: longhorn-frontend
+            port:
+              number: 80
+
