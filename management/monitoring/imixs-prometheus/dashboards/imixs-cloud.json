@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.3.1"
+      "version": "7.3.6"
     },
     {
       "type": "panel",
@@ -65,7 +65,7 @@
   "gnetId": 11074,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1604423975101,
+  "iteration": 1609715238580,
   "links": [
     {
       "icon": "external link",
@@ -156,7 +156,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -299,7 +299,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -441,7 +441,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -583,7 +583,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "count(node_cpu_seconds_total{ mode='system'})",
@@ -686,7 +686,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "sum(node_memory_MemTotal_bytes{})",
@@ -765,7 +765,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "sum(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/rootfs\"})",
@@ -845,7 +845,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "avg(time() - node_boot_time_seconds{})",
@@ -916,7 +916,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "count(kube_namespace_status_phase{phase=\"Active\"})",
@@ -986,7 +986,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "count(kube_pod_info{})",
@@ -1004,12 +1004,11 @@
     },
     {
       "datasource": "${DS_PROMETHEUS}",
-      "description": "Click on a server node to show node details below",
+      "description": "Click on a server node to show the node details below",
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": "center",
-            "displayMode": "auto",
+            "align": null,
             "filterable": false
           },
           "mappings": [],
@@ -1019,10 +1018,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "#EAB839",
-                "value": 75
               },
               {
                 "color": "red",
@@ -1035,109 +1030,16 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "CPU Usage"
+              "options": "Cores"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "basic"
-              },
-              {
-                "id": "decimals",
-                "value": 2
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Node"
-            },
-            "properties": [
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "title": "Link to Details",
-                    "url": "/d/202008/imixs-cloud?orgId=1&var-job=${job}&var-hostname=All&var-node=${__data.fields[instance]}&var-device=All"
-                  }
-                ]
+                "id": "custom.width",
+                "value": 68
               },
               {
                 "id": "custom.align",
-                "value": null
-              },
-              {
-                "id": "custom.width",
-                "value": 129
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Memory"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bytes"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "custom.width",
-                "value": 72
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Memory Usage"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "decimals",
-                "value": 2
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "basic"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Disk Usage"
-            },
-            "properties": [
-              {
-                "id": "custom.displayMode",
-                "value": "basic"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "decimals",
-                "value": 2
-              },
-              {
-                "id": "custom.width",
-                "value": null
+                "value": "center"
               }
             ]
           },
@@ -1148,12 +1050,20 @@
             },
             "properties": [
               {
+                "id": "custom.width",
+                "value": 81
+              },
+              {
                 "id": "unit",
                 "value": "s"
               },
               {
                 "id": "decimals",
                 "value": 0
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               },
               {
                 "id": "thresholds",
@@ -1178,10 +1088,51 @@
               {
                 "id": "custom.displayMode",
                 "value": "color-text"
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Node"
+            },
+            "properties": [
               {
                 "id": "custom.width",
-                "value": 84
+                "value": null
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "/d/202008/imixs-cloud?orgId=1&var-job=${job}&var-hostname=All&var-node=${__data.fields[instance]}&var-device=All"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 93
+              },
+              {
+                "id": "unit",
+                "value": "decbytes"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               }
             ]
           },
@@ -1193,23 +1144,15 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 125
+                "value": 97
               },
               {
                 "id": "unit",
                 "value": "decbytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Cores"
-            },
-            "properties": [
+              },
               {
-                "id": "custom.width",
-                "value": 66
+                "id": "decimals",
+                "value": 0
               }
             ]
           },
@@ -1221,43 +1164,95 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 77
+                "value": 63
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "internal_ip"
+              "options": "CPU usage"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 129
+                "value": 273
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Linux Version"
+              "options": "Memory Usage"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 222
+                "value": 251
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Kubernetes"
+              "options": "Disk Usage"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 94
+                "value": 251
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "basic"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Kublet Version"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 111
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Kubelet"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 75
               }
             ]
           },
@@ -1269,21 +1264,20 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 127
+                "value": 138
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 24,
         "x": 0,
         "y": 7
       },
-      "id": 237,
+      "id": 251,
       "options": {
-        "frameIndex": 0,
         "showHeader": true,
         "sortBy": [
           {
@@ -1292,71 +1286,24 @@
           }
         ]
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
-          "expr": "label_replace(\ncadvisor_version_info{job=\"kubelet\", service=\"kubelet\"},\n\"instance\",\"$1\",\"node\", \"(.+)\"\n)",
+          "expr": "count(node_cpu_seconds_total{job=\"node-exporter\",mode='system'}) by (instance)",
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "count of cores",
+          "queryType": "randomWalk",
           "refId": "A"
-        },
-        {
-          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance)) * 100",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "CPU Usage",
-          "refId": "B"
-        },
-        {
-          "expr": "node_memory_MemTotal_bytes{job=\"node-exporter\"}",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Total Memory",
-          "refId": "C"
-        },
-        {
-          "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / (node_memory_MemTotal_bytes{job=\"node-exporter\"})))* 100",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Memory Usage",
-          "refId": "D"
-        },
-        {
-          "expr": "max((node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes {job=\"node-exporter\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"})))by(instance)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Disk Usage",
-          "refId": "E"
         },
         {
           "expr": "sum(time() - node_boot_time_seconds{job=\"node-exporter\"})by(instance)",
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "Up Time",
-          "refId": "F"
-        },
-        {
-          "expr": "count(node_cpu_seconds_total{job=\"node-exporter\",mode='system'}) by (instance)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Cores",
-          "refId": "G"
-        },
-        {
-          "expr": "sum(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/rootfs\"})by(instance)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Disk Size",
-          "refId": "I"
+          "legendFormat": "up time",
+          "refId": "B"
         },
         {
           "expr": "label_replace(\n   kube_node_info,\n   \"instance\",\"$1\",\"node\", \"(.+)\"\n)",
@@ -1364,13 +1311,70 @@
           "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "node infos",
+          "refId": "C"
+        },
+        {
+          "expr": "label_replace(\n   count(kube_pod_info)by(node),\n   \"instance\",\"$1\",\"node\", \"(.+)\"\n)",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Count of Pods",
+          "refId": "D"
+        },
+        {
+          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance)) * 100",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "cpu usage",
+          "refId": "E"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"node-exporter\"}",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "total memory",
+          "refId": "F"
+        },
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / (node_memory_MemTotal_bytes{job=\"node-exporter\"})))* 100",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "memory usage",
+          "refId": "G"
+        },
+        {
+          "expr": "max((node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes {job=\"node-exporter\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"})))by(instance)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "disk usage",
           "refId": "H"
+        },
+        {
+          "expr": "sum(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/rootfs\"})by(instance)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "disk size",
+          "refId": "I"
+        },
+        {
+          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance)) * 100",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "cpu usage",
+          "refId": "J"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Node Resources Overview",
+      "title": "Node Overview",
       "transformations": [
         {
           "id": "seriesToColumns",
@@ -1382,8 +1386,8 @@
           "id": "organize",
           "options": {
             "excludeByName": {
-              "Time": true,
               "Time 1": true,
+              "Time 10": true,
               "Time 2": true,
               "Time 3": true,
               "Time 4": true,
@@ -1391,109 +1395,104 @@
               "Time 6": true,
               "Time 7": true,
               "Time 8": true,
-              "Value #A": true,
-              "Value #B": false,
-              "Value #I": false,
-              "__name__": true,
+              "Time 9": true,
+              "Value #C": true,
+              "Value #E": true,
               "__name__ 1": true,
               "__name__ 2": true,
               "app_kubernetes_io_name": true,
               "app_kubernetes_io_version": true,
-              "container": true,
-              "endpoint": true,
               "endpoint 1": true,
               "endpoint 2": true,
               "internal_ip": true,
-              "job": true,
               "job 1": true,
               "job 2": true,
               "job 3": true,
-              "kernelVersion": true,
               "kubeproxy_version": true,
               "kubernetes_namespace": true,
               "kubernetes_pod_name": true,
-              "metrics_path": true,
-              "namespace": true,
               "namespace 1": true,
               "namespace 2": true,
-              "node": true,
-              "pod": true,
+              "node 1": true,
+              "node 2": true,
               "pod 1": true,
               "pod 2": true,
               "pod_cidr": true,
               "pod_template_hash": true,
               "provider_id": true,
-              "service": true,
               "service 1": true,
               "service 2": true
             },
             "indexByName": {
-              "Time 1": 10,
-              "Time 2": 11,
-              "Time 3": 17,
-              "Time 4": 23,
-              "Time 5": 24,
-              "Time 6": 25,
-              "Time 7": 26,
-              "Time 8": 27,
-              "Value #B": 6,
-              "Value #C": 3,
-              "Value #D": 7,
-              "Value #E": 8,
-              "Value #F": 1,
-              "Value #G": 2,
-              "Value #H": 5,
+              "Time 1": 13,
+              "Time 10": 48,
+              "Time 2": 14,
+              "Time 3": 15,
+              "Time 4": 29,
+              "Time 5": 31,
+              "Time 6": 33,
+              "Time 7": 40,
+              "Time 8": 46,
+              "Time 9": 47,
+              "Value #A": 2,
+              "Value #B": 1,
+              "Value #C": 28,
+              "Value #D": 5,
+              "Value #E": 32,
+              "Value #F": 3,
+              "Value #G": 7,
+              "Value #H": 8,
               "Value #I": 4,
-              "__name__ 1": 28,
-              "__name__ 2": 29,
-              "app_kubernetes_io_name": 30,
-              "app_kubernetes_io_version": 31,
-              "container_runtime_version": 37,
-              "endpoint 1": 12,
-              "endpoint 2": 18,
+              "Value #J": 6,
+              "__name__ 1": 16,
+              "__name__ 2": 34,
+              "app_kubernetes_io_name": 17,
+              "app_kubernetes_io_version": 18,
+              "container_runtime_version": 11,
+              "endpoint 1": 35,
+              "endpoint 2": 41,
               "instance": 0,
-              "internal_ip": 32,
-              "job 1": 13,
-              "job 2": 19,
-              "job 3": 33,
-              "kernel_version": 36,
-              "kubelet_version": 34,
-              "kubeproxy_version": 38,
-              "kubernetes_namespace": 39,
-              "kubernetes_pod_name": 40,
-              "namespace 1": 14,
-              "namespace 2": 20,
-              "node": 9,
-              "os_image": 35,
-              "pod 1": 15,
-              "pod 2": 21,
-              "pod_cidr": 41,
-              "pod_template_hash": 42,
-              "provider_id": 43,
-              "service 1": 16,
-              "service 2": 22
+              "internal_ip": 19,
+              "job 1": 20,
+              "job 2": 36,
+              "job 3": 42,
+              "kernel_version": 12,
+              "kubelet_version": 9,
+              "kubeproxy_version": 21,
+              "kubernetes_namespace": 22,
+              "kubernetes_pod_name": 23,
+              "namespace 1": 37,
+              "namespace 2": 43,
+              "node 1": 24,
+              "node 2": 30,
+              "os_image": 10,
+              "pod 1": 38,
+              "pod 2": 44,
+              "pod_cidr": 25,
+              "pod_template_hash": 26,
+              "provider_id": 27,
+              "service 1": 39,
+              "service 2": 45
             },
             "renameByName": {
-              "Time": "",
+              "Time 1": "",
               "Time 2": "",
-              "Value #B": "CPU Usage",
-              "Value #C": "Memory",
-              "Value #D": "Memory Usage",
-              "Value #E": "Disk Usage",
-              "Value #F": "Uptime",
-              "Value #G": "Cores",
-              "Value #H": "PODs",
+              "Time 5": "",
+              "Value #A": "Cores",
+              "Value #B": "Uptime",
+              "Value #D": "PODs",
+              "Value #F": "Memory",
+              "Value #G": "Memory Usage",
+              "Value #H": "Disk Usage",
               "Value #I": "Disk Size",
-              "container": "",
-              "container_runtime_version": "Docker",
-              "dockerVersion": "Docker Version",
+              "Value #J": "CPU usage",
+              "container_runtime_version": "Docker Version",
               "instance": "Node",
-              "job 3": "",
               "kernel_version": "Kernel",
-              "kubelet_version": "Kubernetes",
+              "kubelet_version": "Kubelet",
               "kubeproxy_version": "",
-              "osVersion": "OS Version",
-              "os_image": "Linux Version"
+              "os_image": "Linux Version",
+              "pod_cidr": ""
             }
           }
         }
@@ -1507,7 +1506,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 16
       },
       "id": 189,
       "panels": [],
@@ -1527,17 +1526,18 @@
         "h": 2,
         "w": 4,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 241,
       "options": {
         "content": "# ${node}\n",
         "mode": "markdown"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "timeFrom": null,
       "timeShift": null,
       "title": "",
+      "transparent": true,
       "type": "text"
     },
     {
@@ -1583,7 +1583,7 @@
         "h": 2,
         "w": 2,
         "x": 4,
-        "y": 16
+        "y": 17
       },
       "hideTimeOverride": true,
       "id": 15,
@@ -1604,7 +1604,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "avg(time() - node_boot_time_seconds{instance=~\"$node\"})",
@@ -1655,7 +1655,7 @@
         "h": 2,
         "w": 2,
         "x": 6,
-        "y": 16
+        "y": 17
       },
       "id": 14,
       "interval": null,
@@ -1675,7 +1675,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "count(node_cpu_seconds_total{instance=~\"$node\", mode='system'})",
@@ -1726,7 +1726,7 @@
         "h": 2,
         "w": 2,
         "x": 8,
-        "y": 16
+        "y": 17
       },
       "id": 75,
       "interval": null,
@@ -1746,7 +1746,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "sum(node_memory_MemTotal_bytes{instance=~\"$node\"})",
@@ -1796,7 +1796,7 @@
         "h": 2,
         "w": 2,
         "x": 10,
-        "y": 16
+        "y": 17
       },
       "id": 226,
       "interval": null,
@@ -1816,7 +1816,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "count(kube_pod_info{node=~\"$node\"})",
@@ -1854,68 +1854,149 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "decbytes"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Value"
+              "options": "CPU Usage"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "none"
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width",
+                "value": 103
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory Usage"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 122
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory Limit"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 99
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FIle Usage"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 75
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 16,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 17
       },
-      "id": 243,
+      "id": 253,
       "options": {
-        "frameIndex": 1,
         "showHeader": true,
         "sortBy": [
           {
             "desc": true,
-            "displayName": "Value #A"
+            "displayName": "FIle Usage"
           }
         ]
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
-          "expr": "sum({instance=~\"$node\"}) by (namespace)",
+          "expr": "sum(container_spec_memory_limit_bytes{instance=~\"$node\", container!=\"POD\", container!=\"\"}) by (namespace,container)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "memory limit",
           "refId": "A"
         },
         {
-          "expr": "sum(container_spec_memory_limit_bytes{instance=~\"$node\"}) by (namespace)",
+          "expr": "sum(container_memory_usage_bytes{instance=~\"$node\", container!=\"POD\", container!=\"\"}) by (namespace,container)",
           "format": "table",
-          "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "memory usage",
           "refId": "B"
+        },
+        {
+          "expr": "sum(container_fs_usage_bytes{instance=~\"$node\", container!=\"POD\", container!=\"\"}) by (namespace,container)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "file usage",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{instance=~\"$node\", container!=\"POD\", container!=\"\"}[5m])) by (namespace,container)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "cpu usage",
+          "refId": "D"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Container Overview by Node",
       "transformations": [
         {
           "id": "merge",
           "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "Time": 0,
+              "Value #A": 3,
+              "Value #B": 4,
+              "Value #C": 5,
+              "container": 2,
+              "namespace": 1
+            },
+            "renameByName": {
+              "Value #A": "Memory Limit",
+              "Value #B": "Memory Usage",
+              "Value #C": "FIle Usage",
+              "Value #D": "CPU Usage",
+              "container": "Container",
+              "namespace": "Namespace"
+            }
+          }
         }
       ],
       "type": "table"
@@ -1980,7 +2061,7 @@
             "properties": [
               {
                 "id": "custom.displayMode",
-                "value": "basic"
+                "value": "lcd-gauge"
               },
               {
                 "id": "unit",
@@ -2030,7 +2111,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 19
       },
       "id": 247,
       "links": [],
@@ -2038,7 +2119,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "targets": [
         {
           "expr": "node_filesystem_size_bytes{instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"/rootfs\"}",
@@ -2138,7 +2219,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 23
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2166,7 +2247,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2305,8 +2386,8 @@
       "gridPos": {
         "h": 5,
         "w": 12,
-        "x": 12,
-        "y": 22
+        "x": 0,
+        "y": 28
       },
       "hiddenSeries": false,
       "id": 7,
@@ -2335,7 +2416,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2463,7 +2544,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 33
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2492,7 +2573,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.6",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2597,7 +2678,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 41
       },
       "id": 217,
       "panels": [],
@@ -2672,5 +2753,5 @@
   "timezone": "browser",
   "title": "Imixs-Cloud",
   "uid": "202008",
-  "version": 22
+  "version": 1
 }
