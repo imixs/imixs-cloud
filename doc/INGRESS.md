@@ -15,14 +15,14 @@ First edit the file management/nginx/020-service.yaml and replace {YOUR_CLUSTER_
 
 In the file management/nginx/030-cluster-issuer.yaml replace the email address with a valid address from your organization. This email address will become the issuer for the Let’s Encrypt certificates.
 
-**2. Deploy the cert-manager **
+**2. Deploy the cert-manager**
 
 To support certificates from Let's Encrypt, the cert-manager is needed. This service can be deployed from the cert-manager repo on Github:
 
 	$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
 
 
-**3. Deploy the NGINX Controller **
+**3. Deploy the NGINX Controller**
 
 Finally you can deploy the NGINX Ignress Controller:
 

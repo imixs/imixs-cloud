@@ -18,7 +18,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
 
  - [Setup, Upgrade & Maintenance Guide](./doc/SETUP.md)
  - [Terminal Tool K9S](tools/k9s/README.md)
- - [Ingress Integration with Traefik](./doc/INGRESS.md)
+ - [Ingress Integration with NGINX](./doc/INGRESS.md)
  - [Distributed Storage solution](./doc/STORAGE.md)
  - [Docker Registry Habor](./doc/REGISTRY.md)
  - [Security Configuration](./doc/SECURITY.md) 
