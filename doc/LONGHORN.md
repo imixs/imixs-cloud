@@ -4,7 +4,7 @@ Longhorn is a cloud native distributed block storage for Kubernetes. Longhorn de
 
 ## Quick Setup
 
-For a quick setup check the file /management/longhorn/002-ingress.yaml. This file will provide a placeholder for the Longhorn Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
+For a quick setup check the file /management/longhorn/030-ingress.yaml. This file will provide a placeholder for the Longhorn Web UI. If you have setup this file to your needs you can start Longhorn within the Imixs-Cloud with:
 
 	$ kubectl apply -f management/longhorn/
 
@@ -12,73 +12,9 @@ The deployment may take some minutes. Corresponding to your ingress configuratio
 
 <img src="images/storage-longhorn-01.png" />
 
+**Note:** Authentication for the Longhorn-UI is not enabled by default. This means anonymous can access the longhorn UI form Internet.
+You will find a detailed documentation about the setup and the authentication [here](../management/longhorn/README.md).
 
-You will find a detailed documentation [here](https://longhorn.io/docs/). The following section describes the setup process in more detail.
-
-
-
-## Setup of Longhorn
- 
-The longhorn configuration is defined in the service directory /management/longhorn . You can modify the setup and apply your individual settings as described in the following sections.
-
-
-### open-iscsi
-	
-Longhorn is based on open-iscsi. So first make sure that 'open-iscsi' has been installed on all the nodes of the Kubernetes cluster, and the _iscsid_ daemon is running on all the nodes.
-
-For Debian/Ubuntu, use the following command to install open-iscsi if it is not already installed: 
-
-	$ sudo apt-get install open-iscsi
-
-
-### Install Longhorn into your Cluster
-
-For a quick test you can install Longhorn  into your Kubernetes cluster using the command:
-
-	$ kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
-
-This will start Longhorn with the latest release. If you want to have more control you can customize the longhorn configuration provided by _Imixs-Cloud_ in the directory  management/longhorn/
-
-To start longhorn from you custom setup run:
-
-	$ kubectl apply -f management/longhorn/
-
-The startup can take a while. You can monitor the startup with the [K9s tool](../tools/k9s/README.md).
-
-### The Longhorn-UI
-
-Longhorn comes with a UI web interface to monitor and administrate the cluster. To access the UI from *Imixs-Cloud* you have to create a ingress for the Longhorn UI using the [traefik service](https://github.com/imixs/imixs-cloud/blob/master/doc/INGRESS.md). Just edit the file management/longhorn/002-ingress.yaml and replace {YOUR-HOST-NAME} with a DNS name pointing to your cluster:
-
-
-	kind: Ingress
-	apiVersion: networking.k8s.io/v1beta1
-	metadata:
-	  name: longhorn-ui
-	  namespace: longhorn-system
-	  annotations:
-	    traefik.ingress.kubernetes.io/router.middlewares: default-cors-all@kubernetescrd
-	    # optional cors with basic-auth
-	    #traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
-	
-	spec:
-	  rules:
-	  - host: {YOUR-HOST-NAME}
-	    http:
-	      paths:
-	      - path: /
-	        backend:
-	          serviceName: longhorn-frontend
-	          servicePort: 80
-    
-Apply the ingress route:
-
-	$ kubectl apply -f management/longhorn/002-ingress.yaml
-    
-**Note:** The traefik middleware configuration 'basic-auth' should be used to protect the Longhorn-UI for administrative access only. If you already have configured a basic-auth middleware you can use the traefik middlewares:
-
-	traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
-	
-See the section [Traefik Middleware](https://github.com/imixs/imixs-cloud/blob/master/doc/INGRESS.md#middleware) for more details.  
 
 ## Create Longhorn Volumes
 

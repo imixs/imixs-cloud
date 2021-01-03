@@ -97,4 +97,17 @@ Finally apply you changes
 
 	$ kubectl apply -f management/longhorn/030-ingress.yaml
 
-Further infromation can be found [here](https://longhorn.io/docs/1.0.0/deploy/accessing-the-ui/longhorn-ingress/)
+Further information can be found [here](https://longhorn.io/docs/1.0.0/deploy/accessing-the-ui/longhorn-ingress/)
+
+
+
+## open-iscsi
+	
+Longhorn is based on open-iscsi. So it is necessary to ensure that 'open-iscsi' has been installed on all the nodes of the Kubernetes cluster, and the _iscsid_ daemon is running on all the nodes. 'open-iscsi' is allready part of the Imixs-Cloud setup scripts, so there is no need for extra configuraiton.
+
+If you need to install it anyway you can use the following command to install open-iscsi in debian systems: 
+
+	$ sudo apt-get install open-iscsi
+
+	
+	
