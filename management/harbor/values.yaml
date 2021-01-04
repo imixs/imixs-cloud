@@ -1,0 +1,43 @@
+expose:
+  type: ingress
+  # NGINX Ingress confiugration
+  ingress:
+    hosts:
+      core: "{YOUR-DOMAIN-NAME}"
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+      ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      # choose letsencrypt-staging or letsencrypt-prod
+      cert-manager.io/cluster-issuer: "letsencrypt-staging"
+      # To be used for the nginx ingress on AKS:
+      #kubernetes.io/ingress.class: nginx
+  tls:
+    enabled: true
+    certSource: secret
+    secret: 
+      secretName: "tls-harbor"
+
+# The external URL for Harbor core service.
+externalURL: "https://{YOUR-DOMAIN-NAME}"
+
+
+notary:
+  enabled: false
+trivy:
+  enabled: false
+clair:
+  enabled: false
+chartmuseum:
+  enabled: false
+
+
+persistence:
+  enabled: true
+  # Setting it to "keep" to avoid removing PVCs during a helm delete
+  # operation. Leaving it empty will delete PVCs after the chart deleted
+  # (this does not apply for PVCs that are created for internal database
+  # and redis components, i.e. they are never deleted automatically)
+  resourcePolicy: "keep"
+
