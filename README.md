@@ -123,7 +123,7 @@ The imixs-cloud directory structure contains different sub-directories holding y
 	 |+ management/
 	    |- monitoring/
 	    |- registry/
-	    |- traefik/
+	    |- nginx/
 	 |+ apps/
 	    |+ MY-APP/
 	       |  001-deployment.yaml
@@ -157,21 +157,21 @@ Using the _kubectl apply_ command you can easily create or delete your services 
 
 	$ kubectl apply -f apps/MY-APP/
 
-For example to deploy the traefik configuration you just need to call:
+For example to deploy the whoami sample service you just need to call:
 
-	$ kubectl apply -f management/traefik/
+	$ kubectl apply -f app/whoami/
 	
 In kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which your objects should be created.
 
-	 |+ traefik/
-	    |- 010.crd-rbac.yaml
-	    |- 020.deployment.yaml
-	    |- 030.service.yaml
+	 |+ whoami/
+	    |- 010-deployment.yaml
+	    |- 020-service.yaml
+	    |- 030-ingress.yaml
 
 
 If you want to remove an already deployed service or object just use the delete command:
 
-	$ kubectl delete -f management/traefik/
+	$ kubectl delete -f app/whoami/
 
 
 
@@ -201,13 +201,12 @@ After you have install the tool you can start it with:
 
 
 
-## Traefik
+## NGINX
 
-To access your applications from outside of your cluster _Imixs-Cloud_ provides the Ingress Router [Traefik.io](https://containo.us/traefik/). This tool allows you to easily expose your services to public Internet addresses.
+To access your applications from outside of your cluster *Imixs-Cloud* provides the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx).   This tool allows you to easily expose your services in the Intranet or to public Internet addresses.
+The Ingress setup of *Imixs-Cloud*  already includes the ACME provider [Let's Encrypt](https://letsencrypt.org/). This makes it easy to publish services to the Internet in a secure way. 
 
-<img src="doc/images/traefik-ui.png" />
-
-You can find a detailed description how to install and setup traefik in the [section ingress](./doc/INGRESS.md)
+You can find a detailed description how to install and setup the NGINX Ingress Controller in the [section ingress](./doc/INGRESS.md)
 
 
 ## Storage Volumes

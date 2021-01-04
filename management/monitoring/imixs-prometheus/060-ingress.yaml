@@ -1,24 +1,32 @@
-
-
-
 ###################################
 # Ingress Grafana
 ###################################
 ---
 kind: Ingress
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: grafana-tls
   namespace: monitoring
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
+  tls:
+  - hosts:
+    - {YOUR-DOMAIN-NAME}
+    secretName: tls-grafana
   rules:
-  - host: [YOUR-INTERNET-NAME]
+  - host: {YOUR-DOMAIN-NAME}
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: grafana
-          servicePort: 3000
+          service:
+            name: grafana
+            port:
+              number: 3000
+
+
 
 
 
@@ -28,19 +36,25 @@ spec:
 ###################################
 #---
 #kind: Ingress
-#apiVersion: networking.k8s.io/v1beta1
+#apiVersion: networking.k8s.io/v1
 #metadata:
 #  name: prometheus-ui
 #  namespace: monitoring
 #  annotations:
-#    traefik.ingress.kubernetes.io/router.middlewares: default-basic-auth@kubernetescrd,default-cors-all@kubernetescrd
-#
+#    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 #spec:
+#  tls:
+#  - hosts:
+#    - {YOUR-DOMAIN-NAME}
+#    secretName: tls-prometheus
 #  rules:
-#  - host: [YOUR-INTERNET-NAME]
+#  - host: {YOUR-DOMAIN-NAME}
 #    http:
 #      paths:
 #      - path: /
+#        pathType: Prefix
 #        backend:
-#          serviceName: prometheus
-#          servicePort: 9090
+#          service:
+#            name: prometheus
+#            port:
+#              number: 9090

@@ -2,7 +2,7 @@
 
 ## Ingress Configuration
 
-To run the Longhorn-UI frontend via traefik.io it is necessary to replace the hostname in the file 030-ingress.yaml.
+To run the Longhorn-UI frontend via an Ingress on NGINX, it is necessary to replace the hostname in the file 030-ingress.yaml.
 Replace {YOUR-DOMAIN-NAME} with your own Internet name:
 
 	kind: Ingress
