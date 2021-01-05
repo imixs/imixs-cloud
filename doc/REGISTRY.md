@@ -28,27 +28,42 @@ For the first login the default User/Password is:
 You can change the admin password and create additional users. 
 
 
+
+
+### How to access a Private Registry with containerd
+
+To allow your worker nodes in your Kubernetes Cluster to access the registry, you need to create a registry secret first:
+
+
+	$ kubectl create secret docker-registry registry.foo.com \
+	   --docker-server=https://registry.foo.com \
+	   --docker-username=admin --docker-password=Harbor12345 \
+	   --docker-email=info@foo.com \
+	   -n mynamespace
+
+
+Now you can reference the secret as a 
+
+
+	....
+    spec:
+      containers:
+      - image: registry.foo.com/library/myimage:latest
+        ....
+      imagePullSecrets:
+      - name: registry.foo.com
+
 	
-## How to grant a Docker Client
+## Push a local docker image
 
 After you setup the harbor registry you can upload custom Docker images to be used by services running in the Imixs-Cloud. 
 
-To  be allowed to push/pull images from your new private docker registry you first need to login Docker with the userid and password from the Harbor web ui:
+To  be allowed to push/pull images from your new private registry you first need to login Docker with the userid and password from the Harbor web ui:
 
 	$ sudo docker login -u admin {YOUR-DOMAIN-NAME}
 
 **Note:** In case you run Harbor with ingress and traefik, there is no need to deal with the TLS certificate because traefik provides you with a Let's Encrypt certificate. See the section below how to deal with a self-signed certificate.
 
-
-### How to grant a Worker Node
-
-To allow your worker nodes in your Kubernetes Cluster to access the registry, you need to repeat the login procedure for the local Docker Client on each worker node too! Just login to the shell of each worker node and run:	
-	
-	node-1$ sudo docker login -u admin {YOUR-DOMAIN-NAME}
-
-	
-
-## Push a local docker image
 
 To push a local docker image into the registry you first need to tag the image with the repository uri
 
@@ -58,7 +73,10 @@ To push a local docker image into the registry you first need to tag the image w
 
 next you can push the image:
 
-
 	$ docker push {YOUR-DOMAIN-NAME}/library/IMAGE[:TAG]	
 	
 	
+
+
+
+
