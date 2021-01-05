@@ -83,6 +83,14 @@ Harbor will automatically create data volumes using the Longhorn default storage
 	  resourcePolicy: "keep"
 	...  
 
+You can ignore the persistence of data by setting the 'persistence.enabled' flag in the values.yaml file to 'false:
+
+	...
+	persistence:
+	  enabled: false
+	...
+	
+
 ### Disable Scanners
 
 The harbor scanners are useful to scan docker images for vulnerability. But these services also generates a lot of CPU load. If you want to start Harbor with a minimum of features you can disable the scanners in the values.yaml file
