@@ -1,38 +1,35 @@
 # Imixs-Cloud - Registry
 
-Docker images are available on docker registries. Most public docker images are available on [Docker Hub](https://hub.docker.com/). In the *Imixs-Cloud*  you can also setup your own private docker registry.
-A private registry can be used to push locally build docker images to be used in the cloud infrastructure. Images can be pulled and started as services without the need to build the images from a Docker file.
+Docker images are available on docker registries. Most of the docker images are available on public regestries like [Docker Hub](https://hub.docker.com/). Kubernetes can download these images automatically.  In contrast, private Docker images are stored in private registries. 
+*Imixs-Cloud* provides a setup for a private docker registry which can be used push locally build docker images into the *Imixs-Cloud*.
 
 
-## Habor
+## Harbor
 
-The *Imixs-Cloud* already includes a configuration to run the registry [Habor](https://goharbor.io/).
-*Habor* is a secure, performant, scalable, and available cloud native repository for Kubernetes. It can be installed useing the [helm tool](../tools/helm/README.md)
+The *Imixs-Cloud* already provides a setup to run the registry [Harbor](https://goharbor.io/).
+*Harbor* is a secure, performant, scalable, and available cloud native repository for Kubernetes. It can be installed using the [helm tool](../tools/helm/README.md)
 
-You will find the installation guide to install Harbor in the *Imixs-Cloud* [here](../management/harbor/README.md)
+The installation guide to install Harbor in the *Imixs-Cloud* can be found [here](../management/harbor/README.md)
 
 
 ### The Web UI
 
-Now you can access the Harbor Web UI form your defined Internet Domain or IP address.
+After you have installed Harbor you can access the Web UI form your defined Internet Domain.
 
 	https://{YOUR-DOMAIN-NAME}
 	
 <img src="./images/harbor.png" />
 
-	
 For the first login the default User/Password is:
 
 	admin/Harbor12345
 
-You can change the admin password and create additional users. 
+You can change the admin password after the first login and create additional users. A detailed documentation about how to use Harbor can be found [here](https://goharbor.io/).
 
 
+## How to access a Private Registry from Kubernetes
 
-
-### How to access a Private Registry with containerd
-
-To allow your worker nodes in your Kubernetes Cluster to access the registry, you need to create a registry secret first:
+To allow Kubernetes to access a private registry during the deployment of a Docker image, you need to create a registry secret first. This can be done with the *kubectl* tool :
 
 
 	$ kubectl create secret docker-registry registry.foo.com \
@@ -42,28 +39,36 @@ To allow your worker nodes in your Kubernetes Cluster to access the registry, yo
 	   -n mynamespace
 
 
-Now you can reference the secret as a 
-
+Now you can reference this secret in a deployment .yaml file to pull the image from your private registry:
 
 	....
-    spec:
-      containers:
-      - image: registry.foo.com/library/myimage:latest
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	...
+	template:
+	  ....
+	  spec:
+        containers:
+        - image: registry.foo.com/library/myimage:latest
         ....
-      imagePullSecrets:
-      - name: registry.foo.com
+        imagePullSecrets:
+        - name: registry.foo.com
 
+
+
+
+**Note:** *imagePullSecrets* are defined per namespace. So even if you use the same Harbor user to access the registry you have to create a separate secrete for each namespace. In this way you have the full control which project is allowed to pull Docker images from your private registry. 
+You can find more details about how to pull an image form a private registry [here](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). 
 	
-## Push a local docker image
+## How to Upload a Local Docker Image
 
-After you setup the harbor registry you can upload custom Docker images to be used by services running in the Imixs-Cloud. 
-
-To  be allowed to push/pull images from your new private registry you first need to login Docker with the userid and password from the Harbor web ui:
+After you setup the harbor registry you can upload custom Docker images either manually via the Web UI or with the *docker push* command. 
+To be allowed to push/pull images with Docker into a private registry, you first need to login Docker with the userid and password from your local client. 
 
 	$ sudo docker login -u admin {YOUR-DOMAIN-NAME}
 
-**Note:** In case you run Harbor with ingress and traefik, there is no need to deal with the TLS certificate because traefik provides you with a Let's Encrypt certificate. See the section below how to deal with a self-signed certificate.
-
+**Note:** In case you run Harbor with the Ingress configuration and a Let's Encrypt certificate, there is no need to deal with the non-trusted TLS certificates. 
 
 To push a local docker image into the registry you first need to tag the image with the repository uri
 
