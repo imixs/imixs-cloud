@@ -146,15 +146,14 @@ In some scenarios is required to redirect from www.domain.com to domain.com or v
 	  name: foo-org
 	  namespace: www-foo-org
 	  annotations:
-	    kubernetes.io/ingress.class: nginx
-	    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+	    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 	    nginx.ingress.kubernetes.io/from-to-www-redirect: 'true'
 	spec:
 	  tls:
 	  - hosts:
 	    - foo.org
 	    - www.foo.org
-	    secretName: tls-fooorg
+	    secretName: tls-foo
 	  rules:
 	  - host: www.foo.org 
 	    http:
