@@ -130,3 +130,52 @@ Now you can update the Ingress yaml file by adding the annotations for 'auth' an
 	            port:
 	              number: 80
 
+
+
+## NGNX Configuration
+
+With the [NGINX annotations](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/) you can customize the behavior in many ways.
+
+### Redirect from/to www
+
+In some scenarios is required to redirect from www.domain.com to domain.com or vice versa. To enable this feature use the annotation nginx.ingress.kubernetes.io/from-to-www-redirect: "true". See the following example:
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1
+	metadata:
+	  name: foo-org
+	  namespace: www-foo-org
+	  annotations:
+	    kubernetes.io/ingress.class: nginx
+	    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+	    nginx.ingress.kubernetes.io/from-to-www-redirect: 'true'
+	spec:
+	  tls:
+	  - hosts:
+	    - foo.org
+	    - www.foo.org
+	    secretName: tls-fooorg
+	  rules:
+	  - host: www.foo.org 
+	    http:
+	      paths:
+	      - path: /
+	        pathType: Prefix
+	        backend:
+	          service:
+	            name: foo-org
+	            port:
+	              number: 80
+              
+You don't have to set the host 'foo.org' as the annotation from-to-www-redirect is enough as long as you have SSL certificate to terminate both foo.org and www.foo.org (provided by letsencrypt)              
+
+
+### Configuration Snippet
+
+With the annotation 'nginx.ingress.kubernetes.io/configuration-snippet' you can add custom config snippets. See the following example for a redirect:
+
+
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'foo.org' ) {
+        rewrite ^ https://www.foo.org$request_uri permanent;
+      }
