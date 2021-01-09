@@ -93,13 +93,19 @@ After you have installed the setup script and checked you network IP addresses, 
 
 Replace [NODE\_IP\_ADDRESS] with your servers private IP address.
 
-You will see a detailed protocol showing what happens behind the scene. If something went wrong you can easily roll back everything with the command:
-
-	$ sudo kubeadm reset
+You will see a detailed protocol showing what happens behind the scene. 
 
 The last output form the protocol shows you the join token needed to setup a worker node. If you forgot to note the join token you can run the following command:
 
 	$ sudo kubeadm token create --print-join-command
+
+### The control-plane-endpoint
+
+**Note:** If you have plans to upgrade this single control-plane kubeadm cluster to high availability you should specify the --control-plane-endpoint to set the shared endpoint for all control-plane nodes. Such an endpoint should be a DNS name, so you can change the endpoint later easily. 
+
+	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS] --control-plane-endpoint=[LOAD-BALANCER-DNS-NAME]
+
+
 
 ### Setup kubectl on a Server
 
@@ -126,6 +132,14 @@ The flannel network will been deployed to the Kubernetes cluster. After some sec
 	$ kubectl cluster-info
 
 
+
+### How to Reset a Node
+
+If something went wrong you can easily roll back everything with the command:
+
+	$ sudo kubeadm reset
+
+**Note:** This will erase the etcd database! 
 
 ## Install Worker Nodes
 

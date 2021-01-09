@@ -66,9 +66,11 @@ You can find details about how to create a cluster on the [official kubernets do
 
 After the basic setup, run the  _kubeadm_  tool to setup your kubernetes master node:
 
-	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS]
+	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address={NODE_IP_ADDRESS}
 
-Replace [NODE\_IP\_ADDRESS] with your servers public IP address. At the end the init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
+Replace {NODE\_IP\_ADDRESS} with your servers IP address. For a HA cluster you need also to specify the --control-plane-endpoint (see the [setup guide](./doc/SETUP.md) for details)
+
+At the end the init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
 
 Now deploy a cluster network, this is needed for the internal communication between your cluster nodes. 
 
