@@ -1,6 +1,6 @@
 namespace: ingress-nginx
 bases:
-- github.com/kubernetes/ingress-nginx/deploy/static/provider/cloud?ref=controller-v0.43.0
+- github.com/kubernetes/ingress-nginx/deploy/static/provider/cloud?ref=controller-v0.44.0
 # you can choose different versions here
 
 patchesStrategicMerge:
