@@ -129,6 +129,15 @@ After you have created the volume in Longhorn you can deploy your POD with the P
 **Note:** the acccessMOdes and the storage capacity in the PV must match the PVC definition
 
 
+### Replica Node Level Soft Anti-Affinity
+
+The Longhorn flag *node level soft anti-affinity* allows the Longhorn Manager the scheduling on nodes with existing healthy replicas of the same volume. Per default this flag is set to 'false'. Enabling this flag will increase the availability on small clusters with only 3 nodes. Find more about this option [here](https://longhorn.io/docs/1.1.0/references/settings/#replica-node-level-soft-anti-affinity).
+
+### Volume Attachment Recovery Policy
+
+The Longhorn flag *Attachment Recovery Policy* defines the  action when a Volume is stuck with a Deployment Pod on a failed node. 
+The option *immediate* will recover the Volume Attachment from the failed node as soon as there are pending replacement pods available. This may increase the availibility of volumes in small clusters with only 3 nodes. Find more about this option [here](https://longhorn.io/docs/1.1.0/references/settings/#volume-attachment-recovery-policy).
+
 ## Known Problems
 
 There is also a [forum](https://forums.rancher.com/c/longhorn) to discuss questions with the longhorn community. Some known problems and how you can handle them is listed below: 
