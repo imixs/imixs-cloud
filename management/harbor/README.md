@@ -109,6 +109,17 @@ The harbor scanners are useful to scan docker images for vulnerability. But thes
 	....
 
 
+
+### Upgrade Harbor
+
+Before you upgrade harbor make sure that you have backuped your data. 
+
+Than run:
+
+	$ helm repo update
+	$ helm upgrade registry harbor/harbor -f management/harbor/values.yaml -n harbor
+
+
 ### Uninstall Harbor	
 
 To uninstall/delete the registry deployment:
