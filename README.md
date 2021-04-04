@@ -23,6 +23,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
  - [Docker Registry Habor](./doc/REGISTRY.md)
  - [Security Configuration](./doc/SECURITY.md) 
  - [Monitoring](./doc/MONITORING.md)
+ - [GitOps](./doc/GITOPS.md)
  - [Continuous Integration CI/CD](./doc/CICD.md)
  - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
 
@@ -113,9 +114,9 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
  
 
  
-## The Configuration Directory 
+## Infrastructure as Code
  
-The complete infrastructure of a _Imixs-Cloud_ environment is described in one central configuration directory. The _Configuration Directory_ can be synchronized with a code repository like Git. This makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
+The complete infrastructure of a *Imixs-Cloud* environment is described in one central configuration directory. The *Configuration Directory* can be synchronized with a code repository like Git. This concept is also known as *Infrastructure as Code* and makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
 
 	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
 
@@ -176,14 +177,17 @@ If you want to remove an already deployed service or object just use the delete 
 	$ kubectl delete -f app/whoami/
 
 
+You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) to manage your configuraiton objects in a more flexible way. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
-### Using Kustomize to Manage Custom Configurations
+## GitOps
 
-[Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) is a tool that allows you to customize Kubernetes resources through a *kustomization.yaml* file and overlay folders. 
-*Kustomize* is integrated in the kubectl command-line-tool of Kubernetes and no extra installation is needed to use it. 
-For the core service configuration of Imixs-Cloud we do not use *Kustomize* as you should not run the core services in different configurations. For that reason we advice you to directly edit the configuration of the core-services to your individual needs. The documentation explains how to do this for each core service.
+As *Imixs-Cloud* supports the concept of *Infrastructure as Code* you can setup declarative, continuous deliverys - called GitOps - with the tool Argo CD.
 
-However, we recommend to use *Kustomize* for your own applications if you plan to run different versions of a service. For example if you plan to run a production and test version of a service. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
+<img src="doc/images/argocd-002.png" />
+ 
+This allows you to controll all you application deployments form a modern Web UI and automate the synchronization of your infrastructure.  
+Find a detailed description how to install and setup Argo CD in the [section GitOps](./doc/GITOPS.md)
+
 
 
 ## Manage your Cluster using K9S
