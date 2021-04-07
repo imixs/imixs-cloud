@@ -20,7 +20,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
  - [Terminal Tool K9S](tools/k9s/README.md)
  - [Ingress Integration with NGINX](./doc/INGRESS.md)
  - [Distributed Storage solution](./doc/STORAGE.md)
- - [Docker Registry Habor](./doc/REGISTRY.md)
+ - [Docker Registry](./doc/REGISTRY.md)
  - [Security Configuration](./doc/SECURITY.md) 
  - [Monitoring](./doc/MONITORING.md)
  - [GitOps](./doc/GITOPS.md)
@@ -227,14 +227,8 @@ You can find a detailed description how to install and setup a Longhorn storage 
 
 ## Registry
 
-Docker images are available on docker registries. The _Imixs-Cloud_ includes a setup to run the registry [Harbor](https://goharbor.io/).
-_Habor_ is a secure, performant, scalable, and available cloud native repository for Kubernetes. 
-
-
-<img src="doc/images/harbor.png" />
-
-
-You can find a detailed description how to install and setup the Harbor registry in the [section registry](./doc/REGISTRY.md)
+Docker images are available on docker registries. The _Imixs-Cloud_ includes a setup to run a private Docker Registry. 
+You can find a detailed description how to install and setup the registry in the [section registry](./doc/REGISTRY.md)
 
 
 ## Monitoring
