@@ -1,0 +1,50 @@
+---
+###################################################
+# Deployment docker-registry
+###################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry
+  namespace: registry
+  labels: 
+    app: registry
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: registry
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+      - name: docker-registry
+        image: registry:2
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: CET     
+        - name: REGISTRY_HTTP_ADDR
+          value: ":5000"
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: "/var/lib/registry"
+        ports:
+        - name: http
+          containerPort: 5000
+        volumeMounts:
+        - name: registry-data
+          mountPath: /var/lib/registry
+      # Add the volume to the Pod
+      volumes:
+      - name: registry-data
+        persistentVolumeClaim:
+          claimName: registry-data
+      restartPolicy: Always
+
+
+
+

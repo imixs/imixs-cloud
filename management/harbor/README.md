@@ -2,6 +2,8 @@
 
 [Harbor](https://goharbor.io/) is a secure, performant, scalable, and available cloud native repository for Kubernetes. It can be installed using the *helm* tool. Find more information in the [Harbor Setup Guide](../../doc/REGISTRY.md).
 
+<img src="../../doc/images/harbor.png" />
+
 ## Installation
 
 Harbor consists of several services. To make it easy to install Harbor the right way you can use `helm`. If you have not yet installed helm, follow the install guide [here](../tools/helm/README.md)

@@ -1,0 +1,42 @@
+---
+###################################################
+# Persistence Volume for registry data
+###################################################
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: docker-registry
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: registry
+    name: registry-data
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: registry-data
+  storageClassName: longhorn-durable
+
+---
+###################################################
+# Persistence Volume Claim for registry data
+###################################################
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: registry-data
+  namespace: registry
+spec:
+  storageClassName: longhorn-durable
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: docker-registry
+
+
