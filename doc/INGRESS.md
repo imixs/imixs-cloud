@@ -169,6 +169,23 @@ In some scenarios is required to redirect from www.domain.com to domain.com or v
 You don't have to set the host 'foo.org' as the annotation from-to-www-redirect is enough as long as you have SSL certificate to terminate both foo.org and www.foo.org (provided by letsencrypt)              
 
 
+### Custom max body size 
+
+For NGINX, an 413 error will be returned to the client when the size in a request exceeds the maximum allowed default size of 1MB of the client request body. This size can be configured by the parameter client_max_body_size.
+
+To configure this setting globally for all Ingress rules, the proxy-body-size value may be set in the NGINX ConfigMap. To use custom values in an Ingress rule define these annotation:
+
+	kind: Ingress
+	apiVersion: networking.k8s.io/v1
+	metadata:
+	  name: foo-org
+	  namespace: www-foo-org
+	  annotations:
+	    nginx.ingress.kubernetes.io/proxy-body-size: 8m
+	 ....
+
+Find details also [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#custom-max-body-size).
+
 ### Configuration Snippet
 
 With the annotation 'nginx.ingress.kubernetes.io/configuration-snippet' you can add custom config snippets. See the following example for a redirect:
