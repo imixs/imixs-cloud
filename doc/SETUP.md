@@ -120,17 +120,34 @@ To make kubectl work for your non-root user, run these commands on your master n
 This will copy the configuration of your master node into the kubernetes config directory ./kube of your home directory. Now you can administrate your kubernetes cluster as a non-root user.
 
 
-### Setup a flannel network
+### Setup a Cluster Network Interface (CNI)
 
-Befor your start to setup your first worker node you first need to install a kubernetes cluster network. 
-To deploy the flannel network to the kubernetes cluster run the following kubectl command:
+Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available. You can fine a list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
 
-	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#### The flannel network
+
+[Flannel](https://github.com/flannel-io/flannel#flannel) is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes. To deploy the flannel network to the kubernetes cluster run the following kubectl command:
+
+	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.13.0/Documentation/kube-flannel.yml
 
 The flannel network will been deployed to the Kubernetes cluster. After some seconds the cluster should be up and running. You can check the status with:
 
 	$ kubectl cluster-info
 
+**Note:** You can switch to a newer version if you check the relase notes from the flannel project on [github](https://github.com/flannel-io/flannel/releases)
+
+#### The Calico Network
+
+[Calico](https://docs.projectcalico.org/) is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. It is more flexible and powerful than the flannel network and can be a good alternative.
+
+To install calico download the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
+If you have defined a CIDR network than uncomment the environment variable 'CALICO_IPV4POOL_CIDR' and set your CIDR network here. Next you can deploy the network with:
+
+	$ kubectl apply -f calico.yaml
+	
+After some seconds the cluster should be up and running. You can check the status with:
+
+	$ kubectl cluster-info	
 
 
 ### How to Reset a Node

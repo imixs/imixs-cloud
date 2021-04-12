@@ -58,7 +58,7 @@ A basic deployment can be run via kubectl and the base kustomize setup hosted on
 
 If you have already cloned this repo you can also use your local manifest files:
 	
-	$ kubectl apply -k management/monitoring/imixs-prometheus/base
+	$ kubectl apply -k management/monitoring/imixs-prometheus/
 	
 
 ### Undeploy the Monitoring stack
