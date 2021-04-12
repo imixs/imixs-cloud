@@ -83,7 +83,7 @@ For CentOS 7
 
 ### Hostnames and Network Addresses
 
-In case you are running your cluster in a private network, make sure that all hostnames of the cluster nodes are listed in the */etc/hosts* with the IP addresses of you private network. Otherwise your cluster nodes will probably communicate via the public Internet IPs which is what you want to avoid. 
+In case you are running your cluster in a private network, make sure that all host names of the cluster nodes are listed in the */etc/hosts* with the IP addresses of you private network. Otherwise your cluster nodes will probably communicate via the public Internet IPs which is what you want to avoid. 
 
 ## Setup the Cluster
 
@@ -122,9 +122,9 @@ This will copy the configuration of your master node into the kubernetes config 
 
 ### Setup a Cluster Network Interface (CNI)
 
-Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available. You can fine a list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
+Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available. You can find a list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
 
-#### The flannel network
+#### The Flannel Network
 
 [Flannel](https://github.com/flannel-io/flannel#flannel) is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes. To deploy the flannel network to the kubernetes cluster run the following kubectl command:
 
@@ -141,7 +141,12 @@ The flannel network will been deployed to the Kubernetes cluster. After some sec
 [Calico](https://docs.projectcalico.org/) is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. It is more flexible and powerful than the flannel network and can be a good alternative.
 
 To install calico download the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
-If you have defined a CIDR network than uncomment the environment variable 'CALICO_IPV4POOL_CIDR' and set your CIDR network here. Next you can deploy the network with:
+
+	$ curl https://docs.projectcalico.org/manifests/calico.yaml -O	
+	
+If you have defined a CIDR network than you can optional uncomment the environment variable 'CALICO_IPV4POOL_CIDR' and set your CIDR network here. But this step should not be required if you followed the setup guide here. 
+
+To deploy the network run:
 
 	$ kubectl apply -f calico.yaml
 	
@@ -149,6 +154,7 @@ After some seconds the cluster should be up and running. You can check the statu
 
 	$ kubectl cluster-info	
 
+Find more details about how to install calico [here](https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises).
 
 ### How to Reset a Node
 
@@ -164,7 +170,7 @@ Now you can run the same script used to install the master node on each of your 
 
 	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
 
-This will install the docker runtime and kubernetes tools. 
+This will install the containerd runtime and the kubernetes tools. 
 
 ### Adding a Worker Node to your Cluster
 
@@ -281,68 +287,3 @@ Finally connect to the specific worker node an run:
 	$ sudo kubeadm reset
 	
 
-## Clean Up Disk Space
-
-After some time, the disk space on a worker node may run low. This is often independent from how much disk space each application needs. The reason is, that Docker itself consumes much disk space for docker images and data volumes. Many of these images and volumes are no longer needed because, for example, your are using newer versions of a particular container. In this situation, it may be helpful to remove such objects. 
-
-
-To check the disk space available on a worker node run:
-
-	$ df -h
-
-To remove unused docker images run:
-
-	$ sudo docker system  prune
-	WARNING! This will remove:
-	  - all stopped containers
-	  - all networks not used by at least one container
-	  - all dangling images
-	  - all dangling build cache
-	
-	Are you sure you want to continue? [y/N] 
-
-This command is not so critical as kubernetes will download docker images need to run a application automatically. 
-
-If you also want to remove unused docker volumes you can run the following command. NOTE: volumes can not be restored with this options as volumes for stopped containers will also be removed. 
-
-	$ sudo docker system  prune --volumes
-	WARNING! This will remove:
-	  - all stopped containers
-	  - all networks not used by at least one container
-	  - all volumes not used by at least one container
-	  - all dangling images
-	  - all dangling build cache
-	
-	Are you sure you want to continue? [y/N] 
-
-
-
-### Clean Diskspace by Draining the Node
-
-Another solution that can help is to drain the complete node before pruning:
-
-**Step 1 Drain the node**
-
-	$ kubectl drain woker-node --ignore-daemonsets --delete-local-data
-
-**Step 2 Stop kubelet on this node**
-
-	$ service kubelet stop
-
-**Step 3 Restart the docker on this node**
-
-	$ service docker restart
-
-** Step 4 Clean up the whole docker**
-
-	$ docker system prune --all --volumes --force
-
-Now everything, including images, containers, volumes, are all deleted.
-
-**Step 5 Start kubelet**
-
-	$ service kubelet start
-
-**Step 6 Uncordon the node**
-
-	$ kubectl uncordon woker-node
