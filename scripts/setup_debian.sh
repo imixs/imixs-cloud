@@ -25,7 +25,7 @@ echo "#############################################"
 echo " adding repositories..."
 echo "#############################################"
 apt update
-apt install -y apt-transport-https ca-certificates ne curl gnupg2 software-properties-common
+apt install -y apt-transport-https ca-certificates ne curl gnupg2 software-properties-common nftables
 
 # Add docker repositry
 curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
