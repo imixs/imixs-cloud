@@ -246,12 +246,6 @@ Optional you can also reboot your node to make sure kubernetes is restarted corr
 	$ sudo reboot
 
 
-
-
-
-
-
-
 # Maintenance
 
 The following section contains some maintenance tips for a running environment. 
@@ -262,9 +256,9 @@ See also the section [Monitoring](MONITORING.md) to learn how you can monitor yo
 
 To rescale a node first mark the node as unschedulable:
 
-	$ kubectl cordon node-x
+	$ kubectl drain node-x
 
-next you can shuthown the node and rescal / maintainance the node. After the node is up again run uncordon to join again the scheduler.
+next you can shutdown the node, upgrade or rescale the node. After the node is up again run *uncordon* to join the node again the scheduler.
 
 	$ kubectl uncordon node-x
 	
@@ -276,6 +270,10 @@ In order to remove a node form the cluster you can first call:
 	$ kubectl drain <node name>
 
 This will safely evict all pods from a node before you perform maintenance on the node (e.g. kernel upgrade, hardware maintenance, etc.). Safe evictions allow the pod's containers to gracefully terminate and will respect the PodDisruptionBudgets you have specified.
+
+To bring the node back into the cluster run:
+
+	$ kubectl uncordon node-x
 
 To delete the node from the cluster:
 
