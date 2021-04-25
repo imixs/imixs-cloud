@@ -165,7 +165,7 @@ and from within the client POD you can for example verify the status of your coc
 	   3 | worker-3:26257 | worker-3:26257 | v20.2.8 | 2021-04-24 22:46:38.742714+00:00 | 2021-04-25 12:28:25.349116+00:00 |          | true         | true
 
 
-To enter the SQL client: run:
+To enter the SQL client, run:
 
 	$ cockroach sql --certs-dir=/cockroach-certs --host=cockroachdb-public
 	
