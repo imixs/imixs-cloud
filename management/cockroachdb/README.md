@@ -98,22 +98,22 @@ The cockroachDB PODs in your cluster are not yet starting. First your need to ap
 
 	$ kubectl get csr
 	NAME                             AGE   SIGNERNAME                     REQUESTOR                                   CONDITION
-	default.node.cockroachdb-0   1s    kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
-	default.node.cockroachdb-1   1s    kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
-	default.node.cockroachdb-2   1s    kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
+	cockroach.node.worker-1   1s    kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
+	cockroach.node.worker-2   1s    kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
+	cockroach.node.worker-3   1s    kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
 
 To approve the certificates run:
 
-	$ kubectl certificate approve default.node.cockroachdb-0
-	$ kubectl certificate approve default.node.cockroachdb-1
-	$ kubectl certificate approve default.node.cockroachdb-2
+	$ kubectl certificate approve cockroach.node.worker-1
+	$ kubectl certificate approve cockroach.node.worker-2
+	$ kubectl certificate approve cockroach.node.worker-3
 
 After your have approved the certificates the coackroach PODs will start automatically. 
 
 
 **2.) Init the Cluster**
 
-Now you can initialize the cluster. For that one-time step you first need to edit the file *scripts/cluster-init-secure.yaml*. Replace the HOST_IP_ADDR  with the address of your first worker node. 
+Now you can initialize the cluster. For that one-time step you first need to edit the file *scripts/cluster-init-secure.yaml*. Replace the HOST_IP_ADDR  with the IP address of your first worker node (dont use the node-name here!). 
 
 	....
         command:
@@ -126,7 +126,12 @@ Now you can initialize the cluster. For that one-time step you first need to edi
 Next you can init the cluster with:
 
 	$ kubectl create -f management/cockroachdb/scripts/cluster-init-secure.yaml
- 
+	
+This script generates also the client certificate needed to use the Cockroach Client later. You need to approve this certificate also:
+
+	$ kubectl certificate approve cockroach.client.root
+
+
 Now after a moment you should be able to access the CockroachDB Web UI from your browser:
 
 	https://cockroachdb.foo.com
@@ -141,25 +146,15 @@ The cockroach client provides a command line tool to administrate your cluster a
 
 To install the client run:
  
-	$ kubectl create \
-	-f https://raw.githubusercontent.com/cockroachdb/cockroach/master/cloud/kubernetes/client-secure.yaml
+	$ kubectl create -f management/cockroachdb/scripts/client-secure.yaml
  
-This command starts the client POD and generates a client certificate to access your cockroach cluster in a secure way:
+This command starts the client POD. This POD uses the same client certificate *cockroach.client.root* as already created during initializing the cluster.
 
-	$ kubectl get csr
-	NAME                  AGE   SIGNERNAME                     REQUESTOR                                   CONDITION
-	default.client.root   15s   kubernetes.io/legacy-unknown   system:serviceaccount:default:cockroachdb   Pending
+After the client was created, you can can ssh into the client POD
 
-You need to approve the client certificate which is in a pending state:
-
-	$ kubectl certificate approve default.client.root
-
-Now you can ssh into the client POD
-
-	$ kubectl exec -it cockroachdb-client-secure -- bash
-
+	$ kubectl exec -it -n cockroach cockroachdb-client-secure -- bash
+	
 and from within the client POD you can for example verify the status of your cockroach cluster:
-
 
 	$ cockroach node status --certs-dir=/cockroach-certs --host=10.0.0.3
 	
@@ -193,6 +188,8 @@ To be able to access the Web UI you need first to set the root password. This ca
 
 
 	$ ALTER USER root WITH PASSWORD 'YOUR-NEW-PASSWORD';	
+
+With the new password and the user 'root' you can now login to the Web Frontend.
 
 To create a new user, run the SQL command:
 

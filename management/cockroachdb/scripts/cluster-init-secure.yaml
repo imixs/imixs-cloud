@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: cluster-init-secure
+  namespace: cockroach
   labels:
     app: cockroachdb
 spec:

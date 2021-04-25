@@ -13,12 +13,16 @@
 # "--host=cockroachdb-0.cockroach" line from "cockroachdb-0.cockroach" to the
 # address of one of your nodes.
 #
-# If you're interested in using a DaemonSet in insecure mode instead, please
-# see cockroachdb-daemonset-insecure.yaml.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cockroach
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: cockroachdb
+  namespace: cockroach
   labels:
     app: cockroachdb
 ---
@@ -26,6 +30,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cockroachdb
+  namespace: cockroach
   labels:
     app: cockroachdb
 rules:
@@ -41,6 +46,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: cockroachdb
+  namespace: cockroach
   labels:
     app: cockroachdb
 rules:
@@ -57,6 +63,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: cockroachdb
+  namespace: cockroach
   labels:
     app: cockroachdb
 roleRef:
@@ -66,12 +73,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: cockroachdb
-  namespace: default
+  namespace: cockroach
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: cockroachdb
+  namespace: cockroach
   labels:
     app: cockroachdb
 roleRef:
@@ -81,7 +89,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: cockroachdb
-  namespace: default
+  namespace: cockroach
 ---
 apiVersion: v1
 kind: Service
@@ -89,10 +97,10 @@ metadata:
   # This service is meant to be used by clients of the database. It exposes a ClusterIP that will
   # automatically load balance connections to the different database pods.
   name: cockroachdb-public
+  namespace: cockroach
   labels:
     app: cockroachdb
 spec:
-  #type: ClusterIP
   ports:
   # The main port, served by gRPC, serves Postgres-flavor SQL, internode
   # traffic and the cli.
@@ -110,6 +118,7 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: cockroachdb-budget
+  namespace: cockroach
   labels:
     app: cockroachdb
 spec:
@@ -122,6 +131,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: cockroachdb
+  namespace: cockroach
   labels:
     app: cockroachdb
 spec:
