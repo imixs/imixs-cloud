@@ -1,14 +1,14 @@
 # Cockraoch
 
-The [CockroachDB](https://www.cockroachlabs.com/) is a distributed SQL database with a build in replication mechanism. This means that the data is replicated over several nodes in a database cluster. This increases the scalability and resilience in the case that a single node fails. With its Automated-Repair feature the database also detects data inconsistency and automatically fixes faulty data on disks. The project is Open Source and hosted on [Github](https://github.com/cockroachdb/cockroach).
+The [CockroachDB](https://www.cockroachlabs.com/) is a distributed SQL database with a build in replication mechanism. 
+The database can be used as a central database cluster running as part of the Imixs-Cloud. 
 
-## ACIC Transactions
+Cockroach provides  a build in replication mechanism. This means that the data is replicated automatically over several nodes in a database cluster. This increases the scalability and resilience in the case that a single node fails. With its Automated-Repair feature the database also detects data inconsistency and automatically fixes faulty data on disks. The project is Open Source and hosted on [Github](https://github.com/cockroachdb/cockroach).
 
-CockroachDB fully supports distributed ACID transactions. This means guaranteed atomicity, isolation, consistency, and durability of data. This allows CockroachDB to be used in combination with Jakarta EE and JPA. Supporting the PostgreSQL wire protocol, CockroachDB can be used out of the box for the Java Enterprise Applications and Microservices using the standard PostgresSQL JDBC driver.
 
 ## Web Frontend
 
-Cockroach offers a Web Frontend providing a dashboard with all metrics about the cluster. 
+Cockroach provides a Web Frontend with a dashboard to monitor all metrics about the running database cluster. 
 
 <img src="images/cockroach-screen-01-768x451.png" />
 
@@ -21,7 +21,7 @@ You can run  CockroachDB on all your cluster nodes or you can define specific se
 
 ## The Cockraoch Client
 
-The cockroach client provides a command line tool to administrate your cluster and to open a SQL client shell to create and edit databases and table schemas. The client is installed as a separate POD within your Kubernetes Cluster. 
+The cockroach client provides a command line tool to administrate the cluster and to open a SQL client shell to create and edit databases and table schemas. The client is installed as a separate POD within your Kubernetes Cluster. 
 
 To access the client your need a ssh into the client POD
 
@@ -51,6 +51,11 @@ Cockroach runs in the namespace 'cockroach'. To access the database from a java 
 
 	jdbc:postgresql://cockroachdb-public.cockroach:26257/YOUR-DATABASE
 
-	
+
+### ACIC Transactions
+
+CockroachDB fully supports distributed ACID transactions. This means guaranteed atomicity, isolation, consistency, and durability of data. This allows CockroachDB to be used in combination with Jakarta EE and JPA. 
+
+
 	
 	
