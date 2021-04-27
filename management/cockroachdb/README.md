@@ -156,7 +156,7 @@ After the client was created, you can can ssh into the client POD
 	
 and from within the client POD you can for example verify the status of your cockroach cluster:
 
-	$ cockroach node status --certs-dir=/cockroach-certs --host=10.0.0.3
+	$ cockroach node status --certs-dir=/cockroach-certs --host=cockroachdb-public
 	
 	  id |     address    |  sql_address   |  build  |            started_at            |            updated_at            | locality | is_available | is_live
 	-----+----------------+----------------+---------+----------------------------------+----------------------------------+----------+--------------+----------
