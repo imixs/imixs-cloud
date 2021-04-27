@@ -1,6 +1,6 @@
 # CockroachDB
 
-In Imixs-Cloud we run the CockraochDB as a DaemonSet which is a similar deployment setup like for [Longhorn](../../doc/LONGHORN.md).
+In Imixs-Cloud we run the CockroachDB as a DaemonSet which is a similar deployment setup like for [Longhorn](../../doc/LONGHORN.md).
 The concept of [Node affinities](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity) and [Taints and Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) gives you a fine grained way to define which nodes in your cluster should be part of your CockroachDB. 
 
 You can find general information how to run CockroachDB in a Kuberentes Cluster [here](https://www.cockroachlabs.com/docs/v21.1/kubernetes-performance#running-in-a-daemonset). A basic tutorial can be found [here](https://ralph.blog.imixs.com/2021/04/22/cockroachdb-kubernetes/). 
@@ -90,7 +90,7 @@ Now you can start the deployment of your Cockroach cluster. The deployment takes
 
 **1.) Deploy the Nodes & approve the certificates**
 
-To deploy the CockraochDB nodes into your cluster run:
+To deploy the CockroachDB nodes into your cluster run:
 
 	$ kubectl apply -f management/cockroachdb
 
