@@ -29,7 +29,7 @@ You can enter IP addresses or DNS aliases of your nodes. Specify the addresses o
              --http-addr 0.0.0.0 
              --cache 25% 
              --max-sql-memory 25% 
-             --join=worker-1:26257,worker-2:26257,worker-3:26257"
+             --join=worker-1,worker-2,worker-3"
 
 Replace the 'worker-1' with the host name of your nodes. The port number 26257 is the default port used for the DaemonSet. 
 
@@ -210,14 +210,16 @@ To create a new database run:
 If you setup an additional CockroachDB cluster node you need to approve the auto generated certificate after the first deployment. You can see the command in the log file of the pod:
 
 
-	$ kubectl certificate approve default.node.test-worker-4
+	$ kubectl certificate approve default.node.my-worker-4
 	
 		
 ## Mark a dead node as decommissioned
 
 Run the cockroach node decommission command against the address of any live node, specifying the ID of the dead node:
 
-	$ cockroach node decommission <id of the dead node> --certs-dir=certs --host=<address of any live node>
+	$ cockroach node decommission <id of the dead node> --certs-dir=/cockroach-certs --host=cockroachdb-public
+
+## Remove a single node (dead)
 
 
 
