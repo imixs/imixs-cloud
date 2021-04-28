@@ -191,10 +191,20 @@ To be able to access the Web UI you need first to set the root password. This ca
 
 With the new password and the user 'root' you can now login to the Web Frontend.
 
-To create a new user, run the SQL command:
+### Create a new Admin Account
+
+To create a new user with admin rights, run the SQL command:
 
 	$ CREATE USER roach WITH PASSWORD 'YOUR-USER-PASSWORD';
 	$ GRANT admin TO roach;
+	
+### Create a new Database Account
+
+To create a new user with all rights to a specific database, run the SQL command:
+
+	$ CREATE USER my_user WITH PASSWORD 'MY-USER-PASSWORD';
+	$ GRANT ALL ON DATABASE my_database TO my_user;
+	$ GRANT ALL ON TABLE * TO my_user;
 
 ## Create a Database
 
