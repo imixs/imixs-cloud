@@ -38,6 +38,13 @@ spec:
         volumeMounts:
         - name: registry-data
           mountPath: /var/lib/registry
+        # Liveness Probe
+        livenessProbe:
+          httpGet:
+            path: /v2/_catalog
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
       # Add the volume to the Pod
       volumes:
       - name: registry-data
