@@ -85,7 +85,8 @@ spec:
       serviceAccountName: prometheus
       containers:
       - name: prometheus
-        image: prom/prometheus:v2.1.0
+        # v2.1.0
+        image: prom/prometheus:v2.27.1
         # run as root because of persistence volume storage
         securityContext:
           runAsUser: 0
