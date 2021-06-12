@@ -6,7 +6,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ceph-csi-config
-  #namespace: ceph-system
+  namespace: ceph-system
 data:
   config.json: |-
     [
@@ -25,7 +25,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ceph-csi-encryption-kms-config
-  #namespace: ceph-system
+  namespace: ceph-system
 data:
   config.json: |-
     {}

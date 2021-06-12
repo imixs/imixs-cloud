@@ -58,12 +58,16 @@ First edit the file *csi-config-map.yaml* substituting the fsid for "<clusterID>
 
 ### 2) Create the ceph-csi ceph Secret
 
+First create the namespace
+
+	$ kubectl create namespace ceph-system
+
 With the key form the generated client.kubernetes user create a now a secret 
 
-	$ kubectl create secret generic ceph-admin-secret \
-	    --type="kubernetes.io/rbd" \
-	    --from-literal=key='<key-value>' \
-	    --namespace=ceph-system
+	$ kubectl create secret generic csi-rbd-secret \
+	    --from-literal=userID='kubernetes' \
+	    --from-literal=userKey='<key-value>' \
+	    --namespace=ceph-system	    
 
 Where <key-value> is your ceph client.kubernetes key. You can verify the cuccessfull creation with:
 
@@ -96,7 +100,6 @@ You can find the origin versions of these kubernetes objects on github:
 
 After you have updated the yaml files as describe before you can now apply the Ceph Storage:
 
-	$ kubectl create namespace ceph-system
 	$ kubectl apply -f management/ceph/
 
 

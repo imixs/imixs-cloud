@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: csi-rbdplugin-provisioner
+  namespace: ceph-system
   labels:
     app: csi-metrics
 spec:
@@ -19,6 +20,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: csi-rbdplugin-provisioner
+  namespace: ceph-system
 spec:
   replicas: 3
   selector:

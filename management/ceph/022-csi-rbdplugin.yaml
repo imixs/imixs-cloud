@@ -3,6 +3,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: csi-rbdplugin
+  namespace: ceph-system
 spec:
   selector:
     matchLabels:
@@ -171,6 +172,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: csi-metrics-rbdplugin
+  namespace: ceph-system
   labels:
     app: csi-metrics
 spec:
