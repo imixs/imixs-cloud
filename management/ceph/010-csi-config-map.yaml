@@ -1,0 +1,31 @@
+###############################
+# Ceph Config Map
+###############################
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-csi-config
+  #namespace: ceph-system
+data:
+  config.json: |-
+    [
+      {
+        "clusterID": "<clusterID>",
+        "monitors": [
+          "<IP-ADDRESS-1>:6789",
+          "<IP-ADDRESS-2>:6789",
+          "<IP-ADDRESS-3>:6789"
+        ]
+      }
+    ]
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-csi-encryption-kms-config
+  #namespace: ceph-system
+data:
+  config.json: |-
+    {}

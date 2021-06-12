@@ -179,7 +179,12 @@ To enter the SQL client, run:
 	# Enter \? for a brief introduction.
 	#
 	root@cockroachdb-public:26257/defaultdb>
-	
+
+
+To connect to a specific database run:
+
+
+	$ cockroach sql --certs-dir=/cockroach-certs --host=cockroachdb-public -d my-database	
 	
 
 ## Manage User Accounts
