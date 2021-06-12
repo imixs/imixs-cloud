@@ -193,7 +193,7 @@ Next you can define a corresponding PersistentVolume together with a matching Pe
 	      # The imageFeatures must match the created ceph image exactly!
 	      imageFeatures: "layering"
 	    volumeHandle: test-image 
-
+	
 	---
 	apiVersion: v1
 	kind: Pod
