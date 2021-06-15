@@ -25,7 +25,7 @@ echo "#############################################"
 echo " adding core libraries..."
 echo "#############################################"
 apt update
-apt install -y ne apt-transport-https ca-certificates curl gnupg lsb-release nftables
+apt install -y ne apt-transport-https ca-certificates curl gnupg lsb-release nftables ntp lvm2
 
 
 echo "#############################################"

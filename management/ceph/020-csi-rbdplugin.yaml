@@ -49,7 +49,7 @@ spec:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           # for stable functionality replace canary with latest release version
-          image: quay.io/cephcsi/cephcsi:canary
+          image: quay.io/cephcsi/cephcsi:v3.3.1
           args:
             - "--nodeid=$(NODE_ID)"
             - "--type=rbd"
@@ -57,7 +57,6 @@ spec:
             - "--endpoint=$(CSI_ENDPOINT)"
             - "--v=5"
             - "--drivername=rbd.csi.ceph.com"
-            - "--enableprofiling=false"
             # If topology based provisioning is desired, configure required
             # node labels representing the nodes topology domain
             # and pass the label names below, for CSI to consume and advertise
@@ -108,7 +107,7 @@ spec:
         - name: liveness-prometheus
           securityContext:
             privileged: true
-          image: quay.io/cephcsi/cephcsi:canary
+          image: quay.io/cephcsi/cephcsi:v3.3.1
           args:
             - "--type=liveness"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -172,7 +171,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: csi-metrics-rbdplugin
-  namespace: ceph-system
   labels:
     app: csi-metrics
 spec:

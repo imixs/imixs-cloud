@@ -74,9 +74,9 @@ roleRef:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: rbd-external-provisioner-cfg
   # replace with non-default namespace name
   namespace: ceph-system
+  name: rbd-external-provisioner-cfg
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -95,10 +95,9 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: rbd-csi-provisioner
-  # replace with non-default namespace name
+    # replace with non-default namespace name
     namespace: ceph-system
 roleRef:
   kind: Role
   name: rbd-external-provisioner-cfg
   apiGroup: rbac.authorization.k8s.io
-

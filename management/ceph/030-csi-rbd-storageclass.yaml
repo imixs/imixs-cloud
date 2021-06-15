@@ -11,12 +11,18 @@ parameters:
    clusterID: <clusterID>
    pool: kubernetes
    imageFeatures: layering
+   # The secrets have to contain Ceph credentials with required access
+   # to the 'pool'.
    csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret
    csi.storage.k8s.io/provisioner-secret-namespace: ceph-system
    csi.storage.k8s.io/controller-expand-secret-name: csi-rbd-secret
    csi.storage.k8s.io/controller-expand-secret-namespace: ceph-system
    csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret
    csi.storage.k8s.io/node-stage-secret-namespace: ceph-system
+   # (optional) Specify the filesystem type of the volume. If not specified,
+   # csi-provisioner will set default as `ext4`.
+   csi.storage.k8s.io/fstype: ext4
+# Note: the reclaimPolicy can be overwritten by a PV
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 mountOptions:

@@ -1,14 +1,10 @@
 # Ceph 
 
-You can use Ceph as distributed filesystem for *Imixs-Cloud*. We assume that you have already installed a Ceph cluster and your Ceph cluster is running independent from your kubernetes cluster. We also assume that and you can access your Ceph nodes from each kubernetes worker nodes via a private network. 
+Ceph is a distributed filesystem which can be used in combination with the *Imixs-Cloud* to run statefull applications. We assume that you have already installed a Ceph cluster and that your Ceph cluster is accessible from each kubernetes worker nodesvia a private network. You can find a complete install guide for Ceph [here](https://ralph.blog.imixs.com/2020/04/14/ceph-octopus-running-on-debian-buster/).
 
-This integration is based on the 'Managed rados Block Device (RBD)' images which dynamically provisions RBD images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration also allows mounting a file system contained within the image, with is the usual use case. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
+**Note:** As the filesystem is a critical infrastructur component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  
 
-
-**Note:** The official integration guides form the ceph homepage for the releases 'octopus' and 'pacific' are both outdated in some important details. For that reason this guide is based on the [latest release guide for 'Block Devices and Kubernetes'](https://docs.ceph.com/en/latest/rbd/rbd-kubernetes/) - based on June 2021.
-
-You can find a complete install guide for Ceph [here](https://ralph.blog.imixs.com/2020/04/14/ceph-octopus-running-on-debian-buster/).
-
+The integration is based on the Ceph ceph-csi plugin and provisioner in [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The ceph-csi plugin is using so called 'Managed rados Block Device (RBD)' images. The provisioner can create RBD images dynamically or connect to to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
 
 ## Setup a Kubernetes Pool 
 
@@ -53,7 +49,7 @@ In The following section you can see how the Kubernetes objects, needed to use C
 	
 ### 1) Edit the ceph-csi ConfigMap for Kubernetes
 
-First edit the file *csi-config-map.yaml* substituting the fsid for "<clusterID>", and the monitor addresses <IP-ADDRESS-1>, <IP-ADDRESS-2> and <IP-ADDRESS-3>
+First edit the file *csi-config-map.yaml* substituting the fsid for 'clusterID', and the monitor addresses <IP-ADDRESS-1>, <IP-ADDRESS-2>, <IP-ADDRESS-3>
 
 
 ### 2) Create the ceph-csi ceph Secret
@@ -86,12 +82,7 @@ You can customize these classes if needed. For example you can create additional
 
 ### 4) The csi-provisioner and rdbplugins
 
-The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are needed to access Ceph.  With the possible exception of the ceph-csi container release version, these objects do not necessarily need to be customized for your Kubernetes environment and therefore can be used as-is from the ceph-csi deployment YAMLs. But you can check the files content before deployment from the origin urls
-
-You can find the origin versions of these kubernetes objects on github:
-
-	https://github.com/ceph/ceph-csi/tree/devel/deploy/rbd/kubernetes
-	
+The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version.	
 
 ## Apply the Ceph System
 
