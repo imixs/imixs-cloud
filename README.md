@@ -23,7 +23,7 @@ If you have any questions just open a new [Issue on Github](https://github.com/i
  - [Docker Registry](./doc/REGISTRY.md)
  - [Security Configuration](./doc/SECURITY.md) 
  - [Monitoring](./doc/MONITORING.md)
- - [SQL Database Cluster](./doc/COCKROACH.md)
+ - [SQL Database](./doc/SQL.md)
  - [GitOps](./doc/GITOPS.md)
  - [Continuous Integration CI/CD](./doc/CICD.md)
  - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
