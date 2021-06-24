@@ -3,11 +3,11 @@
 ### Build Your Self Managed Kubernetes Cluster!
 
 
-_Imixs-Cloud_ is an open infrastructure project, providing a lightweight [docker](https://www.docker.com/) based runtime environment for small and medium-sized organizations. 
+*Imixs-Cloud* is an open infrastructure project, providing a lightweight container based runtime environment for small and medium-sized organizations. 
 This projects goal is to **build**, **run** and **maintain** business applications in a production ready and self managed kubernetes cluster.
-The main objectives of _Imixs-Cloud_ are **simplicity**, **transparency** and **operational readiness**. 
+The main objectives of *Imixs-Cloud* are **simplicity**, **transparency** and **operational readiness**. 
 
-The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. _Imixs-Cloud_ provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
+The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. *Imixs-Cloud* provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
 
 If you have any questions just open a new [Issue on Github](https://github.com/imixs/imixs-cloud/issues) and start a Discussion. 
 
@@ -36,7 +36,7 @@ The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and o
 <img src="./doc/images/imixs-cloud-architecture.png" />
 
 For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
-All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You fill find a detailed installation guide in the [setup section](doc/SETUP.md).
+All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You will find a detailed installation guide in the [setup section](doc/SETUP.md).
 
 ### 1. Install Kubernetes
 
