@@ -209,6 +209,58 @@ This example will reuse the image 'test-image' without deletion if the POD is re
 
 
 
+### Resizing Static Persistent Volumes
 
+If you need to resize your ceph image later you also need to resize the ext4 filesystem within your POD. For that you can use the resize2fs command from within your container.
+
+	# resize2fs /dev/rbd[number]
+
+If you don't have the lib in your container image or you have insufficient security privileges you can run the following JOB where you just need to replace the claim name:
+
+	---
+	###################################################
+	# This job can be used to resize a ext4 filesystem
+	# aligned to the given size of the underlying RBD image.
+	###################################################
+	apiVersion: batch/v1
+	kind: Job
+	metadata:
+	  name: ext4-resize2fs
+	spec:
+	  template:
+	    spec:
+	      containers:
+	        - name: debian
+	          image: debian
+	
+	          command: ["/bin/sh"]
+	          args:
+	            - -c
+	            - >-
+	                echo '******** start resizeing block device  ********' &&
+	                echo ...find rbd mounts to be resized.... &&
+	                df | grep /rbd &&
+	                DEVICE=`df | grep /rbd | awk '{print $1}'` &&
+	                echo ...resizing device $DEVICE ... &&
+	                resize2fs $DEVICE &&
+	                echo '******** resize block device completed ********'
+	
+	          volumeMounts:
+	            - name: volume-to-resize
+	              mountPath: /tmp/mount2resize
+	          securityContext:
+	            privileged: true
+	      volumes:
+	        - name: volume-to-resize
+	          persistentVolumeClaim:
+	            claimName: test-pg-dbdata
+	      restartPolicy: Never
+	  backoffLimit: 1
+
+Make sure that the PV and PVC objects exist before you run the job. Replace the PVC with the name of your PVC to be resized.
+
+	$ kubectl apply -f resize2fs.yaml
+
+Find also details [here](https://ralph.blog.imixs.com/2021/10/01/kubernetes-ceph-and-static-volumes/)
 
 	
