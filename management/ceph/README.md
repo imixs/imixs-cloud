@@ -1,24 +1,21 @@
 # Ceph 
 
-Ceph is a distributed filesystem which can be used in combination with the *Imixs-Cloud* to run statefull applications. We assume that you have already installed a Ceph cluster and that your Ceph cluster is accessible from each kubernetes worker nodesvia a private network. You can find a complete install guide for Ceph [here](https://ralph.blog.imixs.com/2020/04/14/ceph-octopus-running-on-debian-buster/).
+Ceph is a distributed filesystem which can be used in combination with the *Imixs-Cloud* to run statefull applications. We assume that you have already installed a Ceph cluster and that your Ceph cluster is accessible from each kubernetes worker node. You can find a complete install guide for Ceph [here](https://ralph.blog.imixs.com/2021/10/03/ceph-pacific-running-on-debian-11-bullseye/).
 
-**Note:** As the filesystem is a critical infrastructur component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  
+**Note:** As the filesystem is a critical infrastructure component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  
 
-The integration is based on the Ceph ceph-csi plugin and provisioner in [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The ceph-csi plugin is using so called 'Managed rados Block Device (RBD)' images. The provisioner can create RBD images dynamically or connect to to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
+The integration is based on the [Ceph ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The ceph-csi plugin is using so called 'Managed rados Block Device (RBD)' images. The provisioner can create RBD images dynamically or connect to to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
 
 ## Setup a Kubernetes Pool 
 
-Before you can integrate Ceph into your kubernetes cluster you need a Ceph pool used by Kubernetes. If not yet done, create a pool with the name 'kubernetes': 
+Before you can integrate Ceph into your kubernetes cluster you need a separate Ceph pool used by Kubernetes. If not yet done, create a pool with the name 'kubernetes'.   This pool can be used for all volumes. 
 
-On the Ceph manager node enter the *cephadm shell* to create a pool for Kubernetes volume storage. This pool can be used for all volumes
+Run the following ceph command on your Ceph node to intialize the pool:
 
-	# ceph osd pool create kubernetes
+	$ sudo ceph osd pool create kubernetes
+	$ sudo rbd pool init kubernetes
 
-Next initialize the pool
-
-	# rbd pool init kubernetes
-
-Next create a new client.user for Kubernetes and ceph-csi. Execute the following command in the cephadm shell to create the user and accociate the userid with your new rbd pool. 
+Next create a new client.user for Kubernetes and ceph-csi. This user is used by the CSI Plugin to access your cluster. Execute the following command to create the user and accociate the userid with your new kubernetes pool. 
 
 	# ceph auth get-or-create client.kubernetes mon 'profile rbd' osd 'profile rbd pool=kubernetes' mgr 'profile rbd pool=kubernetes'
 	[client.kubernetes]
@@ -28,7 +25,7 @@ Record the generated key! This Key is important and needed later.
 
 The ceph-csi requires a ConfigMap object stored in Kubernetes to define the Ceph monitor addresses for the Ceph cluster. To get this data you can run the command *ceph mon dump* which prints out the necessary information:
 
-	# ceph mon dump
+	$ sudo ceph mon dump
 	dumped monmap epoch 3
 	epoch 3
 	fsid aaaaabbbb-xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -39,13 +36,12 @@ The ceph-csi requires a ConfigMap object stored in Kubernetes to define the Ceph
 	1: [v2:10.0.0.5:3300/0,v1:10.0.0.5:6789/0] mon.ceph-2
 	2: [v2:10.0.0.4:3300/0,v1:10.0.0.4:6789/0] mon.ceph-3
 
-record the *fsid* and your IP addresses from your mon nodes (which should be in your private network accessible form your Kubernetes cluster).
-
+record the *fsid* and your IP addresses from your mon nodes. Make sure that the ceph monitoring nodes are accessible on port 6789 from your Kubernetes cluster.
 
 
 ## Configure Ceph Kubernetes Objects
 
-In The following section you can see how the Kubernetes objects, needed to use Ceph as a filesystem need to be setup.
+In The following section we will create the config map and secrets
 	
 ### 1) Edit the ceph-csi ConfigMap for Kubernetes
 
@@ -54,20 +50,20 @@ First edit the file *csi-config-map.yaml* substituting the fsid for 'clusterID',
 
 ### 2) Create the ceph-csi ceph Secret
 
-First create the namespace
+Next create the namespace
 
 	$ kubectl create namespace ceph-system
 
-With the key form the generated client.kubernetes user create a now a secret 
+With the key form the generated client.kubernetes user create a secret to access your cluster:
 
 	$ kubectl create secret generic csi-rbd-secret \
 	    --from-literal=userID='kubernetes' \
-	    --from-literal=userKey='<key-value>' \
+	    --from-literal=userKey='[key-value]' \
 	    --namespace=ceph-system	    
 
-Where <key-value> is your ceph client.kubernetes key. You can verify the cuccessfull creation with:
+Here `[key-value]` is your ceph client.kubernetes key you generated before. You can verify the successful creation with:
 
-	$ kubectl get secrets ceph-admin-secret -n ceph-system 
+	$ kubectl get secrets -n ceph-system 
 
 
 
@@ -75,19 +71,63 @@ Where <key-value> is your ceph client.kubernetes key. You can verify the cuccess
 
 The Kubernetes StorageClass defines a class of storage. In the file "csi-rbd-storageclass.yaml" the new storageClass 'ceph' is provided.
 
-Edit the file *'030-csi-rbd-storageclass.yaml'*  substituting "<clusterID>" with your ceph fsid.
+Edit the file *'030-csi-rbd-storageclass.yaml'*  substituting "<clusterID>" with your ceph fsid. You can customize these values if needed. 
 
-You can customize these classes if needed. For example you can create additional pools for specific storage classes. 
+If you have more than one ceph clusters to connect, than you need to create a separate StorageClass for each cluster. 
 
 
 ### 4) The csi-provisioner and rdbplugins
 
-The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version.	
+The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version. Normally changes are not requried here. 	
 
-## Apply the Ceph System
+### 5) Apply the Ceph System
 
-After you have updated the yaml files as describe before you can now apply the Ceph Storage:
+After you have updated the yaml files as describe before you can now apply the Ceph CSI Plugin:
 
+	$ kubectl apply -f management/ceph/
+
+## Update Cluster Information
+
+In case something changed in your Ceph cluster (e.g. a change of monitor nodes) you need to update the *010-csi-config-map.yaml* values 
+from your Ceph cluster and update thh config map using the following command:
+
+	$ kubectl replace -f management/ceph/010-csi-config-map.yaml
+
+### Multiple Clusters
+
+You can also define more than one Ceph cluster within the ceph-csi-plugin. In the *010-csi-config-map.yaml* you can add multiple entries for each cluster:
+
+	apiVersion: v1
+	kind: ConfigMap
+	metadata:
+	  name: ceph-csi-config
+	  namespace: ceph-system
+	data:
+	  config.json: |-
+	    [
+	      {
+	        "clusterID": "[YOUR-CLUSTER-ID-1]",
+	        "monitors": [
+	          "10.0.0.3:6789",
+	          "10.0.0.5:6789",
+	          "10.0.0.4:6789"
+	        ]
+	      },
+	      {
+	        "clusterID": "[YOUR-CLUSTER-ID-2]",
+	        "monitors": [
+	          "10.1.0.3:6789",
+	          "10.1.0.5:6789",
+	          "10.1.0.4:6789"
+	        ]
+	      }
+	
+	    ]
+    
+In this scenario you need to define also a separate storage class for each cluster with separate csi-rbd secrets for each cluster. Take care that your secrets and storageClasses have unique names. Update the config map and apply the changes:
+
+
+	$ kubectl replace -f management/ceph/010-csi-config-map.yaml
 	$ kubectl apply -f management/ceph/
 
 
