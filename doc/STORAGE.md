@@ -7,11 +7,11 @@ To run stateful docker images (e.g. a Database like PostgreSQL) you need to defi
 
 Because of the idea to abstract all hardware within your Kubernetes cluster, of course only the second variant is appropriate. A distributed storage solution means that independent of where your application is running the storage will always be available in the same way.  
 
-The *Imixs-Cloud* project supports two distributed storage solutions: [longhorn](https://longhorn.io/) and [ceph](https://ceph.io/). For both you will find setup guides. 
+The *Imixs-Cloud* project supports two distributed storage solutions: [longhorn](LONGHORN.md) and [Ceph](CEPH.md). For both you will find setup guides. 
 
 ## Longhorn
  
-Due to its simplicity and the very good integration in Kubernetes, [Longhorn](https://longhorn.io/) is a perfect storage solution for small environments. The Longhorn storage runs within your worker nodes and will be distributed over all nodes in one cluster. In case your worker nodes have extra large storage devices you can easily connect them to longhorn. 
+Due to its simplicity and the very good integration in Kubernetes, [Longhorn](https://longhorn.io/) is a perfect storage solution for small environments. The Longhorn storage runs as part of your cluster on your worker nodes and will be distributed over all nodes in one cluster. In case your worker nodes have extra large storage devices you can easily connect them to longhorn. 
 
 <img src="images/longhorn-architecture.png" />	
 
