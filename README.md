@@ -22,13 +22,13 @@ Kubernetes offers a well designed idea how to run a cluster on different servers
 
 If you do not already have a data storage solution, you must set up a storage for your cluster environment and manage it by yourself. 
 There are various projects which can be seamlessly integrated into Kubernetes, like the [Longhorn project](https://longhorn.io/). 
-But within the *Imixs-Cloud* project, we think a storage solution should run independently from a Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of a failure within your Kubernetes Cluster, an on the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution.
+But within the *Imixs-Cloud* project, we think a storage solution should run independently from a Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of a failure within your Kubernetes Cluster, and on the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution.
 
 <p align="center"><img src="./doc/images/architectrue-01.png" /></p>
 
+In this architecture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from Kubernetes which gives you much flexibility managing your data. Also we recommend to build smaller clusters of Kubernetes as well as Ceph. This allows you to migrate data and applications if your requirements grow faster than you have planed in the beginning. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. 
 
-
-#### Topics
+# Topics
 
  - [Setup, Upgrade & Maintenance Guide](./doc/SETUP.md)
  - [Terminal Tool K9S](tools/k9s/README.md)
@@ -43,7 +43,7 @@ But within the *Imixs-Cloud* project, we think a storage solution should run ind
  - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
 
 
-## Quick Start
+# Quick Start
 
 The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and one or many Kubernetes worker nodes. This basic architecture can be extended in any dimension. 
 
@@ -52,7 +52,7 @@ The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and o
 For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
 All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You will find a detailed installation guide in the [setup section](doc/SETUP.md).
 
-### 1. Install Kubernetes
+## 1. Install Kubernetes
 
 First clone this git repository on your master node. Therefore, you may need to install git:
 
@@ -78,7 +78,7 @@ If you are running Fedora or CentOS than run:
 
 You can find details about how to create a cluster on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
  
-### 2. Initialize Your Kubernetes Master Node
+## 2. Initialize Your Kubernetes Master Node
 
 After the basic setup, run the  _kubeadm_  tool to setup your kubernetes master node:
 
@@ -92,7 +92,7 @@ Now deploy a cluster network, this is needed for the internal communication betw
 
 	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-### 3. Setup Your Kubernetes Worker Nodes
+## 3. Setup Your Kubernetes Worker Nodes
 
 To build your cluster you can join any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes. 
 After the basic setup on a new worker node is completed, you can join your worker node into your new cluster using the join command from your master node:
