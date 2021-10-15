@@ -2,17 +2,31 @@
 
 ### Build Your Self Managed Kubernetes Cluster!
 
+*Imixs-Cloud* provides an open concept for small and medium-sized organizations to run an independent, stable and easy to manage cloud infrastructure.
+This project is 100% open source and based on [Kubernetes](https://kubernetes.io/) - a cloud solution for automating deployment, scaling, and management of containerized applications.
 
-*Imixs-Cloud* is an open infrastructure project, providing a lightweight container based runtime environment for small and medium-sized organizations. 
-This projects goal is to **build**, **run** and **maintain** business applications in a production ready and self managed kubernetes cluster.
-The main objectives of *Imixs-Cloud* are **simplicity**, **transparency** and **operational readiness**. 
-
-The runtime environment is based on [Kubernetes](https://kubernetes.io/). Kubernetes is a powerful platform with no limits in scaling and flexibility. *Imixs-Cloud* provides an easy way to setup and maintain a medium-sized kubernetes cluster environment hosted on virtual servers or bare metal. The project is open source and constantly under development. We sincerely invite you to participate in it!
-
+You can setup an *Imixs-Cloud* Cluster within one day. The flexible and sustainable concept allows you to run your cloud infrastructure without any vendor lock-in. Small and medium-sized cluster environments can be hosted on virtual servers or bare metal. 
+The project is open source and constantly under development. We sincerely invite you to participate in it!
 If you have any questions just open a new [Issue on Github](https://github.com/imixs/imixs-cloud/issues) and start a Discussion. 
 
+Now, let's get started...
 
 <p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
+
+# The Architecture
+
+The *Imixs-Cloud* project supports the concept of *Infrastructure as Code* and you will find a quick setup guide for a Kubernetes cluster below. But before you get started we should talk about the core concept of cloud architecture. 
+
+Of course, when you set up your own cloud infrastructure with [Kubernetes](https://kubernetes.io/), you need to take care of your servers and your data.
+Kubernetes offers a well designed idea how to run a cluster on different servers, providing a stable runtime environment for your containerized applications. These concepts are well documented and you will find a lot of tutorials about that. But Kubernetes does not provide you with a data infrastructure. Kuberentes has a well designed API to abstract storage from your application layer, but it leaves open the question where and how you store your data. 
+
+If you do not already have a data storage solution, you must set up a storage for your cluster environment and manage it by yourself. 
+There are various projects which can be seamlessly integrated into Kubernetes, like the [Longhorn project](https://longhorn.io/). 
+But within the *Imixs-Cloud* project, we think a storage solution should run independently from a Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of a failure within your Kubernetes Cluster, an on the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution.
+
+<p align="center"><img src="./doc/images/architectrue-01.png" /></p>
+
+
 
 #### Topics
 
