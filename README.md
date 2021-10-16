@@ -18,15 +18,87 @@ Now, let's get started...
 The *Imixs-Cloud* project supports the concept of *Infrastructure as Code* and you will find a quick setup guide for a Kubernetes cluster below. But before you get started we should talk about the core concept of cloud architecture. 
 
 Of course, when you set up your own cloud infrastructure with [Kubernetes](https://kubernetes.io/), you need to take care of your servers and your data.
-Kubernetes offers a well designed idea how to run a cluster on different servers, providing a stable runtime environment for your containerized applications. These concepts are well documented and you will find a lot of tutorials about that. But Kubernetes does not provide you with a data infrastructure. Kuberentes has a well designed API to abstract storage from your application layer, but it leaves open the question where and how you store your data. 
+Kubernetes offers a well designed idea how to run a cluster on different nodes, providing a stable runtime environment for your containerized applications. These concepts are well documented and you will find a lot of tutorials about that. But Kubernetes does not provide you with a data infrastructure. It provides a well designed API to abstract storage from your application layer, but it leaves open the question where and how you store your data. 
 
-If you do not already have a data storage solution, you must set up a storage for your cluster environment and manage it by yourself. 
-There are various projects which can be seamlessly integrated into Kubernetes, like the [Longhorn project](https://longhorn.io/). 
-But within the *Imixs-Cloud* project, we think a storage solution should run independently from a Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of a failure within your Kubernetes Cluster, and on the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution.
+## The Data Layer
+
+If you do not already have a data storage solution, you should set up a storage for your cluster environment which can be used by your applications. 
+There are various projects which can be seamlessly integrated into Kubernetes, for example the [Longhorn project](https://longhorn.io/) provides an quick an easy setup. 
+But within the *Imixs-Cloud* project, we believe a storage solution should be run independently from your Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of an outage within your Kubernetes Cluster. On the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution for Kubernetes.
 
 <p align="center"><img src="./doc/images/architectrue-01.png" /></p>
 
-In this architecture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from Kubernetes which gives you much flexibility managing your data. Also we recommend to build smaller clusters of Kubernetes as well as Ceph. This allows you to migrate data and applications if your requirements grow faster than you have planed in the beginning. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. 
+In this picture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect both to the same Ceph cluster.
+In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow faster than you have planed in the beginning or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. 
+
+ 
+## Infrastructure as Code
+ 
+The complete infrastructure of a *Imixs-Cloud* environment is described in one central configuration directory. The *Configuration Directory* can be synchronized with a code repository like Git. This concept is also known as *Infrastructure as Code* and makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
+
+	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
+
+The imixs-cloud directory structure contains different sub-directories holding your applications, scripts and tools:
+
+	/-
+	 |+ management/
+	    |- monitoring/
+	    |- registry/
+	    |- nginx/
+	 |+ apps/
+	    |+ MY-APP/
+	       |  001-deployment.yaml
+	    .....
+	 |+ scripts/
+	    |  apply.sh
+	    |  setup.sh
+	    |  delete.sh
+	 |+ tools/
+
+
+ - **apps/** is the place where where your custom business services are configured. Each sub-directory holds at least one kubernetes object description (yaml file). Optional additional configuration files are also located in this directory. 
+
+ - **management/** in this directory you can find all the management services which are part of the *Imixs-Cloud*. This different service are maintained by this project and can be customized for individual needs. 
+
+ - **scripts/**  provides bash scripts to setup a new kubernetes node.
+
+ - **tools/**  provides useful tools
+
+
+
+### How to Create and Delete Objects
+
+You can define your own services within the /apps/ directory. Each application has its own sub-folder and consists at least of one configuration yaml file 
+
+	 |+ apps/
+	    |+ MY-APP/
+	       |  020-deployment.yaml
+
+Using the `kubectl apply` command you can easily create or delete your services and objects defined within a apps/ or management/ sub-directory:
+
+	$ kubectl apply -f apps/MY-APP/
+
+For example to deploy the whoami sample service you just need to call:
+
+	$ kubectl apply -f app/whoami/
+	
+In kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which way your objects should be created.
+
+	 |+ whoami/
+	    |- 010-deployment.yaml
+	    |- 020-service.yaml
+	    |- 030-ingress.yaml
+
+
+If you want to remove an already deployed service or object just use the `delete` command:
+
+	$ kubectl delete -f app/whoami/
+
+
+You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) to manage your configuraiton objects in a more flexible way. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
+
+
+
 
 # Topics
 
@@ -128,71 +200,6 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
  * A distributed storage solution for stateful services. 
  
 
- 
-## Infrastructure as Code
- 
-The complete infrastructure of a *Imixs-Cloud* environment is described in one central configuration directory. The *Configuration Directory* can be synchronized with a code repository like Git. This concept is also known as *Infrastructure as Code* and makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
-
-	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
-
-The imixs-cloud directory structure contains different sub-directories holding your applications, scripts and tools:
-
-	/-
-	 |+ management/
-	    |- monitoring/
-	    |- registry/
-	    |- nginx/
-	 |+ apps/
-	    |+ MY-APP/
-	       |  001-deployment.yaml
-	    .....
-	 |+ scripts/
-	    |  apply.sh
-	    |  setup.sh
-	    |  delete.sh
-	 |+ tools/
-
-
- - **apps/** is the place where where your custom business services are configured. Each sub-directory holds at least one kubernetes object description (yaml file). Optional additional configuration files are also located in this directory. 
-
- - **management/** in this directory you can find all the management services which are part of the _Imixs-Cloud_. This different service are maintained by this project and can be customized for individual needs. 
-
- - **scripts/**  provides bash scripts to setup a new kubernetes node.
-
- - **tools/**  provides useful tools
-
-
-
-### How to create and delete objects
-
-You can define your own services within the /apps/ directory. Each application has its own sub-folder and consists at least of one configuration yaml file 
-
-	 |+ apps/
-	    |+ MY-APP/
-	       |  020-deployment.yaml
-
-Using the _kubectl apply_ command you can easily create or delete your services and objects defined within a apps/ or management/ sub-directory:
-
-	$ kubectl apply -f apps/MY-APP/
-
-For example to deploy the whoami sample service you just need to call:
-
-	$ kubectl apply -f app/whoami/
-	
-In kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which your objects should be created.
-
-	 |+ whoami/
-	    |- 010-deployment.yaml
-	    |- 020-service.yaml
-	    |- 030-ingress.yaml
-
-
-If you want to remove an already deployed service or object just use the delete command:
-
-	$ kubectl delete -f app/whoami/
-
-
-You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) to manage your configuraiton objects in a more flexible way. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
 ## GitOps
 
