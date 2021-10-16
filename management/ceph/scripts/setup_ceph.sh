@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ############################################################
-# Ceph Install Script for Debian 10 (Buster)
+# Docker Install Script for Debian 11 (Bullseye)
 # 
 # run as sudo 
 ############################################################
@@ -25,7 +25,7 @@ echo "#############################################"
 echo " adding core libraries..."
 echo "#############################################"
 apt update
-apt install -y ne apt-transport-https ca-certificates curl gnupg lsb-release nftables ntp lvm2
+apt install -y ne apt-transport-https ca-certificates curl gnupg lsb-release nftables ntp lvm2 ufw
 
 
 echo "#############################################"
@@ -45,5 +45,24 @@ apt install -y docker-ce docker-ce-cli containerd.io
 #####################################################################################
 # docker is now installed 
 #####################################################################################
+
+echo "#############################################"
+echo " installing cephadm...."
+echo "#############################################"
+curl --silent --remote-name --location https://github.com/ceph/ceph/raw/pacific/src/cephadm/cephadm
+mv cephadm /usr/local/bin
+chmod +x /usr/local/bin/cephadm
+mkdir -p /etc/ceph
+
+# add ceph common tools
+cephadm add-repo --release pacific
+cephadm install ceph-common
+
+
+
+#####################################################################################
+# cephadm is now installed to setup a ceph cluster with cephadmin
+#####################################################################################
+
 
 
