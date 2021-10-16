@@ -1,4 +1,4 @@
-# Ceph - Distributed Object Storage
+# Ceph - Quick Install Guide
 
 In this section you will find a Quick Install Guide for a Ceph cluster. [Ceph](https://ceph.io/) provides an distributed object storage and block device interface. This makes it a powerful storage solution for Kuberentes. In the *Imixs-Cloud* environment we are using the [Ceph CSI-Plugin](https://github.com/ceph/ceph-csi) to access a Ceph cluster. If you already have a Ceph cluster up and running and you just want to connect it to your Kubernetes Cluster, than you may jump directly to the management section [ceph-csi plugin](../management/ceph/README.md).
 
@@ -174,7 +174,7 @@ Adding new disks may take some while. You can verify the status of your cluster 
 Now finally also in the web dashboard the cluster status should now indicate ‘HEALTH_OK:
 
 
-<img src="ceph-setup-web-ui-003-768x383.png" />
+<img src="./images/ceph-setup-web-ui-003-768x383.png" />
 
 
 ### Using cephadmin on Additional Nodes
@@ -192,7 +192,7 @@ Next copy the ceph.* files from your bootstrap node to the second node:
 Now you can install the cephadm tool on the second node as done on the first node before using the install script.
 
 
-### Firewall Setup
+## Firewall Setup
 
 As explained in the beginning my ceph nodes are available on public internet addresses. This requires some security considerations. We want to avoid that unauthorized users can access our cluster.
 
@@ -223,7 +223,7 @@ To disable the firewall run:
 
 
 
-### Ceph CSI Plugin
+## Ceph CSI Plugin
 
 After your Ceph Cluster is up and running you can install the Ceph CSI Plugin to access the cluster from your *Imixs-Cloud* environment.
 
