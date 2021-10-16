@@ -17,9 +17,9 @@ Now, let's get started...
 ## Topics
 
  - [The Architecture](#the-architecture)
- - [Quick Start Guide](#quick-start)
+ - [Quick Start Guide](#quick-start-guide)
  - [Management Services](#management-services)
- - [How to Contribute](#contribute)
+ - [How to Contribute](#how-to-contribute)
 
 
 
@@ -118,7 +118,7 @@ You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/task
 
 
 
-# Quick Start
+# Quick Start Guide
 
 The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and one or many Kubernetes worker nodes. This basic architecture can be extended in any dimension. 
 
@@ -256,10 +256,9 @@ The *Imixs-Cloud* monitoring is based on [Prometheus](https://prometheus.io/) an
 <img src="./doc/images/monitoring-001.png" />  
   
 
-# Contribute
+# How to Contribute
 
-_Imixs-Cloud_ is open source and your are sincerely invited to participate in it. 
+*Imixs-Cloud* is open source and your are sincerely invited to participate in it. 
 If you want to contribute to this project please [report any issues here](https://github.com/imixs/imixs-cloud/issues). 
 All source are available on [Github](https://github.com/imixs/imixs-cloud).
 
-**Note:** My first version was based on [docker-swarm](https://docs.docker.com/engine/swarm/). If you want to run your cluster with docker-swarm switch into the [docker-swarm branch](https://github.com/imixs/imixs-cloud/tree/docker-swarm).
