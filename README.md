@@ -16,7 +16,8 @@ Now, let's get started...
 
 ## Topics
 
- - [Architecture](#the-architecture)
+ - [The Architecture](#the-architecture)
+ - [Quick Start Guide](#quick-start)
  - [Setup, Upgrade & Maintenance Guide](./doc/SETUP.md)
  - [Terminal Tool K9S](tools/k9s/README.md)
  - [Ingress Integration with NGINX](./doc/INGRESS.md)
@@ -35,6 +36,15 @@ Now, let's get started...
 # The Architecture
 
 The *Imixs-Cloud* project supports the concept of *Infrastructure as Code* and you will find a quick setup guide for a Kubernetes cluster below. But before you get started we should talk about the core concept of cloud architecture. 
+
+In its core a Kubernetes cluster consists of the following components:
+
+ * One master node, providing the central services.
+ * One or many worker nodes runing your services and applications. 
+ * A central Reverse-Proxy service to dispatch requests from the Internet to your applications.
+ * A private registry to store custom docker images.
+ * A distributed storage solution for stateful services. 
+ 
 
 Of course, when you set up your own cloud infrastructure with [Kubernetes](https://kubernetes.io/), you need to take care of your servers and your data.
 Kubernetes offers a well designed idea how to run a cluster on different nodes, providing a stable runtime environment for your containerized applications. These concepts are well documented and you will find a lot of tutorials about that. But Kubernetes does not provide you with a data infrastructure. It provides a well designed API to abstract storage from your application layer, but it leaves open the question where and how you store your data. 
@@ -190,34 +200,27 @@ In the following sections you will find more information about the concepts of I
 
 
  
-# The Basic Architecture
+# Management Services
+
+In the *Imixs-Cloud* project we configure some management services and tools that we find useful to manage Kubernetes and the applications running within. 
+
 
 The basic architecture of the _Imixs-Cloud_ consists of the following components:
 
- * A Kubernetes Cluster running on virtual or hardware nodes. 
- * One master node, providing the central services.
- * One or many worker nodes to run your services and applications. 
- * A central Reverse-Proxy service to dispatch requests from the Internet (listening on port 80).
- * A management UI and CLI running on the management node.
- * A private registry to store custom docker images.
- * A distributed storage solution for stateful services. 
- 
-
-
-## GitOps
-
-As *Imixs-Cloud* supports the concept of *Infrastructure as Code* you can setup declarative, continuous deliverys - called GitOps - with the tool Argo CD.
-
-<img src="doc/images/argocd-002.png" />
- 
-This allows you to controll all you application deployments form a modern Web UI and automate the synchronization of your infrastructure.  
-Find a detailed description how to install and setup Argo CD in the [section GitOps](./doc/GITOPS.md)
+ * [kubectl commandline tool](#kubectl)
+ * [K9S](#k9s)
+ * [GitOps](#gitops)
+ * [NGINX](#nginx)
+ * [Registry](#registry) 
+ * [Monitoring](#monitoring)
 
 
 
-## Manage your Cluster using K9S
+## kubectl
 
-To manage your kubernetes cluster you can use [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/), which is already installed on your master node. There is a huge number of commands to obtain information or change configurations. Take a look into the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/).
+To monitor and manage your Kubernetes cluster you can use [kubectl commandline tool](https://kubernetes.io/docs/reference/kubectl/overview/), which is already installed on your master node. There is a huge number of commands to obtain information or change configurations. Take a look into the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/).
+
+## K9S
 
 A more convenient way to obtain information about your cluster provides the tool [K9s](https://github.com/derailed/k9s). K9s is a powerful terminal tool to interact with your Kubernetes cluster. 
 
@@ -231,6 +234,15 @@ After you have install the tool you can start it with:
 	$ ~/imixs-cloud/tools/k9s/k9s
 
 
+## GitOps
+
+As *Imixs-Cloud* supports the concept of *Infrastructure as Code* you can setup declarative, continuous deliverys - called GitOps - with the tool Argo CD.
+
+<img src="doc/images/argocd-002.png" />
+ 
+This allows you to controll all you application deployments form a modern Web UI and automate the synchronization of your infrastructure.  
+Find a detailed description how to install and setup Argo CD in the [section GitOps](./doc/GITOPS.md)
+
 
 ## NGINX
 
@@ -239,15 +251,6 @@ The Ingress setup of *Imixs-Cloud*  already includes the ACME provider [Let's En
 
 You can find a detailed description how to install and setup the NGINX Ingress Controller in the [section ingress](./doc/INGRESS.md)
 
-
-## Storage Volumes
-
-To run stateful docker images (e.g. a Database like PostgreSQL) you need to define a storage volume along with your service. Due to its simplicity and the very good integration in Kubernetes, we use [Longhorn](https://longhorn.io/) as the preferred storage solution within Imixs-Cloud.
-
-<img src="doc/images/storage-longhorn-01.png" />
-
-
-You can find a detailed description how to install and setup a Longhorn storage solution in the [section storage](./doc/STORAGE.md)
 
 
 ## Registry
@@ -258,12 +261,11 @@ You can find a detailed description how to install and setup the registry in the
 
 ## Monitoring
 
-_Imixs-Cloud_ also provides also a monitoring feature which allows you to monitor your Kubernetes cluster.
-
+The *Imixs-Cloud* monitoring is based on [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to monitor your Kubernetes cluster but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
+  
 <img src="./doc/images/monitoring-001.png" />  
   
-The monitoring is based on [Prometheus](https://prometheus.io/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to montor your kubernetes cluster but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
-  
+The 
 # Contribute
 
 _Imixs-Cloud_ is open source and your are sincerely invited to participate in it. 
