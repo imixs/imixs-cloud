@@ -18,18 +18,8 @@ Now, let's get started...
 
  - [The Architecture](#the-architecture)
  - [Quick Start Guide](#quick-start)
- - [Setup, Upgrade & Maintenance Guide](./doc/SETUP.md)
- - [Terminal Tool K9S](tools/k9s/README.md)
- - [Ingress Integration with NGINX](./doc/INGRESS.md)
- - [Distributed Storage solution](./doc/STORAGE.md)
- - [Docker Registry](./doc/REGISTRY.md)
- - [Security Configuration](./doc/SECURITY.md) 
- - [Monitoring](./doc/MONITORING.md)
- - [SQL Database](./doc/SQL.md)
- - [GitOps](./doc/GITOPS.md)
- - [Continuous Integration CI/CD](./doc/CICD.md)
- - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
-
+ - [Management Services](#management-services)
+ - [How to Contribute](#contribute)
 
 
 
@@ -265,7 +255,7 @@ The *Imixs-Cloud* monitoring is based on [Prometheus](https://prometheus.io/) an
   
 <img src="./doc/images/monitoring-001.png" />  
   
-The 
+
 # Contribute
 
 _Imixs-Cloud_ is open source and your are sincerely invited to participate in it. 
