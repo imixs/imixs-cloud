@@ -127,7 +127,7 @@ The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and o
 For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
 All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You will find a detailed installation guide in the [setup section](doc/SETUP.md).
 
-## 1. Install Kubernetes
+### 1. Install Kubernetes
 
 First clone this git repository on your master node. Therefore, you may need to install git:
 
@@ -153,7 +153,7 @@ If you are running Fedora or CentOS than run:
 
 You can find details about how to create a cluster on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
  
-## 2. Initialize Your Kubernetes Master Node
+### 2. Initialize Your Kubernetes Master Node
 
 After the basic setup, run the  _kubeadm_  tool to setup your kubernetes master node:
 
@@ -167,7 +167,7 @@ Now deploy a cluster network, this is needed for the internal communication betw
 
 	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-## 3. Setup Your Kubernetes Worker Nodes
+### 3. Setup Your Kubernetes Worker Nodes
 
 To build your cluster you can join any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes. 
 After the basic setup on a new worker node is completed, you can join your worker node into your new cluster using the join command from your master node:
