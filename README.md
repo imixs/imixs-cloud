@@ -13,6 +13,25 @@ Now, let's get started...
 
 <p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
 
+
+## Topics
+
+ - [Architecture](#the-architecture)
+ - [Setup, Upgrade & Maintenance Guide](./doc/SETUP.md)
+ - [Terminal Tool K9S](tools/k9s/README.md)
+ - [Ingress Integration with NGINX](./doc/INGRESS.md)
+ - [Distributed Storage solution](./doc/STORAGE.md)
+ - [Docker Registry](./doc/REGISTRY.md)
+ - [Security Configuration](./doc/SECURITY.md) 
+ - [Monitoring](./doc/MONITORING.md)
+ - [SQL Database](./doc/SQL.md)
+ - [GitOps](./doc/GITOPS.md)
+ - [Continuous Integration CI/CD](./doc/CICD.md)
+ - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
+
+
+
+
 # The Architecture
 
 The *Imixs-Cloud* project supports the concept of *Infrastructure as Code* and you will find a quick setup guide for a Kubernetes cluster below. But before you get started we should talk about the core concept of cloud architecture. 
@@ -97,22 +116,6 @@ If you want to remove an already deployed service or object just use the `delete
 
 You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) to manage your configuraiton objects in a more flexible way. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
-
-
-
-# Topics
-
- - [Setup, Upgrade & Maintenance Guide](./doc/SETUP.md)
- - [Terminal Tool K9S](tools/k9s/README.md)
- - [Ingress Integration with NGINX](./doc/INGRESS.md)
- - [Distributed Storage solution](./doc/STORAGE.md)
- - [Docker Registry](./doc/REGISTRY.md)
- - [Security Configuration](./doc/SECURITY.md) 
- - [Monitoring](./doc/MONITORING.md)
- - [SQL Database](./doc/SQL.md)
- - [GitOps](./doc/GITOPS.md)
- - [Continuous Integration CI/CD](./doc/CICD.md)
- - [Kustomize Deployments & Applications](doc/KUSTOMIZE.md)
 
 
 # Quick Start
