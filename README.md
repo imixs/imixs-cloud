@@ -47,8 +47,8 @@ But within the *Imixs-Cloud* project, we believe a storage solution should be ru
 
 <p align="center"><img src="./doc/images/architectrue-01.png" /></p>
 
-In this picture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect both to the same Ceph cluster.
-In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow faster than you have planed in the beginning or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. You will find a install guide in the section [Ceph Quick Install](doc/CEPH.md).
+In this picture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect each to the same Ceph cluster.
+In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. You will find a install guide in the section [Ceph Quick Install](doc/CEPH.md).
 
  
 ## Infrastructure as Code
@@ -77,7 +77,7 @@ The imixs-cloud directory structure contains different sub-directories holding y
 
  - **apps/** is the place where where your custom business services are configured. Each sub-directory holds at least one kubernetes object description (yaml file). Optional additional configuration files are also located in this directory. 
 
- - **management/** in this directory you can find all the management services which are part of the *Imixs-Cloud*. This different service are maintained by this project and can be customized for individual needs. 
+ - **management/** in this directory you can find all the management services which are part of the *Imixs-Cloud*. These services are maintained by this project and can be customized for individual needs. 
 
  - **scripts/**  provides bash scripts to setup a new kubernetes node.
 
@@ -87,7 +87,7 @@ The imixs-cloud directory structure contains different sub-directories holding y
 
 ### How to Create and Delete Objects
 
-You can define your own services within the /apps/ directory. Each application has its own sub-folder and consists at least of one configuration yaml file 
+You can define your own services within a sub directory of the /apps/ folder. Each application has its own sub-folder and consists at least of one configuration yaml file 
 
 	 |+ apps/
 	    |+ MY-APP/
@@ -101,7 +101,7 @@ For example to deploy the whoami sample service you just need to call:
 
 	$ kubectl apply -f app/whoami/
 	
-In kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which way your objects should be created.
+In Kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which way your objects should be created.
 
 	 |+ whoami/
 	    |- 010-deployment.yaml
@@ -125,7 +125,7 @@ The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and o
 <img src="./doc/images/imixs-cloud-architecture.png" />
 
 For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
-All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You will find a detailed installation guide in the [setup section](doc/SETUP.md).
+All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You will also find a more detailed installation guide in the [setup section](doc/SETUP.md).
 
 ### 1. Install Kubernetes
 
@@ -151,7 +151,7 @@ If you are running Fedora or CentOS than run:
 
 	$ sudo ./scripts/setup_centos.sh
 
-You can find details about how to create a cluster on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
+You can find details about how to create a cluster also on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
  
 ### 2. Initialize Your Kubernetes Master Node
 
@@ -258,7 +258,7 @@ The *Imixs-Cloud* monitoring is based on [Prometheus](https://prometheus.io/) an
 
 # How to Contribute
 
-*Imixs-Cloud* is open source and your are sincerely invited to participate in it. 
+*Imixs-Cloud* is open source and you are sincerely invited to participate in it. 
 If you want to contribute to this project please [report any issues here](https://github.com/imixs/imixs-cloud/issues). 
 All source are available on [Github](https://github.com/imixs/imixs-cloud).
 
