@@ -80,7 +80,9 @@ EOF
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-yum install -y kubelet kubeadm kubectl open-iscsi --disableexcludes=kubernetes
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+# excluded open-iscsi used by longhorn - see issue-74
+
 # Enable kubelet
 systemctl enable --now kubelet
 
