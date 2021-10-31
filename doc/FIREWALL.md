@@ -22,7 +22,7 @@ As we want to allow communication only internally we need to restrict public acc
 	worker-2	ii.jj.kk.ll
 	worker-3	mm.nn.oo.pp
 
-You can do run the following script on each node to protect access from outside:
+you can do run the following script on each node to protect access from outside:
 
 
 	ufw allow ssh comment 'allow ssh access form anywhere'
@@ -39,8 +39,9 @@ You can do run the following script on each node to protect access from outside:
 	ufw default deny incoming
 	ufw enable
 
+See also the `setup_ufw.sh` bash script in the /scripts directory.
 
-After that you can verify the status of your firewall with
+After actiating your firewall, you can verify the status with:
 
 	$ sudo ufw status verbose
 
