@@ -45,11 +45,18 @@ If you do not already have a data storage solution, you should set up a storage 
 There are various projects which can be seamlessly integrated into Kubernetes, for example the [Longhorn project](https://longhorn.io/) provides an quick an easy setup. 
 But within the *Imixs-Cloud* project, we believe a storage solution should be run independently from your Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of an outage within your Kubernetes Cluster. On the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution for Kubernetes.
 
-<p align="center"><img src="./doc/images/architectrue-01.png" /></p>
+<p align="center"><img src="./doc/images/architecture-01.png" /></p>
 
 In this picture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect each to the same Ceph cluster.
 In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. You will find a install guide in the section [Ceph Quick Install](doc/CEPH.md).
 
+
+## The Network
+
+Network is of course the most important part of a cloud environment. Similar to the Data layer there are a lot of concepts and tutorials about how to setup the network for a Kuberentes Cluster or a Ceph Cluster. In most tutorial it is recommended that you use a second private network for the internal communication of your cluster nodes. But note: this makes only sense if your private network is notedly faster than your public network. If you do not have a separate network adapter in your hardware you can run your cluster also only with a public network. You just need to take care about firewall settings. If your *node to node communication* is fast - 1GiBit or above - there's absolutely nothing wrong operating with a public network only. In addition, this also reduces the complexity of your cluster, which is an advantage in any case. With a simple firewall script you can protect your cluster easily form being accessible from outside and allowing internal communication only. See also the section [Firewall](./doc/FIREWALL.md).
+
+<p align="center"><img src="./doc/images/firewall-01.png" /></p>
+ 
  
 ## Infrastructure as Code
  

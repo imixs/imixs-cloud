@@ -18,7 +18,7 @@ The installation of the latest Ceph pacific release is quite simple using the *c
 
 ### Network
 
-In the following setup we assume that your ceph nodes are accessible form the Internet as we want to connect our Kubernetes Cluster. Of course you can also use a private Network instead. In any case its recommended that your Ceph cluster has at least one private Network for the internal OSD communication. The OSD is the core of a Ceph cluster and responsible to replicate your data amongst different nodes.  
+In the following setup we assume that your ceph nodes are accessible form the Internet as we want to connect our Kubernetes Cluster. Of course you can also use a private Network instead. In most tutorials it is recommended that your Ceph cluster has at least one private Network for the internal OSD communication. The OSD is the core of a Ceph cluster and responsible to replicate your data amongst different nodes. But note: a second private network makes only sense if is notedly faster than your public network. If you do not have a separate network adapter in your hardware you can run your cluster also only with a public network. You just need to take care about firewall settings (see below). 
 
 In the following example we asume that you have a private Network 1.0.0.0/24 with 3 nodes. Also each node has its own public IP address to connect your Kubernetes clients. 
 
