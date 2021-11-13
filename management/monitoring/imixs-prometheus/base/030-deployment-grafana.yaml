@@ -35,8 +35,8 @@ kind: Deployment
 metadata:
   name: grafana
   namespace: monitoring
-  #labels: 
-  #  app: grafana
+  labels: 
+    app: grafana
 spec:
   replicas: 1
   selector:
