@@ -67,7 +67,7 @@ echo " installing kubernetes...."
 echo "#############################################"
 apt update
 apt install -y containerd kubelet kubeadm kubectl open-iscsi apache2-utils
-
+apt-mark hold kubeadm kubelet kubectl
 
 echo "...setup containerd..."
 #sudo apt-get update && sudo apt-get install -y containerd.io
