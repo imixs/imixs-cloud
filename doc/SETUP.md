@@ -206,7 +206,7 @@ In order to get kubectl talking to your cluster, you can again copy the content 
 
 # Upgrade
 
-After you have successfull installed your Imixs-Cloud cluster you may want to verfify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
+After you have successfull installed your Imixs-Cloud cluster you may want to verify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
 
 ## Verify your Cluster Status
 
@@ -214,37 +214,65 @@ You can verify the status of your kubernets cluster with the following command:
 
 	$ kubectl get nodes
 	NAME              STATUS   ROLES    AGE   VERSION
-	master-1   Ready    master   28d   v1.18.3
-	worker-1   Ready    <none>   28d   v1.18.3
-	worker-2   Ready    <none>   28d   v1.18.3
-	worker-3   Ready    <none>   28d   v1.18.3
+	master-1   Ready    master   28d   v1.21.6
+	worker-1   Ready    <none>   28d   v1.21.6
+	worker-2   Ready    <none>   28d   v1.21.6
+	worker-3   Ready    <none>   28d   v1.21.6
 
 This will show you the current version of kubernetes running on each node
 
+**NOTE:** To upgrade the kubeadm and kubectl versions do not run an `apt upgrade`. Instead follow carfully the official [Kubernetes Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
 
-## Upgrade a Cluster Node
+You can check the available versions compared to your current instlled verions:
 
-To upgrade you existing *Imixs-Cloud* environment follow these steps on each node:
+	$ sudo apt update && apt-cache madison kubeadm
 
-**1. Create a snapshot**
 
-Before your start upgrading a worker node or your master node it's a good idea to make a snapshot or backup from your node so you can roll back in case something went wrong.
 
-**2. apt upate**
 
-To update your worker or master node run the following commands on a debian platform:
+## Upgrade the Master Node
 
-	$ sudo apt update
-	$ sudo apt upgrade
+To upgrade the kubeadm tool on the master node run:
 
- 
-**3. Reboot your node**
+	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubeadm=1.22.x-00
+	
+Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
 
-After an upgrade kubernetes will automatically reschedule the node pods. 
-Optional you can also reboot your node to make sure kubernetes is restarted correctly.
+	$ sudo kubeadm version	
 
-	$ sudo reboot
+With the following command youc can that your cluster can be upgraded. The command fetches the versions you can upgrade to. It also shows a table with the component config version states.
 
+
+	$ sudo kubeadm upgrade plan
+	
+	
+**Note:** Follow carefully the instruction on the 	[Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
+	
+	$ sudo kubeadm upgrade apply v1.21.6
+	
+After following the upgrade command you can finally upgrade kubelet and kubectl:
+	
+	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
+
+Where you again need to replace the correct version.	
+	
+	
+## Upgrade the Worker Nodes
+
+On the worker nodes your only need to upgrade kubeadm tool:
+
+	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubeadm=1.22.x-00
+	$ sudo kubeadm upgrade node
+	
+Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
+
+	$ sudo kubeadm version	
+	
+To upgrade kubelet and kubectl run:
+	
+	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
+
+Where you again need to replace the correct version.
 
 # Maintenance
 
