@@ -221,7 +221,7 @@ You can verify the status of your kubernets cluster with the following command:
 
 This will show you the current version of kubernetes running on each node
 
-**NOTE:** To upgrade the kubeadm and kubectl versions do not run an `apt upgrade`. Instead follow carfully the official [Kubernetes Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
+**NOTE:** To upgrade the kubeadm and kubectl versions do not run an `apt upgrade`. Instead follow carefully the official [Kubernetes Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
 
 You can check the available versions compared to your current instlled verions:
 
