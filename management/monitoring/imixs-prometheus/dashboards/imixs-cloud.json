@@ -14,12 +14,12 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.3.6"
+      "version": "8.2.3"
     },
     {
       "type": "panel",
       "id": "graph",
-      "name": "Graph",
+      "name": "Graph (old)",
       "version": ""
     },
     {
@@ -45,6 +45,12 @@
       "id": "text",
       "name": "Text",
       "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
     }
   ],
   "annotations": {
@@ -56,16 +62,23 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "description": "Imixs-Cloud Monitoring",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": 11074,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1609715238580,
+  "iteration": 1636888846481,
   "links": [
     {
       "icon": "external link",
@@ -77,6 +90,7 @@
       "url": "https://imixs.github.io/imixs-cloud/"
     }
   ],
+  "liveNow": false,
   "panels": [
     {
       "alert": {
@@ -115,7 +129,7 @@
         "noDataState": "no_data",
         "notifications": [
           {
-            "uid": "omiBmRvMk"
+            "uid": "RAj_3pcnk"
           }
         ]
       },
@@ -124,12 +138,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
@@ -156,7 +164,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -180,7 +188,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 80
+          "value": 80,
+          "visible": true
         }
       ],
       "timeFrom": null,
@@ -258,19 +267,17 @@
         "handler": 1,
         "name": "Memory Usage alert",
         "noDataState": "no_data",
-        "notifications": []
+        "notifications": [
+          {
+            "uid": "RAj_3pcnk"
+          }
+        ]
       },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
@@ -299,7 +306,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -324,7 +331,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 98
+          "value": 98,
+          "visible": true
         }
       ],
       "timeFrom": null,
@@ -402,19 +410,17 @@
         "message": "Disk Full!",
         "name": "Disk Usage alert",
         "noDataState": "no_data",
-        "notifications": []
+        "notifications": [
+          {
+            "uid": "RAj_3pcnk"
+          }
+        ]
       },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
@@ -441,7 +447,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -464,7 +470,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 84
+          "value": 84,
+          "visible": true
         }
       ],
       "timeFrom": null,
@@ -514,17 +521,17 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -581,9 +588,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "count(node_cpu_seconds_total{ mode='system'})",
@@ -612,18 +620,18 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -684,9 +692,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "sum(node_memory_MemTotal_bytes{})",
@@ -716,18 +725,18 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -763,9 +772,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "sum(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/rootfs\"})",
@@ -787,18 +797,18 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -843,9 +853,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "avg(time() - node_boot_time_seconds{})",
@@ -868,17 +879,17 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -914,9 +925,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "value"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "count(kube_namespace_status_phase{phase=\"Active\"})",
@@ -938,17 +950,17 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -984,9 +996,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "count(kube_pod_info{})",
@@ -1004,11 +1017,12 @@
     },
     {
       "datasource": "${DS_PROMETHEUS}",
-      "description": "Click on a server node to show the node details below",
+      "description": "Click on a server node to show node details below",
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
+            "align": "center",
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -1018,6 +1032,10 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 75
               },
               {
                 "color": "red",
@@ -1030,16 +1048,132 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Cores"
+              "options": "CPU Usage"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 68
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Node"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Link to Details",
+                    "url": "/d/202008/imixs-cloud?orgId=1&var-job=${job}&var-hostname=All&var-node=${__data.fields[instance]}&var-device=All"
+                  }
+                ]
               },
               {
                 "id": "custom.align",
-                "value": "center"
+                "value": null
+              },
+              {
+                "id": "custom.width",
+                "value": 129
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 72
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory Usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Disk Usage"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "lcd-gauge"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.width"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
               }
             ]
           },
@@ -1050,20 +1184,12 @@
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 81
-              },
-              {
                 "id": "unit",
                 "value": "s"
               },
               {
                 "id": "decimals",
                 "value": 0
-              },
-              {
-                "id": "custom.align",
-                "value": "center"
               },
               {
                 "id": "thresholds",
@@ -1088,51 +1214,10 @@
               {
                 "id": "custom.displayMode",
                 "value": "color-text"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Node"
-            },
-            "properties": [
+              },
               {
                 "id": "custom.width",
-                "value": null
-              },
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "title": "",
-                    "url": "/d/202008/imixs-cloud?orgId=1&var-job=${job}&var-hostname=All&var-node=${__data.fields[instance]}&var-device=All"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Memory"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 93
-              },
-              {
-                "id": "unit",
-                "value": "decbytes"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "custom.align",
-                "value": "center"
+                "value": 84
               }
             ]
           },
@@ -1144,15 +1229,23 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 97
+                "value": 125
               },
               {
                 "id": "unit",
                 "value": "decbytes"
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Cores"
+            },
+            "properties": [
               {
-                "id": "decimals",
-                "value": 0
+                "id": "custom.width",
+                "value": 66
               }
             ]
           },
@@ -1164,95 +1257,43 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 63
-              },
-              {
-                "id": "custom.align",
-                "value": "center"
+                "value": 77
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "CPU usage"
+              "options": "internal_ip"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 273
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "basic"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
+                "value": 129
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Memory Usage"
+              "options": "Linux Version"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 251
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "basic"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
+                "value": 222
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Disk Usage"
+              "options": "Kubernetes"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 251
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "basic"
-              },
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Kublet Version"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 111
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Kubelet"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 75
+                "value": 94
               }
             ]
           },
@@ -1264,20 +1305,21 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 138
+                "value": 127
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 6,
         "w": 24,
         "x": 0,
         "y": 7
       },
-      "id": 251,
+      "id": 237,
       "options": {
+        "frameIndex": 0,
         "showHeader": true,
         "sortBy": [
           {
@@ -1286,24 +1328,71 @@
           }
         ]
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
-          "expr": "count(node_cpu_seconds_total{job=\"node-exporter\",mode='system'}) by (instance)",
+          "expr": "label_replace(\ncadvisor_version_info{job=\"kubelet\", service=\"kubelet\"},\n\"instance\",\"$1\",\"node\", \"(.+)\"\n)",
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "count of cores",
-          "queryType": "randomWalk",
+          "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance)) * 100",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "CPU Usage",
+          "refId": "B"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"node-exporter\"}",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Total Memory",
+          "refId": "C"
+        },
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / (node_memory_MemTotal_bytes{job=\"node-exporter\"})))* 100",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Memory Usage",
+          "refId": "D"
+        },
+        {
+          "expr": "max((node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes {job=\"node-exporter\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"})))by(instance)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Disk Usage",
+          "refId": "E"
         },
         {
           "expr": "sum(time() - node_boot_time_seconds{job=\"node-exporter\"})by(instance)",
           "format": "table",
           "instant": true,
           "interval": "",
-          "legendFormat": "up time",
-          "refId": "B"
+          "legendFormat": "Up Time",
+          "refId": "F"
+        },
+        {
+          "expr": "count(node_cpu_seconds_total{job=\"node-exporter\",mode='system'}) by (instance)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Cores",
+          "refId": "G"
+        },
+        {
+          "expr": "sum(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/rootfs\"})by(instance)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Disk Size",
+          "refId": "I"
         },
         {
           "expr": "label_replace(\n   kube_node_info,\n   \"instance\",\"$1\",\"node\", \"(.+)\"\n)",
@@ -1311,70 +1400,13 @@
           "hide": false,
           "instant": true,
           "interval": "",
-          "legendFormat": "node infos",
-          "refId": "C"
-        },
-        {
-          "expr": "label_replace(\n   count(kube_pod_info)by(node),\n   \"instance\",\"$1\",\"node\", \"(.+)\"\n)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "Count of Pods",
-          "refId": "D"
-        },
-        {
-          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance)) * 100",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "cpu usage",
-          "refId": "E"
-        },
-        {
-          "expr": "node_memory_MemTotal_bytes{job=\"node-exporter\"}",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "total memory",
-          "refId": "F"
-        },
-        {
-          "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"node-exporter\"} / (node_memory_MemTotal_bytes{job=\"node-exporter\"})))* 100",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "memory usage",
-          "refId": "G"
-        },
-        {
-          "expr": "max((node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}) *100/(node_filesystem_avail_bytes {job=\"node-exporter\",fstype=~\"ext.?|xfs\"}+(node_filesystem_size_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"}-node_filesystem_free_bytes{job=\"node-exporter\",fstype=~\"ext.?|xfs\"})))by(instance)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "disk usage",
+          "legendFormat": "",
           "refId": "H"
-        },
-        {
-          "expr": "sum(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/rootfs\"})by(instance)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "disk size",
-          "refId": "I"
-        },
-        {
-          "expr": "(1 - avg(irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) by (instance)) * 100",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "cpu usage",
-          "refId": "J"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Node Overview",
+      "title": "Node Resources Overview",
       "transformations": [
         {
           "id": "seriesToColumns",
@@ -1386,8 +1418,8 @@
           "id": "organize",
           "options": {
             "excludeByName": {
+              "Time": true,
               "Time 1": true,
-              "Time 10": true,
               "Time 2": true,
               "Time 3": true,
               "Time 4": true,
@@ -1395,104 +1427,109 @@
               "Time 6": true,
               "Time 7": true,
               "Time 8": true,
-              "Time 9": true,
-              "Value #C": true,
-              "Value #E": true,
+              "Value #A": true,
+              "Value #B": false,
+              "Value #I": false,
+              "__name__": true,
               "__name__ 1": true,
               "__name__ 2": true,
               "app_kubernetes_io_name": true,
               "app_kubernetes_io_version": true,
+              "container": true,
+              "endpoint": true,
               "endpoint 1": true,
               "endpoint 2": true,
               "internal_ip": true,
+              "job": true,
               "job 1": true,
               "job 2": true,
               "job 3": true,
+              "kernelVersion": true,
               "kubeproxy_version": true,
               "kubernetes_namespace": true,
               "kubernetes_pod_name": true,
+              "metrics_path": true,
+              "namespace": true,
               "namespace 1": true,
               "namespace 2": true,
-              "node 1": true,
-              "node 2": true,
+              "node": true,
+              "pod": true,
               "pod 1": true,
               "pod 2": true,
               "pod_cidr": true,
               "pod_template_hash": true,
               "provider_id": true,
+              "service": true,
               "service 1": true,
               "service 2": true
             },
             "indexByName": {
-              "Time 1": 13,
-              "Time 10": 48,
-              "Time 2": 14,
-              "Time 3": 15,
-              "Time 4": 29,
-              "Time 5": 31,
-              "Time 6": 33,
-              "Time 7": 40,
-              "Time 8": 46,
-              "Time 9": 47,
-              "Value #A": 2,
-              "Value #B": 1,
-              "Value #C": 28,
-              "Value #D": 5,
-              "Value #E": 32,
-              "Value #F": 3,
-              "Value #G": 7,
-              "Value #H": 8,
+              "Time 1": 10,
+              "Time 2": 11,
+              "Time 3": 17,
+              "Time 4": 23,
+              "Time 5": 24,
+              "Time 6": 25,
+              "Time 7": 26,
+              "Time 8": 27,
+              "Value #B": 6,
+              "Value #C": 3,
+              "Value #D": 7,
+              "Value #E": 8,
+              "Value #F": 1,
+              "Value #G": 2,
+              "Value #H": 5,
               "Value #I": 4,
-              "Value #J": 6,
-              "__name__ 1": 16,
-              "__name__ 2": 34,
-              "app_kubernetes_io_name": 17,
-              "app_kubernetes_io_version": 18,
-              "container_runtime_version": 11,
-              "endpoint 1": 35,
-              "endpoint 2": 41,
+              "__name__ 1": 28,
+              "__name__ 2": 29,
+              "app_kubernetes_io_name": 30,
+              "app_kubernetes_io_version": 31,
+              "container_runtime_version": 37,
+              "endpoint 1": 12,
+              "endpoint 2": 18,
               "instance": 0,
-              "internal_ip": 19,
-              "job 1": 20,
-              "job 2": 36,
-              "job 3": 42,
-              "kernel_version": 12,
-              "kubelet_version": 9,
-              "kubeproxy_version": 21,
-              "kubernetes_namespace": 22,
-              "kubernetes_pod_name": 23,
-              "namespace 1": 37,
-              "namespace 2": 43,
-              "node 1": 24,
-              "node 2": 30,
-              "os_image": 10,
-              "pod 1": 38,
-              "pod 2": 44,
-              "pod_cidr": 25,
-              "pod_template_hash": 26,
-              "provider_id": 27,
-              "service 1": 39,
-              "service 2": 45
+              "internal_ip": 32,
+              "job 1": 13,
+              "job 2": 19,
+              "job 3": 33,
+              "kernel_version": 36,
+              "kubelet_version": 34,
+              "kubeproxy_version": 38,
+              "kubernetes_namespace": 39,
+              "kubernetes_pod_name": 40,
+              "namespace 1": 14,
+              "namespace 2": 20,
+              "node": 9,
+              "os_image": 35,
+              "pod 1": 15,
+              "pod 2": 21,
+              "pod_cidr": 41,
+              "pod_template_hash": 42,
+              "provider_id": 43,
+              "service 1": 16,
+              "service 2": 22
             },
             "renameByName": {
-              "Time 1": "",
+              "Time": "",
               "Time 2": "",
-              "Time 5": "",
-              "Value #A": "Cores",
-              "Value #B": "Uptime",
-              "Value #D": "PODs",
-              "Value #F": "Memory",
-              "Value #G": "Memory Usage",
-              "Value #H": "Disk Usage",
+              "Value #B": "CPU Usage",
+              "Value #C": "Memory",
+              "Value #D": "Memory Usage",
+              "Value #E": "Disk Usage",
+              "Value #F": "Uptime",
+              "Value #G": "Cores",
+              "Value #H": "PODs",
               "Value #I": "Disk Size",
-              "Value #J": "CPU usage",
-              "container_runtime_version": "Docker Version",
+              "container": "",
+              "container_runtime_version": "Docker",
+              "dockerVersion": "Docker Version",
               "instance": "Node",
+              "job 3": "",
               "kernel_version": "Kernel",
-              "kubelet_version": "Kubelet",
+              "kubelet_version": "Kubernetes",
               "kubeproxy_version": "",
-              "os_image": "Linux Version",
-              "pod_cidr": ""
+              "osVersion": "OS Version",
+              "os_image": "Linux Version"
             }
           }
         }
@@ -1506,7 +1543,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 13
       },
       "id": 189,
       "panels": [],
@@ -1516,28 +1553,20 @@
     {
       "datasource": null,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "gridPos": {
         "h": 2,
         "w": 4,
         "x": 0,
-        "y": 17
+        "y": 14
       },
       "id": 241,
       "options": {
         "content": "# ${node}\n",
         "mode": "markdown"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
-      "transparent": true,
       "type": "text"
     },
     {
@@ -1546,18 +1575,18 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1583,7 +1612,7 @@
         "h": 2,
         "w": 2,
         "x": 4,
-        "y": 17
+        "y": 14
       },
       "hideTimeOverride": true,
       "id": 15,
@@ -1602,9 +1631,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "avg(time() - node_boot_time_seconds{instance=~\"$node\"})",
@@ -1627,17 +1657,17 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1655,7 +1685,7 @@
         "h": 2,
         "w": 2,
         "x": 6,
-        "y": 17
+        "y": 14
       },
       "id": 14,
       "interval": null,
@@ -1673,9 +1703,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "count(node_cpu_seconds_total{instance=~\"$node\", mode='system'})",
@@ -1697,18 +1728,18 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1726,7 +1757,7 @@
         "h": 2,
         "w": 2,
         "x": 8,
-        "y": 17
+        "y": 14
       },
       "id": 75,
       "interval": null,
@@ -1744,9 +1775,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "sum(node_memory_MemTotal_bytes{instance=~\"$node\"})",
@@ -1768,17 +1800,17 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [
             {
-              "id": 0,
-              "op": "=",
-              "text": "N/A",
-              "type": 1,
-              "value": "null"
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
             }
           ],
-          "nullValueMode": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1796,7 +1828,7 @@
         "h": 2,
         "w": 2,
         "x": 10,
-        "y": 17
+        "y": 14
       },
       "id": 226,
       "interval": null,
@@ -1814,9 +1846,10 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "count(kube_pod_info{node=~\"$node\"})",
@@ -1836,8 +1869,12 @@
       "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
-            "align": null,
+            "align": "auto",
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -1864,28 +1901,23 @@
             },
             "properties": [
               {
+                "id": "decimals"
+              },
+              {
                 "id": "unit",
                 "value": "percentunit"
-              },
-              {
-                "id": "decimals",
-                "value": 2
-              },
-              {
-                "id": "custom.width",
-                "value": 103
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Memory Usage"
+              "options": "pod"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 122
+                "value": 173
               }
             ]
           },
@@ -1897,43 +1929,27 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 99
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "FIle Usage"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 75
+                "value": 150
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 16,
+        "h": 6,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 14
       },
       "id": 253,
       "options": {
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "FIle Usage"
-          }
-        ]
+        "sortBy": []
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
+          "exemplar": true,
           "expr": "sum(container_spec_memory_limit_bytes{instance=~\"$node\", container!=\"POD\", container!=\"\"}) by (namespace,container)",
           "format": "table",
           "instant": true,
@@ -1942,33 +1958,27 @@
           "refId": "A"
         },
         {
+          "exemplar": true,
           "expr": "sum(container_memory_usage_bytes{instance=~\"$node\", container!=\"POD\", container!=\"\"}) by (namespace,container)",
           "format": "table",
+          "hide": false,
           "instant": true,
           "interval": "",
           "legendFormat": "memory usage",
           "refId": "B"
         },
         {
-          "expr": "sum(container_fs_usage_bytes{instance=~\"$node\", container!=\"POD\", container!=\"\"}) by (namespace,container)",
-          "format": "table",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "file usage",
-          "refId": "C"
-        },
-        {
+          "exemplar": true,
           "expr": "sum(rate(container_cpu_usage_seconds_total{instance=~\"$node\", container!=\"POD\", container!=\"\"}[5m])) by (namespace,container)",
           "format": "table",
+          "hide": false,
           "instant": true,
           "interval": "",
           "legendFormat": "cpu usage",
           "refId": "D"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Container Overview by Node",
+      "title": "POD Overview by Node",
       "transformations": [
         {
           "id": "merge",
@@ -1984,17 +1994,15 @@
               "Time": 0,
               "Value #A": 3,
               "Value #B": 4,
-              "Value #C": 5,
+              "Value #D": 5,
               "container": 2,
               "namespace": 1
             },
             "renameByName": {
               "Value #A": "Memory Limit",
               "Value #B": "Memory Usage",
-              "Value #C": "FIle Usage",
               "Value #D": "CPU Usage",
-              "container": "Container",
-              "namespace": "Namespace"
+              "container": "pod"
             }
           }
         }
@@ -2011,6 +2019,7 @@
           },
           "custom": {
             "align": null,
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -2061,7 +2070,7 @@
             "properties": [
               {
                 "id": "custom.displayMode",
-                "value": "lcd-gauge"
+                "value": "basic"
               },
               {
                 "id": "unit",
@@ -2070,6 +2079,14 @@
               {
                 "id": "custom.align",
                 "value": "center"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
               }
             ]
           },
@@ -2111,7 +2128,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 19
+        "y": 16
       },
       "id": 247,
       "links": [],
@@ -2119,7 +2136,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
           "expr": "node_filesystem_size_bytes{instance=~'$node',fstype=~\"ext.*|xfs\",mountpoint=\"/rootfs\"}",
@@ -2208,7 +2225,6 @@
       "decimals": 2,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": []
         },
         "overrides": []
@@ -2219,7 +2235,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 23
+        "y": 20
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2247,7 +2263,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2271,6 +2287,7 @@
       "steppedLine": false,
       "targets": [
         {
+          "exemplar": true,
           "expr": "node_memory_MemTotal_bytes{instance=~\"$node\"}",
           "format": "time_series",
           "hide": false,
@@ -2376,7 +2393,6 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": []
         },
         "overrides": []
@@ -2386,8 +2402,8 @@
       "gridPos": {
         "h": 5,
         "w": 12,
-        "x": 0,
-        "y": 28
+        "x": 12,
+        "y": 20
       },
       "hiddenSeries": false,
       "id": 7,
@@ -2416,7 +2432,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2495,6 +2511,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:852",
           "decimals": 0,
           "format": "percent",
           "label": "",
@@ -2504,6 +2521,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:853",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2532,7 +2550,6 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "links": []
         },
         "overrides": []
@@ -2541,10 +2558,10 @@
       "fillGradient": 1,
       "grid": {},
       "gridPos": {
-        "h": 8,
-        "w": 24,
+        "h": 7,
+        "w": 12,
         "x": 0,
-        "y": 33
+        "y": 25
       },
       "height": "300",
       "hiddenSeries": false,
@@ -2573,7 +2590,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.6",
+      "pluginVersion": "8.2.3",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2621,6 +2638,7 @@
           "step": 20
         },
         {
+          "exemplar": true,
           "expr": " sum(count(node_cpu_seconds_total{instance=~\"$node\", mode='system'}) by (cpu,instance)) by(instance)",
           "format": "time_series",
           "instant": false,
@@ -2652,6 +2670,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:774",
           "format": "short",
           "logBase": 1,
           "max": null,
@@ -2659,6 +2678,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:775",
           "format": "short",
           "logBase": 1,
           "max": null,
@@ -2672,22 +2692,344 @@
       }
     },
     {
-      "collapsed": false,
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 41
+      "datasource": "${DS_PROMETHEUS}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "packets out (-) / in (+)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "pps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "receive_packets_eth0"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#7EB26D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "receive_packets_lo"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E24D42",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "transmit_packets_eth0"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#7EB26D",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "transmit_packets_lo"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#E24D42",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
-      "id": 217,
-      "panels": [],
-      "title": "Overall",
-      "type": "row"
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 261,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "-rate(node_network_receive_packets_total{instance=~\"($node)([\\\\.:].*)?\",device=~\"(eth).*\"}[$__rate_interval])",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{device}}.rx",
+          "refId": "A",
+          "step": 240
+        },
+        {
+          "exemplar": true,
+          "expr": " rate(node_network_transmit_packets_total{instance=~\"($node)([\\\\.:].*)?\",device=~\"(eth).*\"}[$__rate_interval])",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{device}}.tx",
+          "refId": "B",
+          "step": 240
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Network Traffic by Packets",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_PROMETHEUS}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "axisLabel": "Send (+) / Receive (-)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 8,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "yellow",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "id": 262,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.3",
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "sum by (device) (\n  irate(node_network_receive_bytes_total{instance=~\"($node)([\\\\.:].*)?\",device=~\"(eth).*\"}[1m])\n)",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{device}}.rx",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Network Received",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${DS_PROMETHEUS}",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "axisLabel": "Send (+) / Receive (-)",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 8,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "id": 257,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.3",
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "sum by (device) (  \n  irate(node_network_transmit_bytes_total{instance=~\"($node)([\\\\.:].*)?\",device=~\"(eth).*\"}[1m])\n)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{device}}.tx",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Network Transmited",
+      "type": "timeseries"
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 26,
+  "schemaVersion": 31,
   "style": "dark",
   "tags": [
     "Prometheus",
@@ -2702,6 +3044,7 @@
         "current": {},
         "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values(node_uname_info{job=~\"$job\",nodename=~\"$hostname\"},instance)",
+        "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
@@ -2710,13 +3053,15 @@
         "multiFormat": "regex values",
         "name": "node",
         "options": [],
-        "query": "label_values(node_uname_info{job=~\"$job\",nodename=~\"$hostname\"},instance)",
+        "query": {
+          "query": "label_values(node_uname_info{job=~\"$job\",nodename=~\"$hostname\"},instance)",
+          "refId": "prometheus-node-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 5,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -2753,5 +3098,5 @@
   "timezone": "browser",
   "title": "Imixs-Cloud",
   "uid": "202008",
-  "version": 1
+  "version": 20
 }
