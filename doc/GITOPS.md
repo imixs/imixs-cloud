@@ -26,7 +26,7 @@ For a quick setup we use the official install.yaml file form the argo-cd github 
 
 The startup may take some seconds. 
 
-For the Ingress configuration the directory */management/arco-cd* includes additional resource objects. Edit the file '030-ingress.yaml' and replace '{YOUR-DOMAIN-NAME}' with your Internet domain name.
+For the Ingress configuration the directory */management/argo-cd* includes additional resource objects. Edit the file '030-ingress.yaml' and replace '{YOUR-DOMAIN-NAME}' with your Internet domain name.
 
 Next you can apply the Ingress configuration to your running argo-cd instance:
 
