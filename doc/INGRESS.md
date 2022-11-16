@@ -7,7 +7,7 @@ _Imixs-Cloud_  provides you with a ready to use Ingress Configuration based on t
 
 ## Quick Setup
 
-The following is a quick setup guide to install teh NGINX Controller. You will find a detailed description about the setup [here](../management/nginx/README.md). 
+The following is a quick setup guide to install the NGINX Controller. You will find a detailed description about the setup [here](../management/nginx/README.md). 
 
 **1. Edit the NGINX .yaml files**
 
@@ -17,9 +17,9 @@ In the file management/nginx/030-cluster-issuer.yaml replace the email address w
 
 **2. Deploy the cert-manager**
 
-To support certificates from Let's Encrypt, the cert-manager is needed. This service can be deployed from the cert-manager repo on Github:
+To support certificates from Let's Encrypt, the cert-manager is needed. This service can be deployed directly from the cert-manager repo on Github:
 
-	$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.yaml
+	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
 
 
 **3. Deploy the NGINX Controller**

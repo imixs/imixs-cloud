@@ -8,7 +8,7 @@ The NGINX Ingress Controller is maintained by the Kubernetes community.
 
 The deployment configuration in *Imixs-Cloud* contains already a setup for TLS certificates issued by Let’s Encrypt. So there is no further configuration needed to use Let’s Encrypt. To support certificates the [cert-manager](https://cert-manager.io) is needed. This service can be deployed from the cert-manager repo on Github:
 
-	$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.2.0/cert-manager.yaml
+	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
 
 Verify the installation of the cert-manager with:
 
@@ -133,6 +133,37 @@ Once a certificate has been successfully created, you can run a describe for fur
 
 
 Find more information about the cert-manager [here](https://cert-manager.io/docs/concepts/certificate/). 
+
+
+
+
+# Upgrade the Cert Manager
+
+It is recommend upgrading the cert-manager one minor version at a time, always choosing the latest patch version for the minor version. Find a detailed description [here](https://cert-manager.io/docs/installation/upgrading/).
+
+## Backup
+
+To backup all of your cert-manager configuration resources, run:
+
+	$ kubectl get --all-namespaces -oyaml issuer,clusterissuer,cert > cert-manager-backup.yaml
+
+Find more details [here](https://cert-manager.io/docs/tutorials/backup/).
+
+
+## Upgrade
+
+The cert-manager can be upgraded in a similar way to how you first installed them.
+
+To begin the upgrade process run:
+
+	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/<version>/cert-manager.yaml
+
+Replace <version> with the version number you want to install:
+
+Once you have deployed the new version of cert-manager, you can verify the installation by checking the cert-manager namespace for running pods:
+
+	$ kubectl get pods --namespace cert-manager
+
 
 
 
