@@ -45,6 +45,7 @@ The following example shows a simple Ingress configuration from the whoami sampl
 	metadata:
 	  name: whoami
 	  annotations:
+	    kubernetes.io/ingress.class: "nginx"		    	    	  
 	    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 	    # For production
 	    #cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -104,6 +105,7 @@ Now you can update the Ingress yaml file by adding the annotations for 'auth' an
 	  name: YOUR_INGRESS
 	  namespace: YOUR_NAMESPACE
 	  annotations:
+	    kubernetes.io/ingress.class: "nginx"	  
 	    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 	    # type of authentication
 	    nginx.ingress.kubernetes.io/auth-type: basic
@@ -146,7 +148,8 @@ In some scenarios is required to redirect from www.domain.com to domain.com or v
 	  name: foo-org
 	  namespace: www-foo-org
 	  annotations:
-	    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+	    kubernetes.io/ingress.class: "nginx"	  
+	    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 	    nginx.ingress.kubernetes.io/from-to-www-redirect: 'true'
 	spec:
 	  tls:
