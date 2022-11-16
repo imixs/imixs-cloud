@@ -170,9 +170,13 @@ Replace {NODE\_IP\_ADDRESS} with your servers IP address. For a HA cluster you n
 
 At the end the init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
 
-Now deploy a cluster network, this is needed for the internal communication between your cluster nodes. 
+Now you need to setup the [Calico](https://docs.projectcalico.org/) Network interface. The cluster network is needed for the internal communication between your cluster nodes. 
 
-	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+Download and deploy the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
+
+	$ curl https://docs.projectcalico.org/manifests/calico.yaml -O	
+	$ kubectl apply -f calico.yaml
+	
 
 ### 3. Setup Your Kubernetes Worker Nodes
 

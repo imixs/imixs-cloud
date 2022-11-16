@@ -122,23 +122,14 @@ This will copy the configuration of your master node into the kubernetes config 
 
 ### Setup a Cluster Network Interface (CNI)
 
-Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available. You can find a list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
+Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available like [Calico](https://docs.projectcalico.org/) or [Flannel](https://github.com/flannel-io/flannel#flannel). 
+You will find a complete list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
 
-#### The Flannel Network
-
-[Flannel](https://github.com/flannel-io/flannel#flannel) is a simple and easy way to configure a layer 3 network fabric designed for Kubernetes. To deploy the flannel network to the kubernetes cluster run the following kubectl command:
-
-	$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.13.0/Documentation/kube-flannel.yml
-
-The flannel network will been deployed to the Kubernetes cluster. After some seconds the cluster should be up and running. You can check the status with:
-
-	$ kubectl cluster-info
-
-**Note:** You can switch to a newer version if you check the relase notes from the flannel project on [github](https://github.com/flannel-io/flannel/releases)
+**Note:** In Imixs-Cloud we use the [Calico](https://docs.projectcalico.org/) Network interface. 
 
 #### The Calico Network
 
-[Calico](https://docs.projectcalico.org/) is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. It is more flexible and powerful than the flannel network and can be a good alternative.
+[Calico](https://docs.projectcalico.org/) is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. It is more flexible and powerful than the flannel network and  is the recommended solution for Imixs-Cloud.
 
 To install calico download the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
 
