@@ -8,7 +8,7 @@ The NGINX Ingress Controller is maintained by the Kubernetes community.
 
 The deployment configuration in *Imixs-Cloud* contains already a setup for TLS certificates issued by Let’s Encrypt. So there is no further configuration needed to use Let’s Encrypt. To support certificates the [cert-manager](https://cert-manager.io) is needed. This service can be deployed from the cert-manager repo on Github:
 
-	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
+	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.yaml
 
 Verify the installation of the cert-manager with:
 

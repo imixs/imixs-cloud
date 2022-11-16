@@ -19,7 +19,7 @@ In the file management/nginx/030-cluster-issuer.yaml replace the email address w
 
 To support certificates from Let's Encrypt, the cert-manager is needed. This service can be deployed directly from the cert-manager repo on Github:
 
-	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
+	$ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.yaml
 
 
 **3. Deploy the NGINX Controller**
