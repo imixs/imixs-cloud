@@ -197,7 +197,7 @@ In order to get kubectl talking to your cluster, you can again copy the content 
 
 # Upgrade
 
-After you have successfull installed your Imixs-Cloud cluster you may want to verify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
+After you have successful installed your Imixs-Cloud cluster you may want to verify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
 
 ## Verify your Cluster Status
 
@@ -264,6 +264,26 @@ To upgrade kubelet and kubectl run:
 	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
 
 Where you again need to replace the correct version.
+
+
+## Upgrade containerd
+
+For  containerd we mark the package in our setup script to hold the version even during a general `apt upgrade`. To upgrade to the latest version manually run:
+
+
+	apt-mark unhold containerd && \
+	apt-get update && apt-get install -y containerd && \
+	apt-mark hold containerd
+
+If the worker node does not start again this can be a problem with the containerd configuration. To setup the default config run:
+
+	# Configure containerd
+	cd /etc/containerd
+	sudo containerd config default | sudo tee /etc/containerd/config.toml
+	# Restart containerd
+	sudo systemctl restart containerd
+
+
 
 # Maintenance
 
