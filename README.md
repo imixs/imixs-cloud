@@ -48,7 +48,9 @@ But within the *Imixs-Cloud* project, we believe a storage solution should be ru
 <p align="center"><img src="./doc/images/architecture-01.png" /></p>
 
 In this picture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect each to the same Ceph cluster.
-In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. You will find a install guide in the section [Ceph Quick Install](doc/CEPH.md).
+In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. 
+
+You will find a install guide in the section [Ceph Quick Install](doc/CEPH.md).
 
 
 ## The Network
