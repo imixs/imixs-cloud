@@ -2,7 +2,7 @@
 # ClusterIssuer - Let's Encrypt staging  
 ###################################################
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
  name: letsencrypt-staging
@@ -25,7 +25,7 @@ spec:
 # ClusterIssuer - Let's Encrypt production  
 ###################################################
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
