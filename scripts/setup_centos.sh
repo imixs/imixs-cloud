@@ -3,7 +3,10 @@
 ############################################################
 # Kubernetes Install Script for CentOS 7
 # 
-# run as sudo 
+# NOTE: This script is outdated. If you feel it should be updated 
+#       in some plases please join the project. Your contribution 
+#       is very welcome!
+# 
 ############################################################
 
  
