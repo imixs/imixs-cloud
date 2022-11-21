@@ -13,7 +13,7 @@ To install the metrics-server run:
 
 The server will be installed into the namespace 'kube-system'.  The latest version of the deplyoment yaml file can be downloaded form the github project as well:
 
-	$ wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+	$ wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.1/components.yaml
 	
 
 The metrics-server will start grabbing the node metrics. Until the first data is available it may take some seconds. 
@@ -24,4 +24,21 @@ The metrics-server will start grabbing the node metrics. Until the first data is
 	master-1   297m         14%    1358Mi          36%       
 	worker-1   1424m        35%    13913Mi         89%       
 
+
+##
+
+In case the metric server will not work because of insecure certificates just download the componens.yaml and add the command argument `-kubelet-insecure-tls`
+
+      containers:
+      - args:
+        - --cert-dir=/tmp
+        - --secure-port=4443
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        - --kubelet-use-node-status-port
+        - --metric-resolution=15s
+        - --kubelet-insecure-tls
+
+You can find a more secure solution here:  https://particule.io/en/blog/kubeadm-metrics-server/
+
+Also follow the discussion [here](https://github.com/kubernetes-sigs/metrics-server/issues/196)
 
