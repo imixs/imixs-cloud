@@ -1,7 +1,7 @@
 # How to Setup the Imixs-Cloud
 
 The following section describes the setup procedure of *Imixs-Cloud* for small and medium organizations. 
-This setup guide shows how to install a kubernetes cluster into a productive environment consisting of several Internet nodes. 
+This setup guide shows how to install a kubernetes cluster into a productive environment consisting of several Internet nodes. Detailed help can be found on the [official Kubernetes documentation](https://kubernetes.io/docs/home/).
 
 If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below.
 
@@ -14,13 +14,49 @@ A *Imixs-Cloud* consists of a minimum of two nodes.
 * The master node is the kubernetes api server
 * The worker nodes are serving the applications (pods). 
 
-A node can be a virtual or a hardware node. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. So you also can connect your worker nodes with a private network if you like. 
-
-To enable communication between your cluster nodes using short names, make sure that on each node the short host names are listed in the /etc/hosts with the public or private IP addresses.
+A node can be run on a virtual or on bare metal. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. So you also can connect your worker nodes with a private network if you like. 
 
 
 
-## The Cluster-User
+
+### Cloudname, Hostname and FQDN
+
+To access our servers from the Internet as internally Linux distinguish between the system hostname (short name without a domain) and the fully-qualified domain name (FQDN) in the format hostname.domainname 
+
+Kubernetes knows different node types e.g. master nodes and worker nodes. It is recommended that your hostname should reflect this in the nodename. Also it is recommended to have a short name for your cloud that should be also part of the hostname. This makes it more clear when working on a node directly or checking different log files. 
+
+The FQDN than looks like this:
+
+	nodename.cloudname.domainname   
+
+To set this names in `/etc/hosts` set the FQDN as the first column for the server's IP, followed by the short name.
+
+	$ cat /etc/hosts:
+	127.0.0.1    localhost
+	10.0.0.1     nodename.cloudname.domainname nodename-cloudname
+	
+	10.0.0.1     kube-load-balancer
+
+**Note:** To enable communication between your cluster nodes using short names, make sure that on each node the short host names are listed in the `/etc/hosts` with the public or private IP addresses. We also set a IP for the `kube-load-balancer` here. This IP can be used later for setting up a HA-Cluster. If you don't have multiple master nodes than place here the IP of your hostname.
+
+
+The hostname is stored in `/etc/hostname`
+
+	$ cat /etc/hostname:
+	hostname-cloudname
+
+This concept allows you to login form outside via the FQDN
+
+	$ ssh imixs@nodename.cloud.domainname
+
+and you also see the node and cloudname on your login promt:
+
+	Last login: Sat Nov 19 07:26:26 2022 from 93.104.191.28
+	imixs@nodename-cloud ~ $ 
+
+
+
+### The Cluster-User
 
 **Note:**
 In *Imixs-Cloud* you should always work with a non-root, sudo privileged cluster user. This protects yourself from doing nasty things with the root user. So first make sure that you have defined a cluster-user on your master node and also on all your worker nodes. 
@@ -81,17 +117,15 @@ For CentOS 7
 	$ sudo ~/imixs-cloud/scripts/setup_centos.sh
 	
 
-### Hostnames and Network Addresses
 
-In case you are running your cluster in a private network, make sure that all host names of the cluster nodes are listed in the */etc/hosts* with the IP addresses of you private network. Otherwise your cluster nodes will probably communicate via the public Internet IPs which is what you want to avoid. 
 
 ## Setup the Cluster
 
 After you have installed the setup script and checked you network IP addresses, you can initialize the Kubernetes cluster using the following kubeadm command:
 
-	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS]
-
-Replace [NODE\_IP\_ADDRESS] with your servers private IP address.
+	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE-IP-ADDRESS] 
+	
+Replace `[NODE-IP-ADDRESS]` with your servers private IP address.
 
 You will see a detailed protocol showing what happens behind the scene. 
 
@@ -103,7 +137,7 @@ The last output form the protocol shows you the join token needed to setup a wor
 
 **Note:** If you have plans to upgrade this single control-plane kubeadm cluster to high availability you should specify the --control-plane-endpoint to set the shared endpoint for all control-plane nodes. Such an endpoint should be a DNS name, so you can change the endpoint later easily. 
 
-	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS] --control-plane-endpoint=[LOAD-BALANCER-DNS-NAME]
+	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS] --control-plane-endpoint=kube-load-balancer
 
 
 
@@ -225,7 +259,7 @@ You can check the available versions compared to your current instlled verions:
 
 To upgrade the kubeadm tool on the master node run:
 
-	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubeadm=1.22.x-00
+	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.22.x-00
 	
 Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
 
@@ -243,7 +277,7 @@ With the following command youc can that your cluster can be upgraded. The comma
 	
 After following the upgrade command you can finally upgrade kubelet and kubectl:
 	
-	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
+	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
 
 Where you again need to replace the correct version.	
 	
