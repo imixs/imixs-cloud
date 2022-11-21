@@ -20,9 +20,10 @@ fi
 ufw allow ssh comment 'allow ssh access form anywhere'
 # the https rule is only needed on master node
 ufw allow 443 comment 'allow https only'
+ufw allow from 10.0.0.0/8
 
-# Uncomment this to allow your kubernetes cluster to access your ceph nodes
-# rreplace the public IPs
+# Uncomment this to allow your kubernetes cluster to access internal communication
+# replace with the public IPs for each cluster node
 #ufw allow from x.y.a.b comment 'allow your ceph cluster nodes'
 #ufw allow from x.y.a.c
 #ufw allow from x.y.a.d
@@ -31,6 +32,8 @@ ufw allow 443 comment 'allow https only'
 ufw default allow outgoing
 ufw default deny incoming
 ufw enable
+
+ufw reload
 
 # setup finished
 #############################################################
