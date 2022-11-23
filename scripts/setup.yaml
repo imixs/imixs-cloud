@@ -1,0 +1,44 @@
+##################################
+# Init configuration used to init a new cluster. 
+# Usage:
+#  $ sudo kubeadm init -config=kubeadm.yaml
+#
+##################################
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+# // uncomment to set the advertiseAddress - the IP address for the API server to advertise.
+#localAPIEndpoint:
+#  advertiseAddress: "[NODE_IP]"
+#  bindPort: 6443
+
+
+
+##################################
+# cluster configuration used to 
+##################################
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+#clusterName: "[YOUR-CLUSTER-NAME]"
+
+# // overwrite kubernetesVersion if you want to instal a specific version
+#kubernetesVersion: "v1.25.4"
+
+# // set the controlPlaneEndpoint to a stable IP address or DNS name for the control plane. 
+# // It can be a valid IP address or a RFC-1123 DNS subdomain, both with optional TCP port.
+#controlPlaneEndpoint: "[NODE_IP]"
+
+networking:
+  podSubnet: "10.244.0.0/24"
+
+
+##################################
+# kubelet specific options here
+##################################
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+# // Enable TLSBootstrap for metric-server
+serverTLSBootstrap: true
+
+

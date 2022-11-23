@@ -121,17 +121,46 @@ For CentOS 7
 
 ## Setup the Cluster
 
-After you have installed the setup script and checked you network IP addresses, you can initialize the Kubernetes cluster using the following kubeadm command:
+After you have installed the setup script and checked you network IP addresses, you can initialize the Kubernetes cluster. 
 
-	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE-IP-ADDRESS] 
+We use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before if you want to change some of the default settings. 
+
+To start the setup run:
+
+	$ sudo kubeadm init --config=scripts/setup.yaml
+
+You will see a detailed protocol showing what happens behind the scene. The last output form the protocol shows you the join token needed to setup a worker node. 
 	
-Replace `[NODE-IP-ADDRESS]` with your servers private IP address.
+### Customize Setup 
+	
+By editing the `scripts/setup.yaml` before you run the init command, you can customize various settings of your cluster
 
-You will see a detailed protocol showing what happens behind the scene. 
 
-The last output form the protocol shows you the join token needed to setup a worker node. If you forgot to note the join token you can run the following command:
+**clusterName**
 
-	$ sudo kubeadm token create --print-join-command
+Uncomment the clusterName to give your cluster a custom name. This makes it more easy to identify your cluster when working with different clusters. 
+
+	clusterName: "[YOUR-CLUSTER-NAME]"
+
+**advertiseAddress**
+
+Uncomment the localAPIPoint if your master node is using multiple network adapters and you whant to bind the node to a specific endpoint. Normally kubeadmn detects the correct address by itself. 
+
+	localAPIEndpoint:
+	  advertiseAddress: "[NODE_IP]"
+	  bindPort: 6443
+
+**controlPlaneEndpoint**
+
+If you plan to setup a HA cluster later than proivde a DNS for a loadBalancer to be used by your API Server. 
+
+	controlPlaneEndpoint: "LOAD-BALANCER-DN"
+
+**networking**
+
+You can change the default pod-network `10.244.0.0/16` if this network collides with an existing network. Y
+
+.d
 
 ### The control-plane-endpoint
 
@@ -155,7 +184,6 @@ This will copy the configuration of your master node into the kubernetes config 
 
 
 ### Setup a Cluster Network Interface (CNI)
-
 Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available like [Calico](https://docs.projectcalico.org/) or [Flannel](https://github.com/flannel-io/flannel#flannel). 
 You will find a complete list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
 
@@ -189,13 +217,17 @@ If something went wrong you can easily roll back everything with the command:
 
 **Note:** This will erase the etcd database! 
 
+After a reset you should also restart the cri-o runtime:
+
+	$ sudo systemctl restart crio
+
 ## Install Worker Nodes
 
 Now you can run the same script used to install the master node on each of your worker nodes. 
 
 	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
 
-This will install the containerd runtime and the kubernetes tools. 
+This will install the container runtime and the kubernetes tools. 
 
 ### Adding a Worker Node to your Cluster
 
