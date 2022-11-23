@@ -166,14 +166,15 @@ If you are running Fedora or CentOS than run:
  
 ### 2. Initialize Your Kubernetes Master Node
 
-We use a config file to make your installation as pleasant and flexible as possible. 
+We use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before if you want to change some of the default settings. 
+
 To initialize the cluster on your master node run:
 
 	$ sudo kubeadm init --config=scripts/setup.yaml
 
-At the end the init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
+At the end the init command will give a install guide how to install the commandline tool `kubectl` on your host and how to setup worker nodes. 
 
-Now you need to setup the [Calico](https://docs.projectcalico.org/) Network interface. The cluster network is needed for the internal communication between your cluster nodes. 
+Now you can setup the [Calico](https://docs.projectcalico.org/) Network interface. The cluster network is needed for the internal communication between your cluster nodes. 
 
 Download and deploy the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
 
@@ -183,12 +184,11 @@ Download and deploy the calico.yaml file from [here](https://docs.projectcalico.
 
 ### 3. Setup Your Kubernetes Worker Nodes
 
-To build your cluster you can join any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes. 
-After the basic setup on a new worker node is completed, you can join your worker node into your new cluster using the join command from your master node:
+To build your cluster you can join now any worker node into your new kubernetes cluster. Just repeat the step 1 on each of your worker nodes to install the kubeadm tool. After that, you can join your worker node into your new cluster using the join command from your master node:
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx  --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
 
-If you do not know the join command run the following command on your master node. This command will just print out the command you need to join the cluster from your worker node:
+If you do not know the join command any more, run the following command on your master node:
 
 	$ kubeadm token create --print-join-command
  
@@ -197,7 +197,7 @@ After a new worker has joined the cluster you can check the status of your maste
 	$ kubectl get nodes
 
 	 
-**That's it! Your kubernetes cluster is ready**
+**That's it! Your kubernetes cluster is now up and running!**
 
 You will find a more detailed description about how to setup your Kubernetes cluster in the [setup section](doc/SETUP.md). If you have any probelm or questions just open a new [Issue](https://github.com/imixs/imixs-cloud/issues) on Github. 
 In the following sections you will find more information about the concepts of Imixs-Cloud.
