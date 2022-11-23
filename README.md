@@ -156,19 +156,20 @@ now you can run the setup script on your master node to install Docker and Kuber
  
 	$ sudo ./scripts/setup_debian.sh
 
+You can find details about how to create a cluster also on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
+
 If you are running Fedora or CentOS than run:
 
 	$ sudo ./scripts/setup_centos.sh
 
-You can find details about how to create a cluster also on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
+**Note:** The setup script for centos is outdated. Please join this project to update it!
  
 ### 2. Initialize Your Kubernetes Master Node
 
-After the basic setup, run the  _kubeadm_  tool to setup your kubernetes master node:
+We use a config file to make your installation as pleasant and flexible as possible. 
+To initialize the cluster on your master node run:
 
-	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address={NODE_IP_ADDRESS}
-
-Replace {NODE\_IP\_ADDRESS} with your servers IP address. For a HA cluster you need also to specify the --control-plane-endpoint (see the [setup guide](./doc/SETUP.md) for details)
+	$ sudo kubeadm init --config=scripts/setup.yaml
 
 At the end the init command will give a install guide how to install the commandline tool 'kubectl' on your host. 
 
