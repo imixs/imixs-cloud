@@ -157,12 +157,6 @@ now you can run the setup script on your master node to install Docker and Kuber
 	$ sudo ./scripts/setup_debian.sh
 
 You can find details about how to create a cluster also on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
-
-If you are running Fedora or CentOS than run:
-
-	$ sudo ./scripts/setup_centos.sh
-
-**Note:** The setup script for centos is outdated. Please join this project to update it!
  
 ### 2. Initialize Your Kubernetes Master Node
 

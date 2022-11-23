@@ -108,89 +108,44 @@ In order to ensure that all nodes are running the same software releases run the
 
 The install script can be found in the script directory /scripts/. The install script is available for Debian/Ubuntu and Fedora/CentOS. Run the setup script as sudo:
 
-For Debian 10
+**For Debian 10**
 
 	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
 	
-For CentOS 7
+**For CentOS 7**
 
 	$ sudo ~/imixs-cloud/scripts/setup_centos.sh
 	
-
+**Note:** The setup script for centos is outdated. Please join this project to update it!
 
 
 ## Setup the Cluster
 
-After you have installed the setup script and checked you network IP addresses, you can initialize the Kubernetes cluster. 
+After you have installed the setup script and checked your network IP addresses, you can start to initialize your new Kubernetes cluster. 
 
-We use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before if you want to change some of the default settings. 
+We use a config file to make the cluster setup as easy and flexible as possible. You can edit the config file `scripts/setup.yaml` before, if you want to change some of the default settings (see details below). 
 
 To start the setup run:
 
 	$ sudo kubeadm init --config=scripts/setup.yaml
 
-You will see a detailed protocol showing what happens behind the scene. The last output form the protocol shows you the join token needed to setup a worker node. 
-	
-### Customize Setup 
-	
-By editing the `scripts/setup.yaml` before you run the init command, you can customize various settings of your cluster.
-You will find a detailed description of all available API settings [here](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/).
+You will see a detailed protocol showing what happens behind the scene. The last output form the protocol shows you how to setup kubectl and the join token needed to setup worker nodes. 
 
-**clusterName**
+### Setup kubectl
 
-Uncomment the clusterName to give your cluster a custom name. This makes it more easy to identify your cluster when working with different clusters. 
+`kubectl` is the commandline tool of kubernetes. We use `kubectl` to administration *Imixs-Cloud* and to create, update or delete resources and applications into the cluster.
 
-	clusterName: "[YOUR-CLUSTER-NAME]"
-
-**kubernetesVersion**
-
-Uncomment the kubernetesVersion if you want to install a specific kubernetes version.
-
-	kubernetesVersion: "v1.25.4"
-
-
-**advertiseAddress**
-
-Uncomment the localAPIPoint if your master node is using multiple network adapters and you whant to bind the node to a specific endpoint. Normally kubeadmn detects the correct address by itself. 
-
-	localAPIEndpoint:
-	  advertiseAddress: "[NODE_IP]"
-	  bindPort: 6443
-
-**controlPlaneEndpoint**
-
-If you plan to setup a HA cluster later than proivde a DNS for a loadBalancer to be used by your API Server. 
-
-	controlPlaneEndpoint: "LOAD-BALANCER-DN"
-
-**networking**
-
-You can change the default pod-network `10.244.0.0/16` if this network collides with an existing network. 
-
-### The control-plane-endpoint
-
-**Note:** If you have plans to upgrade this single control-plane kubeadm cluster to high availability you should specify the --control-plane-endpoint to set the shared endpoint for all control-plane nodes. Such an endpoint should be a DNS name, so you can change the endpoint later easily. 
-
-	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS] --control-plane-endpoint=kube-load-balancer
-
-
-
-
-
-### Setup kubectl on a Server
-
-*kubectl* is the commandline tool of kubernetes. We use *kubectl* to administration *Imixs-Cloud* and to create, update or delete resources and applications into the cluster.
-
-To make kubectl work for your non-root user, run these commands on your master node. (These commands are also part of the kubeadm init output):
+To make `kubectl` work for your non-root user, run these commands on your master node. (These commands are also part of the kubeadm init output):
 
 	$ mkdir -p $HOME/.kube
 	$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 	$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-This will copy the configuration of your master node into the kubernetes config directory ./kube of your home directory. Now you can administrate your kubernetes cluster as a non-root user.
+This will copy the configuration of your master node into the kubernetes config directory `./kube `of your home directory. Now you can administrate your kubernetes cluster as a non-root user.
 
 
 ### Setup a Cluster Network Interface (CNI)
+
 Before you start to setup your first worker node you need to install a kubernetes cluster network. There are several network plugins available like [Calico](https://docs.projectcalico.org/) or [Flannel](https://github.com/flannel-io/flannel#flannel). 
 You will find a complete list [here](https://kubernetes.io/docs/concepts/cluster-administration/networking/).
 
@@ -216,17 +171,69 @@ After some seconds the cluster should be up and running. You can check the statu
 
 Find more details about how to install calico [here](https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises).
 
-### How to Reset a Node
 
-If something went wrong you can easily roll back everything with the command:
+	
+### Customize Setup 
+	
+By editing the `scripts/setup.yaml` before you run the `kubeadm init` command, you can customize various settings for your new cluster.
+You will find a detailed description of all available API settings [here](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/).
 
-	$ sudo kubeadm reset
+**clusterName**
 
-**Note:** This will erase the etcd database! 
+Uncomment the clusterName to give your cluster a custom name. This makes it more easy to identify your cluster when working with different clusters. 
 
-After a reset you should also restart the cri-o runtime:
+	clusterName: "[YOUR-CLUSTER-NAME]"
 
-	$ sudo systemctl restart crio
+**kubernetesVersion**
+
+Uncomment the kubernetesVersion if you want to install a specific kubernetes version. Otherwise the latest version will be installed.
+
+	kubernetesVersion: "v1.25.4"
+
+
+**advertiseAddress**
+
+Uncomment the localAPIPoint, if your master node is using multiple network adapters and you want to bind the node to a specific endpoint. Normally kubeadmn detects the correct address by itself. 
+
+	localAPIEndpoint:
+	  advertiseAddress: "[NODE_IP]"
+	  bindPort: 6443
+
+
+**networking**
+
+You can change the default pod-network `10.244.0.0/16` if this network collides with an existing network. 
+
+**controlPlaneEndpoint**
+
+If you have plans to upgrade the cluster to high availability, you can specify the `controlPlaneEndpoint` defining a shared endpoint used by all control-plane nodes. Such an endpoint should be a DNS name, so you can change the endpoint later easily. 
+
+	controlPlaneEndpoint: "LOAD-BALANCER-DN"
+
+
+**serverTLSBootstrap**
+
+By default the kubelet serving certificate deployed by kubeadm is self-signed. This means a connection from external services like the metrics-server to a kubelet cannot be secured with TLS. To configure the kubelets in a new kubeadm cluster to obtain properly signed serving certificates you can uncomment the KubeletConfiguration option `serverTLSBootstrap`.
+
+	serverTLSBootstrap: true
+
+This will enable the bootstrap of kubelet serving certificates by requesting them from the certificates.k8s.io API. The CSRs (Certificate Signing Requests) for these certificates cannot be automatically approved by the default signer in the kube-controller-manager and will require that you approve the CSRs manually:
+
+Get a list of all Pending CSRs:
+
+	$ kubectl get csr
+	NAME        AGE     SIGNERNAME                        REQUESTOR                      CONDITION
+	csr-9wvgt   112s    kubernetes.io/kubelet-serving     system:node:worker-1           Pending
+	csr-lz97v   1m58s   kubernetes.io/kubelet-serving     system:node:control-plane-1    Pending
+
+To approve them call for each CSR the following command:
+
+	$ kubectl certificate approve <CSR-name>
+
+Replace <CSR-name> with the name of the pending signing request.
+
+
+
 
 ## Install Worker Nodes
 
@@ -238,15 +245,15 @@ This will install the container runtime and the kubernetes tools.
 
 ### Adding a Worker Node to your Cluster
 
-To add the new node to your cluster you need to run the join command from the master setup:
+To add the new node into your cluster, you need to run the `kubeadm join` command. This command is a result of the init process performed on your master node. The command expects a token and a certificate hash:
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx     --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-If you do not know the join command you can run the following command on your master node first:
+If you do not know the join command from your cluster, you can run the following command on your master node first:
 
 	$ kubeadm token create --print-join-command
 
-Check your new cluster status on your master node:
+After you have added a new worker node the node should appear in your node list:
 
 	$ kubectl get nodes
 	
@@ -268,6 +275,20 @@ In order to get kubectl talking to your cluster, you can again copy the content 
 
 
 
+## Reset a Node
+
+If something went wrong you can easily roll back everything with the command:
+
+	$ sudo kubeadm reset
+
+**Note:** This will erase the etcd database! 
+
+After a reset you should also restart the cri-o runtime:
+
+	$ sudo systemctl restart crio
+
+You can also use the `scripts/delete_cluster.sh` command on the master node to reset the complete master node. 
+	
 # Upgrade
 
 After you have successful installed your Imixs-Cloud cluster you may want to verify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
@@ -278,45 +299,43 @@ You can verify the status of your kubernets cluster with the following command:
 
 	$ kubectl get nodes
 	NAME              STATUS   ROLES    AGE   VERSION
-	master-1   Ready    master   28d   v1.21.6
-	worker-1   Ready    <none>   28d   v1.21.6
-	worker-2   Ready    <none>   28d   v1.21.6
-	worker-3   Ready    <none>   28d   v1.21.6
+	master-1   Ready    master   28d   v1.25.6
+	worker-1   Ready    <none>   28d   v1.25.4
+	worker-2   Ready    <none>   28d   v1.25.4
+	worker-3   Ready    <none>   28d   v1.25.4
 
-This will show you the current version of kubernetes running on each node
+This will show you the current kubelet version running on each node
 
 **NOTE:** To upgrade the kubeadm and kubectl versions do not run an `apt upgrade`. Instead follow carefully the official [Kubernetes Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
 
-You can check the available versions compared to your current instlled verions:
+You can check the available versions compared to your current installed versions:
 
 	$ sudo apt update && apt-cache madison kubeadm
-
-
 
 
 ## Upgrade the Master Node
 
 To upgrade the kubeadm tool on the master node run:
 
-	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.22.x-00
+	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.25.x-00
 	
 Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
 
 	$ sudo kubeadm version	
 
-With the following command youc can that your cluster can be upgraded. The command fetches the versions you can upgrade to. It also shows a table with the component config version states.
-
+With the following command you can than upgrade your cluster . The command fetches the versions you can upgrade to. It also shows a table with the component config version states.
 
 	$ sudo kubeadm upgrade plan
 	
-	
 **Note:** Follow carefully the instruction on the 	[Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
-	
-	$ sudo kubeadm upgrade apply v1.21.6
+
+To start an upgrade run:
+
+	$ sudo kubeadm upgrade apply v1.25.6
 	
 After following the upgrade command you can finally upgrade kubelet and kubectl:
 	
-	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
+	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.25.x-00 kubectl=1.25.x-00
 
 Where you again need to replace the correct version.	
 	
@@ -325,7 +344,7 @@ Where you again need to replace the correct version.
 
 On the worker nodes your only need to upgrade kubeadm tool:
 
-	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubeadm=1.22.x-00
+	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubeadm=1.25.x-00
 	$ sudo kubeadm upgrade node
 	
 Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
@@ -334,28 +353,14 @@ Where you replace the kubeadm version with the version you want to upgrade to. N
 	
 To upgrade kubelet and kubectl run:
 	
-	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.22.x-00 kubectl=1.22.x-00
+	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.25.x-00 kubectl=1.25.x-00
 
 Where you again need to replace the correct version.
 
 
-## Upgrade containerd
+## Upgrade cri-o Container Runtime
 
-For  containerd we mark the package in our setup script to hold the version even during a general `apt upgrade`. To upgrade to the latest version manually run:
-
-
-	apt-mark unhold containerd && \
-	apt-get update && apt-get install -y containerd && \
-	apt-mark hold containerd
-
-If the worker node does not start again this can be a problem with the containerd configuration. To setup the default config run:
-
-	# Configure containerd
-	cd /etc/containerd
-	sudo containerd config default | sudo tee /etc/containerd/config.toml
-	# Restart containerd
-	sudo systemctl restart containerd
-
+To upgrade the cri-o container runtime follow the official [install guide](https://github.com/cri-o/cri-o/blob/main/install.md).
 
 
 # Maintenance

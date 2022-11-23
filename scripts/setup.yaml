@@ -39,6 +39,6 @@ networking:
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 # // Enable TLSBootstrap for metric-server
-serverTLSBootstrap: true
+#serverTLSBootstrap: true
 
 
