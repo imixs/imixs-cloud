@@ -133,14 +133,21 @@ You will see a detailed protocol showing what happens behind the scene. The last
 	
 ### Customize Setup 
 	
-By editing the `scripts/setup.yaml` before you run the init command, you can customize various settings of your cluster
-
+By editing the `scripts/setup.yaml` before you run the init command, you can customize various settings of your cluster.
+You will find a detailed description of all available API settings [here](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/).
 
 **clusterName**
 
 Uncomment the clusterName to give your cluster a custom name. This makes it more easy to identify your cluster when working with different clusters. 
 
 	clusterName: "[YOUR-CLUSTER-NAME]"
+
+**kubernetesVersion**
+
+Uncomment the kubernetesVersion if you want to install a specific kubernetes version.
+
+	kubernetesVersion: "v1.25.4"
+
 
 **advertiseAddress**
 
@@ -158,15 +165,15 @@ If you plan to setup a HA cluster later than proivde a DNS for a loadBalancer to
 
 **networking**
 
-You can change the default pod-network `10.244.0.0/16` if this network collides with an existing network. Y
-
-.d
+You can change the default pod-network `10.244.0.0/16` if this network collides with an existing network. 
 
 ### The control-plane-endpoint
 
 **Note:** If you have plans to upgrade this single control-plane kubeadm cluster to high availability you should specify the --control-plane-endpoint to set the shared endpoint for all control-plane nodes. Such an endpoint should be a DNS name, so you can change the endpoint later easily. 
 
 	$ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=[NODE_IP_ADDRESS] --control-plane-endpoint=kube-load-balancer
+
+
 
 
 
