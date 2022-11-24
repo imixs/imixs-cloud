@@ -1,0 +1,30 @@
+#################################################################
+# This is the ceph default storage class for dynamic storage claims
+#################################################################
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: ceph-abpua
+provisioner: rbd.csi.ceph.com
+parameters:
+   clusterID: 13e18c40-35ac-11ec-b8d7-c8600054c7bc
+   pool: kubernetes
+   imageFeatures: layering
+   # The secrets have to contain Ceph credentials with required access
+   # to the 'pool'.
+   csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret-ceph-abpua
+   csi.storage.k8s.io/provisioner-secret-namespace: ceph-system
+   csi.storage.k8s.io/controller-expand-secret-name: csi-rbd-secret-ceph-abpua
+   csi.storage.k8s.io/controller-expand-secret-namespace: ceph-system
+   csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret-ceph-abpua
+   csi.storage.k8s.io/node-stage-secret-namespace: ceph-system
+   # (optional) Specify the filesystem type of the volume. If not specified,
+   # csi-provisioner will set default as `ext4`.
+   csi.storage.k8s.io/fstype: ext4
+# Note: the reclaimPolicy can be overwritten by a PV
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+mountOptions:
+   - discard
+

@@ -4,7 +4,7 @@ Ceph is a distributed filesystem which can be used in combination with the *Imix
 
 **Note:** As the filesystem is a critical infrastructure component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  
 
-The integration is based on the [ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The ceph-csi plugin is using so called 'Managed rados Block Device (RBD)' images. The provisioner can create RBD images dynamically or connect to to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
+The integration is based on the [ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.7.2](https://github.com/ceph/ceph-csi/tree/v3.7.2/deploy/rbd/kubernetes). The ceph-csi plugin is using so called 'Managed rados Block Device (RBD)' images. The provisioner can create RBD images dynamically or connect to to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
 
 ## Setup a Kubernetes Pool 
 
@@ -78,20 +78,20 @@ If you have more than one ceph clusters to connect, than you need to create a se
 
 ### 4) The csi-provisioner and rdbplugins
 
-The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.3.1](https://github.com/ceph/ceph-csi/tree/v3.3.1/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version. Normally changes are not requried here. 	
+The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.7.2](https://github.com/ceph/ceph-csi/tree/v3.7.2/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version. Normally changes are not requried here. 	
 
 ### 5) Apply the Ceph System
 
 After you have updated the yaml files as describe before you can now apply the Ceph CSI Plugin:
 
-	$ kubectl apply -f management/ceph/
+	$ kubectl apply -f management/ceph/v3.7.2/
 
 ## Update Cluster Information
 
 In case something changed in your Ceph cluster (e.g. a change of monitor nodes) you need to update the *010-csi-config-map.yaml* values 
 from your Ceph cluster and update thh config map using the following command:
 
-	$ kubectl replace -f management/ceph/010-csi-config-map.yaml
+	$ kubectl replace -f management/ceph/v3.7.2/010-csi-config-map.yaml
 
 ### Multiple Clusters
 
@@ -127,8 +127,8 @@ You can also define more than one Ceph cluster within the ceph-csi-plugin. In th
 In this scenario you need to define also a separate storage class for each cluster with separate csi-rbd secrets for each cluster. Take care that your secrets and storageClasses have unique names. Update the config map and apply the changes:
 
 
-	$ kubectl replace -f management/ceph/010-csi-config-map.yaml
-	$ kubectl apply -f management/ceph/
+	$ kubectl replace -f management/ceph/v3.7.2/010-csi-config-map.yaml
+	$ kubectl apply -f management/ceph/v3.7.2/
 
 
 ## Create a PersistentVolumeClaim
