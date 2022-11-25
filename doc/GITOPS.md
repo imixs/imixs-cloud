@@ -24,6 +24,7 @@ For a quick setup we use the official install.yaml file form the argo-cd github 
 	$ kubectl create namespace argocd
 	$ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
+
 The startup may take some seconds. 
 
 For the Ingress configuration the directory */management/argo-cd* includes additional resource objects. Edit the file '030-ingress.yaml' and replace '{YOUR-DOMAIN-NAME}' with your Internet domain name.
@@ -38,7 +39,8 @@ In the official [Getting Started Guide](https://argo-cd.readthedocs.io/en/stable
 
 For the first login argo-cd generates a random password for the user 'admin'. The password can be retrieved with the command:
 
-	$ kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+	$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
 
 Using the username admin and the password from above, you can login to Argo CD's Web UI.
 
