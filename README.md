@@ -133,8 +133,10 @@ The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and o
 
 <img src="./doc/images/imixs-cloud-architecture.png" />
 
-For a quick setup you need at least a Debian 10 (Buster) server with a public Internet address and a user with sudo privileges.
-All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. You will also find a more detailed installation guide in the [setup section](doc/SETUP.md).
+For a quick setup you need at least a Debian 11 (Bullseye) server with a public Internet address and a user with sudo privileges.
+All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. 
+
+**Note:** You will find a detailed installation guide in the [setup section](doc/SETUP.md).
 
 ### 1. Install Kubernetes
 
@@ -216,7 +218,9 @@ The basic architecture of the _Imixs-Cloud_ consists of the following components
 
 ## kubectl
 
-To monitor and manage your Kubernetes cluster you can use [kubectl commandline tool](https://kubernetes.io/docs/reference/kubectl/overview/), which is already installed on your master node. There is a huge number of commands to obtain information or change configurations. Take a look into the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/).
+To monitor and manage your Kubernetes cluster you can use [kubectl commandline tool](https://kubernetes.io/docs/reference/kubectl/overview/), which is already installed on your master node. There is a huge number of commands to obtain information or change configurations. Take a look into the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/). `kubectl` always offers you with a helpful tool to manage your Kubernetes cluster in any situation. 
+
+If you follow the [setup guide](doc/SETUP.md) you will have `kubectl` automatically installed on each of your cluster nodes. 
 
 ## K9S
 
@@ -244,7 +248,7 @@ Find a detailed description how to install and setup Argo CD in the [section Git
 
 ## NGINX
 
-To access your applications from outside of your cluster *Imixs-Cloud* provides the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx).   This tool allows you to easily expose your services in the Intranet or to public Internet addresses.
+To access your applications from outside of your cluster *Imixs-Cloud* provides a pre-configured [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx).   This tool allows you to easily expose your services in the Intranet or to public Internet addresses.
 The Ingress setup of *Imixs-Cloud*  already includes the ACME provider [Let's Encrypt](https://letsencrypt.org/). This makes it easy to publish services to the Internet in a secure way. 
 
 You can find a detailed description how to install and setup the NGINX Ingress Controller in the [section ingress](./doc/INGRESS.md)
@@ -253,8 +257,8 @@ You can find a detailed description how to install and setup the NGINX Ingress C
 
 ## Registry
 
-Docker images are available on docker registries. The _Imixs-Cloud_ includes a setup to run a private Docker Registry. 
-You can find a detailed description how to install and setup the registry in the [section registry](./doc/REGISTRY.md)
+Docker images are available on docker registries. *Imixs-Cloud* includes a simple setup to run a private Docker Registry. 
+You can find a detailed description how to install and setup the registry in the [section registry](./doc/REGISTRY.md). The registry allows you to push your own applications into your private cloud in a secure way. 
 
 
 ## Monitoring

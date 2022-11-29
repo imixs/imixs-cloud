@@ -3,9 +3,9 @@
 The following section describes the setup procedure of *Imixs-Cloud* for small and medium organizations. 
 This setup guide shows how to install a kubernetes cluster into a productive environment consisting of several Internet nodes. Detailed help can be found on the [official Kubernetes documentation](https://kubernetes.io/docs/home/).
 
-If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below.
+This Setup Guide is currenty based on Debian 11 and Kubernetes 1.25.4. 
 
-In the [Maintenance section](#maintenance) you will find useful information how to maintain a running *Imixs-Cloud* cluster environment. 
+If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below. In the [Maintenance section](#maintenance) you will find useful information how to maintain a running *Imixs-Cloud* cluster environment. 
 
 ## The Cluster Nodes
 
@@ -67,7 +67,9 @@ To create a cluster-user follow the next steps and replace '{username}' with the
 	$ passwd {username}
 
 Make sure that your cluster-user has also *sudo* rights!
- 
+
+	$ usermod -aG sudo {username}
+
 ## Install the Master Node 
  
 *Imixs-Cloud* provides a install script for Debain and Fedora/CentOS linux distributions. You can copy the setup script from the /scritps/ directory. But we recommend to clone the *Imixs-Cloud* git repo so you have all scripts and configuration files in one place. You can also fork the *Imixs-Cloud* project to customize your environment individually to your needs. 
