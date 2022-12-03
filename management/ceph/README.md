@@ -170,7 +170,7 @@ See the following example for a Ceph PersistentVolumeClaim and a example applica
 	        claimName: rbd-pvc
 	        readOnly: false
         
-**Note:** This PersistentVolumeClaim creates dynamically a new image in the ceph pool 'kuberenetes'. The reclaimPolicy of the StorageClass is 'Delete' which means that the image will be removed when the pod is deleted. 
+**Note:** This PersistentVolumeClaim creates dynamically a new image in the ceph pool `kubernetes`. The reclaimPolicy of the StorageClass is 'Delete' which means that the image will be removed when the pod is deleted. 
 
 ### Static Persistent Volumes
 
