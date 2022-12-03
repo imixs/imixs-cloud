@@ -8,7 +8,7 @@ The integration is based on the [ceph-csi plugin](https://github.com/ceph/ceph-c
 
 ## Setup a Kubernetes Pool 
 
-Before you can integrate Ceph into your kubernetes cluster you need a separate Ceph pool used by Kubernetes. If not yet done, create a pool with the name 'kubernetes'.   This pool can be used for all volumes. 
+Before you can integrate Ceph into your kubernetes cluster you need a separate Ceph pool used by Kubernetes. If not yet done, create a pool with the name `kubernetes`. This pool can be used for all volumes. 
 
 Run the following ceph command on your Ceph node to intialize the pool:
 
