@@ -1,10 +1,10 @@
 # Ceph - Quick Install Guide
 
-In this section you will find a Quick Install Guide for a Ceph cluster. [Ceph](https://ceph.io/) provides an distributed object storage and block device interface. This makes it a powerful storage solution for Kuberentes. In the *Imixs-Cloud* environment we are using the [Ceph CSI-Plugin](https://github.com/ceph/ceph-csi) to access a Ceph cluster. If you already have a Ceph cluster up and running and you just want to connect it to your Kubernetes Cluster, than you may jump directly to the management section [ceph-csi plugin](../management/ceph/README.md).
+In this section you will find a Quick Install Guide for a Ceph cluster. [Ceph](https://ceph.io/) provides an distributed object storage and block device interface. This makes it a powerful storage solution for Kubernetes. In the *Imixs-Cloud* environment we are using the [Ceph CSI-Plugin](https://github.com/ceph/ceph-csi) to access a Ceph cluster. If you already have a Ceph cluster up and running and you just want to connect it to your Kubernetes Cluster, than you may jump directly to the management section [ceph-csi plugin](../management/ceph/README.md).
 
 ## Architecture
 
-It is recommended to run a Ceph cluster independent from Kuberenetes on separate nodes. In this architecture you run the ceph monitor nodes in a public network and use only a private network for the internal replication, as it is recommended from the official ceph install guide:
+It is recommended to run a Ceph cluster independent from Kubernetes on separate nodes. In this architecture you run the ceph monitor nodes in a public network and use only a private network for the internal replication, as it is recommended from the official ceph install guide:
 
 <img src="images/ceph-network-768x354.png" />
 
