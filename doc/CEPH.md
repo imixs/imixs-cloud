@@ -229,4 +229,91 @@ After your Ceph Cluster is up and running you can install the Ceph CSI Plugin to
 
 Follow the setup guide for the Ceph CSI Plugin [here](../management/ceph/README.md).
 
+
+# Maintenance 
+
+## Removing a Disk
+
+To remove a Disk or OSD from your running cluster first check the status of all OSDs. You will see the osd number of each osd in your cluster:
+
+	$ sudo ceph osd tree
+
+First you need to take it out of the cluster so that Ceph can begin rebalancing and copying its data to other OSDs. :
+
+    $ sudo ceph osd out {osd-num}
+
+Next you can stop the osd (will be marked as 'down')
+
+	$ sudo ceph orch daemon stop osd.{osd-num}
+
+You can check the status again with `osd tree`. Yor osd should be now 'down'.
+
+Finally you can delete the osd:
+
+	$ sudo ceph osd crush remove osd.{osd-num}
+	$ sudo ceph osd rm {osd-num}
+	$ sudo ceph auth del osd.{osd-num}
+
+To erase the data you can use the `zap` tool:
+
+	$ sudo cephadm ceph-volume lvm zap /dev/<DEVICE> --destroy
+	
+**NOTE**: This command will delete all data. 
+
+## Removing a Host
+
+A host can safely be removed from a the cluster after all daemons are removed from it. To drain all daemons from a host, run:
+
+	$ sudo ceph mon remove *<host>*
+	$ sudo ceph orch host drain *<host>*
+
+All osds on the host will be scheduled to be removed. You can check osd removal progress with the following:
+
+	$ sudo ceph orch osd rm status
+
+You can check if there are no daemons left on the host with the following:
+
+	$ sudo ceph orch ps <host>
+
+Finally once all daemons are removed you can remove the host:
+
+	$ sudo ceph orch host rm <host>
+
+
+
+## Troubleshooting
+
+### Clean old Host Meta Data
+
+If removing a hos failed or you are unable to bring the host back again. Than you may clean the cluster information manually. 
+
+First make sure the host is remove from your cluster using the  `--force` option:
+
+	$ sudo ceph orch host rm <host>  --force
+
+The dashboard should now no longer show this host. Next switch to the host of the old node and remove the content from the directory
+
+	/var/lib/ceph/<CLUSTERID>
+	
+Now you should be able to add this host again into your cluster
+
+
+### entity osd.n exists but key does not match
+
+If you run into a problem where you can't add a previous device into your cluster you will see a error message like this:
+
+	stderr: Error EEXIST: entity osd.2 exists but key does not match
+	....
+	Unable to create a new OSD id
+
+The problem here is that your old OSD auth details are still stored in the cluster. If you remove the OSD entry and its auth keys, you should be able to add old OSDs.
+
+	$ sudo ceph osd rm osd.<YOUR-OSD-ID>
+	removed osd.0
+	
+	$ sudo ceph auth del osd.<YOUR-OSD-ID>
+	updated
+
+	
+
  
