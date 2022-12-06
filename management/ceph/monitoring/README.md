@@ -1,6 +1,6 @@
 # Imixs-Cloud - Ceph Monitoring
 
-When you followed the [Quick install guide for ceph](../../doc/CEPH.md) you have protected your ceph cluster from unauthorized access with a firewall. 
+When you followed the [Quick install guide for ceph](../../../doc/CEPH.md) you have protected your ceph cluster from unauthorized access with a firewall. 
 
 To enable the Ceph Monitoring capabilities in the Web Dashboard, you can install a Reverse Proxy using a nginx container with basic authentication within your *Imixs-Cloud*. 
 
