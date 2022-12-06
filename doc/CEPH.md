@@ -248,7 +248,9 @@ Ceph provides a Web Dashboard to check and manage the status of your cluster. In
 
 <img src="./images/ceph-monitoring-grafana_768.png" />
 
-As the graphana services are not protected from unauthorized access you should secure them with a reverse proxy. You can 
+As the Grafana services are not protected from unauthorized access you should secure them with a reverse proxy. 
+
+You will find an additional install guide for a reverse proxy in the section [Ceph Monitoring](../management/ceph/monitoring/README.md).
 
 # Maintenance 
 
