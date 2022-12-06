@@ -8,8 +8,8 @@ You can find a nginx deployment for kuberenets at `./management/ceph/monitoring/
 
 
 Via this Kubernetes Nginx configuration, you will have a reverse proxy that allows a secure access into your public ceph cluster node.
-
- - https://grafana.ceph.coo.com
+	
+	https://grafana.ceph.coo.com
  
 
 ## Deployment of the Reverse Proxies
