@@ -2,6 +2,7 @@
 
 ############################################################
 # Docker Install Script for Debian 11 (Bullseye)
+# and Ceph Quincy
 # 
 # run as sudo 
 ############################################################
@@ -49,13 +50,13 @@ apt install -y docker-ce docker-ce-cli containerd.io
 echo "#############################################"
 echo " installing cephadm...."
 echo "#############################################"
-curl --silent --remote-name --location https://github.com/ceph/ceph/raw/pacific/src/cephadm/cephadm
+curl --silent --remote-name --location https://github.com/ceph/ceph/raw/quincy/src/cephadm/cephadm
 mv cephadm /usr/local/bin
 chmod +x /usr/local/bin/cephadm
 mkdir -p /etc/ceph
 
 # add ceph common tools
-cephadm add-repo --release pacific
+cephadm add-repo --release quincy
 cephadm install ceph-common
 
 

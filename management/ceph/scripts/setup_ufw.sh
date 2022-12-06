@@ -19,7 +19,7 @@ fi
 
 ufw allow ssh
 ufw allow 8443 comment 'allow dashboard'
-ufw allow from 10.0.0.0/16
+# ufw allow from 10.0.0.0/16 comment 'private network'
 
 # Uncomment this to allow your kubernetes cluster to access your ceph nodes
 # rreplace the public IPs
