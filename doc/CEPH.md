@@ -242,6 +242,14 @@ To disable the firewall run:
 After your Ceph Cluster is up and running you can install the Ceph CSI Plugin to access the cluster from a Kuberentes cluster. Follow the setup guide for the Ceph CSI Plugin [here](../management/ceph/README.md).
 
 
+# Monitoring
+
+Ceph provides a Web Dashboard to check and manage the status of your cluster. In addition ceph also runs also extended monitoring based on Prometheus and Grafana. This monitoring can be included into the Dashboard:
+
+<img src="./images/ceph-monitoring-grafana_768.png" />
+
+As the graphana services are not protected from unauthorized access you should secure them with a reverse proxy. You can 
+
 # Maintenance 
 
 The following section includes some help for maintenance and trouble shooting.

@@ -1,0 +1,119 @@
+###############################
+# Nginx Config Map
+###############################
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-dashboard-config
+  namespace: ceph-monitoring
+data:
+  nginx.conf: |-
+    events {}
+    http {
+     
+      upstream grafana_backend {
+          server ceph-1.foo.com:3000;         
+      }
+
+      server {          
+          listen 80;
+          server_name ceph-grafana;    
+          location / {
+            proxy_pass              https://grafana_backend;
+            proxy_ssl_verify        off;
+            proxy_next_upstream     error timeout invalid_header http_500 http_502 http_503;
+          }
+      }
+
+    }
+
+
+---
+###################################################
+# Deployment nginx fail over balancer
+###################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-dashboard-proxy
+  namespace: ceph-monitoring
+  labels:
+    app: proxy-ceph
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: proxy-ceph
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: proxy-ceph
+    spec:
+      containers:
+      - image: nginx:latest
+        name: proxy-ceph
+        volumeMounts:
+        - name: ceph-dashboard-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      restartPolicy: Always
+      # Add the ConfigMap as a volume to the Pod
+      volumes:
+      - name: ceph-dashboard-config
+        configMap:
+          name: ceph-dashboard-config
+
+---
+###################################################
+# Service object
+###################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-grafana
+  namespace: ceph-monitoring
+spec:
+  ports:
+  - name: ceph-grafana
+    port: 80
+  selector:
+    app: proxy-ceph
+
+
+###################################################
+# Ingress
+###################################################
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: ceph-grafana
+  namespace: ceph-monitoring
+  annotations:
+    # replace with letsencrypt-prod after successful testing!
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m    
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: ceph-basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
+    kubernetes.io/ingress.class: "nginx"    
+spec:
+  tls:
+  - hosts:
+    - grafana.ceph.foo.com
+    secretName: tls-ceph-grafana
+  rules:
+  - host: grafana.ceph.foo.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ceph-grafana
+            port:
+              number: 80
