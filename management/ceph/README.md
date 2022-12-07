@@ -1,10 +1,13 @@
-# Ceph 
+# Ceph CSI
 
-Ceph is a distributed filesystem which can be used in combination with the *Imixs-Cloud* to run statefull applications. We assume that you have already installed a Ceph cluster and that your Ceph cluster is accessible from each kubernetes worker node. You can find a complete install guide for Ceph [here](https://ralph.blog.imixs.com/2021/10/03/ceph-pacific-running-on-debian-11-bullseye/).
+The [Container Storage Interface (CSI)](https://kubernetes-csi.github.io/docs/) is a common standard to access storage systems from a container running in Kubernetes. 
+The [ceph-csi plugin](https://github.com/ceph/ceph-csi) is used to access 'Managed rados Block Devices (RBD)' in a ceph cluster. The plugin can create RBD images dynamically or connect to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server.
 
-**Note:** As the filesystem is a critical infrastructure component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  
+[Ceph](https://ceph.io) is a distributed data storage which can be used in combination with the *Imixs-Cloud* to run statefull applications. We assume that you have already installed a Ceph cluster and that your Ceph cluster is accessible from each kubernetes worker node. 
 
-The integration is based on the [ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.7.2](https://github.com/ceph/ceph-csi/tree/v3.7.2/deploy/rbd/kubernetes). The ceph-csi plugin is using so called 'Managed rados Block Device (RBD)' images. The provisioner can create RBD images dynamically or connect to to static images to back Kubernetes volumes and maps these RBD images as block devices on worker nodes running pods that reference an RBD-backed volume. This integration includes the ability mounting a file system, with is the usual use case for most static applications. Ceph stripes block device images as objects across the cluster, which means that large Ceph Block Device images have better performance than a standalone server. 
+**Note:** As the filesystem is a critical infrastructure component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  You can find a complete install guide for Ceph [here](../../doc/CEPH.md).
+
+The following integration guide is based on the [ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.7.2](https://github.com/ceph/ceph-csi/tree/v3.7.2/deploy/rbd/kubernetes). 
 
 ## Setup a Kubernetes Pool 
 
