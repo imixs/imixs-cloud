@@ -68,13 +68,18 @@ Here `[key-value]` is your ceph client.kubernetes key you generated before. You 
 
 	$ kubectl get secrets -n ceph-system 
 
+**Note:** If you have multiple Ceph clusters you can create unique secrets for each cluster by extending the secret name 'csi-rdb-secret' simply with your cluster name - e.g:
 
+	$ kubectl create secret generic csi-rbd-secret-MYCLUSTER \
+	    --from-literal=userID='kubernetes' \
+	    --from-literal=userKey='[key-value]' \
+	    --namespace=ceph-system	 
 
 ### 3) Create the Storage Classes
 
-The Kubernetes StorageClass defines a class of storage. In the file "csi-rbd-storageclass.yaml" the new storageClass 'ceph' is provided.
+Kubernetes defines Storage classes to access your cluster. You can add mulitple storage classes in the file "030-csi-rbd-storageclass.yaml".
 
-Edit the file *'030-csi-rbd-storageclass.yaml'*  substituting "<clusterID>" with your ceph fsid. You can customize these values if needed. 
+Edit the file *'030-csi-rbd-storageclass.yaml'* and add a new class for your ceph cluster by  substituting "<clusterID>" with your ceph fsid. You can customize these values if needed. 
 
 If you have more than one ceph clusters to connect, than you need to create a separate StorageClass for each cluster. 
 

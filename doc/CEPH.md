@@ -252,6 +252,33 @@ As the Grafana services are not protected from unauthorized access you should se
 
 You will find an additional install guide for a reverse proxy in the section [Ceph Monitoring](../management/ceph/monitoring/README.md).
 
+# Alerting
+
+Ceph provides a alerting mechansim which allows you to send out an E-Mail notification in case an serious event occurs. 
+
+To enable the alerting moduel run:
+
+	$ sudo ceph mgr module enable alerts
+	
+By default, the module will use SSL and port 465 for E-Mail notification. To configure the E-Mail run:
+
+	$ sudo ceph config set mgr mgr/alerts/smtp_host *<smtp-server>*
+	$ sudo ceph config set mgr mgr/alerts/smtp_destination *<email-address-to-send-to>*
+	$ sudo ceph config set mgr mgr/alerts/smtp_sender *<from-email-address>*
+	$ sudo ceph config set mgr mgr/alerts/smtp_user *<username>*
+	$ sudo ceph config set mgr mgr/alerts/smtp_password *<password>*
+
+You can disabel ssl via:
+
+	$ sudo ceph config rm mgr mgr/alerts/smtp_ssl
+	$ sudo ceph config rm mgr mgr/alerts/smtp_port
+
+To test the Mail configuration run:
+
+	$ sudo ceph alerts send
+
+Find more details [here](https://docs.ceph.com/en/quincy/mgr/alerts/).
+
 # Maintenance 
 
 The following section includes some help for maintenance and trouble shooting.
