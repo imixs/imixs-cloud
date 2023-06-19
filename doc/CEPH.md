@@ -99,6 +99,13 @@ You can do a first check of your setup via web browser by opening the Ceph Dashb
 
 Use the user 'admin' and the  password you have passed before in your bootstrap command.
 
+**Restart Dashboard**
+
+In case the web dashboard is not responding you can try to restart it with:
+
+	$ ceph mgr module disable dashboard
+	$ ceph mgr module enable dashboard
+
 
 ## Expending the Cluster
 
