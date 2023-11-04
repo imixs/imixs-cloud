@@ -18,5 +18,4 @@ Next deploy the Ingress configuration with:
 
 For the login argo-cd generates a random password for the user 'admin'. The password can be retrieved with the command:
 
-	$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
-	
+	$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d

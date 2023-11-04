@@ -25,10 +25,10 @@ echo "#############################################"
 echo " adding k8s repositories..."
 echo "#############################################"
 apt-get update
-apt-get install -y gnupg curl
+apt-get install -y apt-transport-https ca-certificates gnupg curl
 # Add kubernetes repository  
-curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 
 echo "#############################################"
@@ -57,15 +57,15 @@ echo "#############################################"
 echo " installing container runtime CRI-O...."
 echo "#############################################"
 # See  also: https://github.com/cri-o/cri-o/blob/main/install.md#readme"
-OS=Debian_11
-VERSION=1.23
+OS=Debian_12
+# old 1.23  1.26
+CRIO_VERSION=1.28
 # Update repo
 echo "deb [signed-by=/usr/share/keyrings/libcontainers-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-echo "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.list
-
+echo "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$CRIO_VERSION.list
 mkdir -p /usr/share/keyrings
-curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | gpg --dearmor -o /usr/share/keyrings/libcontainers-archive-keyring.gpg
-curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/Release.key | gpg --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | gpg --batch --yes --dearmor -o /usr/share/keyrings/libcontainers-archive-keyring.gpg
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/Release.key | gpg --batch --yes --dearmor -o /usr/share/keyrings/libcontainers-crio-archive-keyring.gpg
 
 apt-get update
 apt-get install -y cri-o cri-o-runc
@@ -80,7 +80,9 @@ systemctl enable crio --now
 echo "#############################################"
 echo " installing kubernetes...."
 echo "#############################################"
-apt install -y kubelet=1.25.4-00 kubeadm=1.25.4-00 kubectl=1.25.4-00 open-iscsi apache2-utils ufw
+# old versions 1.26.10-1.1
+KUBE_VERSION=1.28.3-1.1
+apt install --allow-change-held-packages  -y kubelet=$KUBE_VERSION kubeadm=$KUBE_VERSION kubectl=$KUBE_VERSION open-iscsi apache2-utils ufw
 apt-mark hold kubeadm kubelet kubectl
 
 

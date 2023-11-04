@@ -159,7 +159,7 @@ You will find a complete list [here](https://kubernetes.io/docs/concepts/cluster
 
 To install calico download the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
 
-	$ curl https://docs.projectcalico.org/manifests/calico.yaml -O	
+	$ curl https://docs.projectcalico.org/manifests/calico.yaml -O	-L
 	
 If you have defined a CIDR network than you can optional uncomment the environment variable 'CALICO_IPV4POOL_CIDR' and set your CIDR network here. But this step should not be required if you followed the setup guide here. 
 
@@ -295,6 +295,8 @@ You can also use the `scripts/delete_cluster.sh` command on the master node to r
 
 After you have successful installed your Imixs-Cloud cluster you may want to verify its status and maybe update your master and worker nodes. The following guide shows you how to do this. (If you just have installed your new cluster you can skip this section.)
 
+**Note:** Follow carefully also the official [Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
+
 ## Verify your Cluster Status
 
 You can verify the status of your kubernets cluster with the following command:
@@ -306,22 +308,35 @@ You can verify the status of your kubernets cluster with the following command:
 	worker-2   Ready    <none>   28d   v1.25.4
 	worker-3   Ready    <none>   28d   v1.25.4
 
-This will show you the current kubelet version running on each node
+Next you need to upgrade the package repository. Check the current repo version with: 
 
-**NOTE:** To upgrade the kubeadm and kubectl versions do not run an `apt upgrade`. Instead follow carefully the official [Kubernetes Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
+	$ pager /etc/apt/sources.list.d/kubernetes.list
 
-You can check the available versions compared to your current installed versions:
+**NOTE:** If you're not yet using the community-owned package repositories (pkgs.k8s.io), you need to enable the package repository for the desired Kubernetes minor release. This is explained in [Changing the Kubernetes package repository document](https://v1-26.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/change-package-repository/).
 
-	$ sudo apt update && apt-cache madison kubeadm
+Run the following command to upgrade your repo version (replace $KUBE_VERSION with the version to upgrade - e.g. "v1.26")
 
+	$ sudo echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/$KUBE_VERSION/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+Check the update with: 
+
+	$ pager /etc/apt/sources.list.d/kubernetes.list
 
 ## Upgrade the Master Node
 
-To upgrade the kubeadm tool on the master node run:
+To upgrade the kubeadm tool on the master node first find the latest version
 
-	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.25.x-00
-	
-Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
+	$ sudo apt update
+	$ sudo apt-cache madison kubeadm
+
+Now you can update your control plane node
+
+```bash
+$ sudo apt-mark unhold kubeadm
+$ sudo apt-get install -y kubeadm
+$ sudo apt-mark hold kubeadm
+```
+Next your can verify the update:
 
 	$ sudo kubeadm version	
 
@@ -329,35 +344,63 @@ With the following command you can than upgrade your cluster . The command fetch
 
 	$ sudo kubeadm upgrade plan
 	
-**Note:** Follow carefully the instruction on the 	[Upgrade Guide](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/). 
-
 To start an upgrade run:
 
-	$ sudo kubeadm upgrade apply v1.25.6
+	$ sudo kubeadm upgrade apply v1.27.x
 	
 After following the upgrade command you can finally upgrade kubelet and kubectl:
 	
-	$ sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.25.x-00 kubectl=1.25.x-00
+	$ sudo apt-get install -y --allow-change-held-packages kubelet kubectl
+	$ sudo apt-mark hold kubelet kubectl
 
-Where you again need to replace the correct version.	
+We do not need to care about the version as we already updated the repo version.
 	
-	
+Finally reboot the node.
+
+
+**NOTE:** It maybe also necessary to update the network plugin clico. See the section "The Calico Network" on this page.
+
 ## Upgrade the Worker Nodes
 
-On the worker nodes your only need to upgrade kubeadm tool:
+On the worker nodes you first need to check the repo sources:
 
-	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubeadm=1.25.x-00
-	$ sudo kubeadm upgrade node
+	$ pager /etc/apt/sources.list.d/kubernetes.list
+
+you need to update the repo source to the desired version first : 
+
+	$ sudo echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/$KUBE_VERSION/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+replace $KUBE_VERSION with the version to upgrade - e.g. "v1.26"
+
+next update the repo:
+
+	$ sudo apt update
+
+Now you can check which versions are available: 
+
+	$ sudo apt-cache madison kubeadm
+
+and upgrade the kubeadm tool to the latest patch version (the version is now fetched form the kube repo sources which we updated first)version with the version you want to upgrade to. 
+
+```bash 
+$ sudo apt-mark unhold kubeadm
+$ sudo apt-get install -y kubeadm
+$ sudo apt-mark hold kubeadm
+```
 	
-Where you replace the kubeadm version with the version you want to upgrade to. Next your can verify the update:
+Next upgrade the local kubelet configuration:
 
-	$ sudo kubeadm version	
+	$ sudo kubeadm upgrade node
+
+Next your can verify the update:
+
+	$ sudo kubeadm version
 	
 To upgrade kubelet and kubectl run:
 	
-	$ sudo apt-get update && apt-get install -y --allow-change-held-packages kubelet=1.25.x-00 kubectl=1.25.x-00
+	$ sudo apt-get install -y --allow-change-held-packages kubelet kubectl
 
-Where you again need to replace the correct version.
+
 
 
 ## Upgrade cri-o Container Runtime
