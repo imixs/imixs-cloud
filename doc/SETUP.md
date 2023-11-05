@@ -55,7 +55,7 @@ and you also see the node and cloudname on your login promt:
 
 ### Public IP Addresses
 
-If you are using public IP Addresses as mentioned in the [architecture overview](../README.md#the-architecture) read the section  [Firewall](FIREWALL.md).
+If you are using public IP Addresses as mentioned in the [architecture overview](../README.md#the-network] read the section  [Firewall](FIREWALL.md).
 
 
 ### The Cluster-User
