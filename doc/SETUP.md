@@ -334,9 +334,7 @@ To upgrade the kubeadm tool on the master node first find the latest version
 Now you can update your control plane node
 
 ```bash
-$ sudo apt-mark unhold kubeadm
-$ sudo apt-get install -y kubeadm
-$ sudo apt-mark hold kubeadm
+$ sudo apt-mark unhold kubeadm && sudo apt-get install -y kubeadm && sudo apt-mark hold kubeadm
 ```
 Next your can verify the update:
 
@@ -357,10 +355,13 @@ After following the upgrade command you can finally upgrade kubelet and kubectl:
 
 We do not need to care about the version as we already updated the repo version.
 	
-Finally reboot the node.
+Finally reboot the node or restart the kubelet
+
+	$ sudo systemctl daemon-reload
+	$ sudo systemctl restart kubelet
 
 
-**NOTE:** It maybe also necessary to update the network plugin clico. See the section "The Calico Network" on this page.
+**NOTE:** It maybe also necessary to update the network plugin clico. See the section "[The Calico Network](#the-calico-network)" on this page.
 
 ## Upgrade the Worker Nodes
 
@@ -385,9 +386,7 @@ Now you can check which versions are available:
 and upgrade the kubeadm tool to the latest patch version (the version is now fetched form the kube repo sources which we updated first)version with the version you want to upgrade to. 
 
 ```bash 
-$ sudo apt-mark unhold kubeadm
-$ sudo apt-get install -y kubeadm
-$ sudo apt-mark hold kubeadm
+$ sudo apt-mark unhold kubeadm && sudo apt-get install -y kubeadm && sudo apt-mark hold kubeadm
 ```
 	
 Next upgrade the local kubelet configuration:
@@ -403,7 +402,10 @@ To upgrade kubelet and kubectl run:
 	$ sudo apt-get install -y --allow-change-held-packages kubelet kubectl
 
 
+Finally reboot the node or restart the kubelet
 
+	$ sudo systemctl daemon-reload
+	$ sudo systemctl restart kubelet
 
 ## Upgrade cri-o Container Runtime
 
