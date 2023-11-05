@@ -9,7 +9,7 @@ You are sincerely invited to join this project on [Github](https://github.com/im
 
 You can setup your own *Imixs-Cloud* Kubernetes Cluster within a few hours. The flexible and sustainable concept allows you to run your cloud infrastructure without any vendor lock-in. Small and medium-sized cluster environments can be hosted on virtual servers or bare metal. 
 The project is open source and constantly under development. We sincerely invite you to participate in it!
-If you have any questions just open a new [Issue on Github](https://github.com/imixs/imixs-cloud/issues) and start a Discussion. 
+If you have any questions just start a new [Discussion on Github](https://github.com/imixs/imixs-cloud/discussions). 
 
 Now, let's get started...
 
@@ -64,7 +64,7 @@ Network is of course the most important part of a cloud environment. Similar to 
  
 ## Infrastructure as Code
  
-The complete infrastructure of a *Imixs-Cloud* environment is described in one central configuration directory. The *Configuration Directory* can be synchronized with a code repository like Git. This concept is also known as *Infrastructure as Code* and makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
+The complete infrastructure of a *Imixs-Cloud* environment is described in one central configuration directory. The *Configuration Directory* can be synchronized with a code repository like Git. This concept is also known as **Infrastructure as Code** or **GitOps** and makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
 
 	$ git clone https://github.com/imixs/imixs-cloud.git && rm -rf imixs-cloud/.git/
 
@@ -135,7 +135,7 @@ The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and o
 
 <img src="./doc/images/imixs-cloud-architecture.png" />
 
-For a quick setup you need at least a Debian 11 (Bullseye) server with a public Internet address and a user with sudo privileges.
+For a quick setup you need at least a Debian 12 (Bookworm) server with a public Internet address and a user with sudo privileges.
 All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. 
 
 **Note:** You will find a detailed installation guide in the [setup section](doc/SETUP.md).
@@ -145,11 +145,6 @@ All configuration files and scripts are provided in this git repository. You can
 First clone this git repository on your master node. Therefore, you may need to install git:
 
 	$ sudo apt install -y git 
-	   
-If you are running Fedora or CentOS than use the yum installer
-	   
-	$ sudo yum install -y git 
-
 
 next you can clone the imixs-cloud repo from github....
 
@@ -160,11 +155,11 @@ now you can run the setup script on your master node to install Docker and Kuber
  
 	$ sudo ./scripts/setup_debian.sh
 
-You can find details about how to create a cluster also on the [official kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
+You can find details about how to create a cluster also on the [official Kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
  
 ### 2. Initialize Your Kubernetes Master Node
 
-We use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before if you want to change some of the default settings. 
+We use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before if you want to change some of the default settings. You can find details about the uses of a `setup.yaml` in the [detailed setup guide](doc/SETUP.md).
 
 To initialize the cluster on your master node run:
 

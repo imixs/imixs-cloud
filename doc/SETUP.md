@@ -17,8 +17,6 @@ A *Imixs-Cloud* consists of a minimum of two nodes.
 A node can be run on a virtual or on bare metal. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. So you also can connect your worker nodes with a private network if you like. 
 
 
-
-
 ### Cloudname, Hostname and FQDN
 
 To access our servers from the Internet as internally Linux distinguish between the system hostname (short name without a domain) and the fully-qualified domain name (FQDN) in the format hostname.domainname 
@@ -33,11 +31,11 @@ To set this names in `/etc/hosts` set the FQDN as the first column for the serve
 
 	$ cat /etc/hosts:
 	127.0.0.1    localhost
-	10.0.0.1     nodename.cloudname.domainname nodename-cloudname
-	
+	127.0.1.1    nodename.cloudname.domainname nodename-cloudname
 	10.0.0.1     kube-load-balancer
 
-**Note:** To enable communication between your cluster nodes using short names, make sure that on each node the short host names are listed in the `/etc/hosts` with the public or private IP addresses. We also set a IP for the `kube-load-balancer` here. This IP can be used later for setting up a HA-Cluster. If you don't have multiple master nodes than place here the IP of your hostname.
+
+**Note:** To enable communication between your cluster nodes using short names, make sure that on each node the short host names are listed in the `/etc/hosts` with the public or private IP addresses. We also set a IP for the `kube-load-balancer` here. This IP can be used later for setting up a HA-Cluster. If you don't have multiple master nodes than place here the IP of your hostname. 
 
 
 The hostname is stored in `/etc/hostname`
@@ -54,6 +52,10 @@ and you also see the node and cloudname on your login promt:
 	Last login: Sat Nov 19 07:26:26 2022 from 93.104.191.28
 	imixs@nodename-cloud ~ $ 
 
+
+### Public IP Addresses
+
+If you are using public IP Addresses as mentioned in the [architecture overview](../README.md#the-architecture) read the section  [Firewall](FIREWALL.md).
 
 
 ### The Cluster-User
@@ -125,7 +127,7 @@ The install script can be found in the script directory /scripts/. The install s
 
 After you have installed the setup script and checked your network IP addresses, you can start to initialize your new Kubernetes cluster. 
 
-We use a config file to make the cluster setup as easy and flexible as possible. You can edit the config file `scripts/setup.yaml` before, if you want to change some of the default settings (see details below). 
+We use a config file to make the cluster setup as easy and flexible as possible. You can edit the config file `scripts/setup.yaml` before, if you want to change some of the default settings (see details below). You can find details about the uses of a `setup.yaml` file [here](https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/).
 
 To start the setup run:
 
@@ -204,7 +206,7 @@ Uncomment the localAPIPoint, if your master node is using multiple network adapt
 
 **networking**
 
-You can change the default pod-network `10.244.0.0/16` if this network collides with an existing network. 
+The podSubnet is the subnet used by Pods. You can change the default podSubnet `10.244.0.0/16` if this network collides with an existing network.  
 
 **controlPlaneEndpoint**
 
