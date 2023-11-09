@@ -22,7 +22,7 @@ kind: ClusterConfiguration
 #clusterName: "[YOUR-CLUSTER-NAME]"
 
 # // overwrite kubernetesVersion if you want to instal a specific version
-#kubernetesVersion: "v1.25.4"
+#kubernetesVersion: "v1.28.3"
 
 # // set the controlPlaneEndpoint to a stable IP address or DNS name for the control plane. 
 # // It can be a valid IP address or a RFC-1123 DNS subdomain, both with optional TCP port.

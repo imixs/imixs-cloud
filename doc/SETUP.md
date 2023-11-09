@@ -3,7 +3,7 @@
 The following section describes the setup procedure of *Imixs-Cloud* for small and medium organizations. 
 This setup guide shows how to install a kubernetes cluster into a productive environment consisting of several Internet nodes. Detailed help can be found on the [official Kubernetes documentation](https://kubernetes.io/docs/home/).
 
-This Setup Guide is currenty based on Debian 11 and Kubernetes 1.25.4. 
+This Setup Guide is currenty based on Debian 12 and Kubernetes 1.28.3. 
 
 If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below. In the [Maintenance section](#maintenance) you will find useful information how to maintain a running *Imixs-Cloud* cluster environment. 
 
@@ -80,7 +80,7 @@ Make sure that your cluster-user has also *sudo* rights!
  
 For a easy setup install git on your master node and clone the *Imixs-Cloud* repository or a fork:
 
-For Debian 10 run:
+For Debian 12 run:
 
 	$ sudo apt install -y git
 	
@@ -112,13 +112,9 @@ In order to ensure that all nodes are running the same software releases run the
 
 The install script can be found in the script directory /scripts/. The install script is available for Debian/Ubuntu and Fedora/CentOS. Run the setup script as sudo:
 
-**For Debian 10**
+**For Debian 12**
 
 	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
-	
-**For CentOS 7**
-
-	$ sudo ~/imixs-cloud/scripts/setup_centos.sh
 	
 **Note:** The setup script for centos is outdated. Please join this project to update it!
 
@@ -192,7 +188,7 @@ Uncomment the clusterName to give your cluster a custom name. This makes it more
 
 Uncomment the kubernetesVersion if you want to install a specific kubernetes version. Otherwise the latest version will be installed.
 
-	kubernetesVersion: "v1.25.4"
+	kubernetesVersion: "v1.28.3"
 
 
 **advertiseAddress**
@@ -305,10 +301,10 @@ You can verify the status of your kubernets cluster with the following command:
 
 	$ kubectl get nodes
 	NAME              STATUS   ROLES    AGE   VERSION
-	master-1   Ready    master   28d   v1.25.6
-	worker-1   Ready    <none>   28d   v1.25.4
-	worker-2   Ready    <none>   28d   v1.25.4
-	worker-3   Ready    <none>   28d   v1.25.4
+	master-1   Ready    master   28d   v1.28.3
+	worker-1   Ready    <none>   28d   v1.28.3
+	worker-2   Ready    <none>   28d   v1.28.3
+	worker-3   Ready    <none>   28d   v1.28.3
 
 Next you need to upgrade the package repository. Check the current repo version with: 
 
