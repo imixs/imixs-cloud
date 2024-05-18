@@ -261,10 +261,28 @@ If you do not know the join command from your cluster, you can run the following
 After you have added a new worker node the node should appear in your node list:
 
 	$ kubectl get nodes
+
+### Approve Certificates
+
+If you add a worker node later to your cluster it may happen hat you have to approve certificate-signing-requests (csr) first for the new Node. 
+On the master node run:
+
+```
+$ kubectl get csr
+NAME        AGE     SIGNERNAME                        REQUESTOR                      CONDITION
+csr-9wvgt   112s    kubernetes.io/kubelet-serving     system:node:worker-5           Pending
+....
+```
+
+You need to approve the new certificates first ::
+
+	$ kubectl certificate approve <CSR-name>
+
+After that the master node will be able to control the worker node. 
 	
 ## Controlling your Cluster From your Workstation
 
-In different to docker-swarm, a kubernetes cluster can be administrated remote from your workstation. The tool ‘kubectl’ is the kubernetes command line tool used to manage your cluster via the kubernetes api either from your server or from a workstation.
+A kubernetes cluster can be administrated remote from your workstation. The tool ‘kubectl’ is the kubernetes command line tool used to manage your cluster via the kubernetes api either from your server or from a workstation.
 
 For security reasons we recommend to run kubectl in smaller environments only from your master-node. 
 
