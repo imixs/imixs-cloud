@@ -104,7 +104,7 @@ Find more details about how to fork or clone this repo [here](GIT.md).
 
 In order to ensure that all nodes are running the same software releases run the *Imixs-Cloud* setup script on all your nodes. The script installs the following tools:
 
- - containerd (the container runtime)
+ - cri-o (the container runtime)
  - kubelet (the kubernetes node agent)
  - kubeadm (the kubernetes cluster tool)
  - kubectl (the kubernetes command line interface)
@@ -114,8 +114,13 @@ The install script can be found in the script directory /scripts/. The install s
 
 **For Debian 12**
 
-	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
+	$ sudo ~/imixs-cloud/scripts/setup_debian_bookworm.sh
 	
+
+**For Debian 11**
+
+	$ sudo ~/imixs-cloud/scripts/setup_debian_bullseye.sh
+
 **Note:** The setup script for centos is outdated. Please join this project to update it!
 
 
@@ -239,7 +244,7 @@ Replace <CSR-name> with the name of the pending signing request.
 
 Now you can run the same script used to install the master node on each of your worker nodes. 
 
-	$ sudo ~/imixs-cloud/scripts/setup_debian.sh
+	$ sudo ~/imixs-cloud/scripts/setup_debian_bookworm.sh
 
 This will install the container runtime and the kubernetes tools. 
 

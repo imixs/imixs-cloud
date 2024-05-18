@@ -151,9 +151,9 @@ next you can clone the imixs-cloud repo from github....
 	$ cd && git clone https://github.com/imixs/imixs-cloud.git
 	$ cd imixs-cloud/
 
-now you can run the setup script on your master node to install Docker and Kubernetes:
+now you can run the setup script on your master node to install Kubernetes together wir the cri-o container runtime:
  
-	$ sudo ./scripts/setup_debian.sh
+	$ sudo ./scripts/setup_debian_bookworm.sh
 
 You can find details about how to create a cluster also on the [official Kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
  

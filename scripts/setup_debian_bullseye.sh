@@ -22,9 +22,10 @@ if [ "$EUID" -ne 0 ]
 fi
 
 echo "#############################################"
-echo " adding k8s repositories..."
+echo " adding k8s repositories v1.28..."
 echo "#############################################"
 apt-get update
+# apt-transport-https may be a dummy package; if so, you can skip that package
 apt-get install -y apt-transport-https ca-certificates gnupg curl
 # Add kubernetes repository  
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
