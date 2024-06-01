@@ -7,7 +7,7 @@ The [ceph-csi plugin](https://github.com/ceph/ceph-csi) is used to access 'Manag
 
 **Note:** As the filesystem is a critical infrastructure component for a productive Kubernetes cluster we recommend to run ceph independent from Kubernetes on separate servers.  You can find a complete install guide for Ceph [here](../../doc/CEPH.md).
 
-The following integration guide is based on the [ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.7.2](https://github.com/ceph/ceph-csi/tree/v3.7.2/deploy/rbd/kubernetes). 
+The following integration guide is based on the [ceph-csi plugin](https://github.com/ceph/ceph-csi) and provisioner in [version 3.11.0](https://github.com/ceph/ceph-csi/tree/v3.11.0/deploy/rbd/kubernetes). 
 
 ## Setup a Kubernetes Pool 
 
@@ -86,20 +86,20 @@ If you have more than one ceph clusters to connect, than you need to create a se
 
 ### 4) The csi-provisioner and rdbplugins
 
-The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.7.2](https://github.com/ceph/ceph-csi/tree/v3.7.2/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version. Normally changes are not requried here. 	
+The ceph-csi Plugins and the ceph-csi provisioner in the yaml files 02x- are based on [version 3.11.0](https://github.com/ceph/ceph-csi/tree/v3.11.0/deploy/rbd/kubernetes). The csi-plugin and provisioner is needed to access Ceph. If needed you can customize and upgrade the ceph-csi version. Normally changes are not requried here. 	
 
 ### 5) Apply the Ceph System
 
 After you have updated the yaml files as describe before you can now apply the Ceph CSI Plugin:
 
-	$ kubectl apply -f management/ceph/v3.7.2/
+	$ kubectl apply -f management/ceph/v3.11.0/
 
 ## Update Cluster Information
 
 In case something changed in your Ceph cluster (e.g. a change of monitor nodes) you need to update the *010-csi-config-map.yaml* values 
 from your Ceph cluster and update thh config map using the following command:
 
-	$ kubectl replace -f management/ceph/v3.7.2/010-csi-config-map.yaml
+	$ kubectl replace -f management/ceph/v3.11.0/010-csi-config-map.yaml
 
 ### Multiple Clusters
 
@@ -135,8 +135,8 @@ You can also define more than one Ceph cluster within the ceph-csi-plugin. In th
 In this scenario you need to define also a separate storage class for each cluster with separate csi-rbd secrets for each cluster. Take care that your secrets and storageClasses have unique names. Update the config map and apply the changes:
 
 
-	$ kubectl replace -f management/ceph/v3.7.2/010-csi-config-map.yaml
-	$ kubectl apply -f management/ceph/v3.7.2/
+	$ kubectl replace -f management/ceph/v3.11.0/010-csi-config-map.yaml
+	$ kubectl apply -f management/ceph/v3.11.0/
 
 
 ## Create a PersistentVolumeClaim
@@ -311,4 +311,34 @@ Make sure that the PV and PVC objects exist before you run the job. Replace the 
 
 Find also details [here](https://ralph.blog.imixs.com/2021/10/01/kubernetes-ceph-and-static-volumes/)
 
-	
+
+# Troubleshooting  
+
+## Pending Certificate Signing Requests
+
+If the ceph csi plugin is not starting a possible reason can be that new certificate siging requests are still pending.
+In this case you have to approve the new certificate-signing-requests (csr) first. 
+On the master node run:
+
+```
+$ kubectl get csr
+NAME        AGE     SIGNERNAME                        REQUESTOR                      CONDITION
+csr-9wvgt   112s    kubernetes.io/kubelet-serving     system:node:worker-5           Pending
+....
+```
+
+If you have `pending` signing request you can approve the new certificates:
+
+	$ kubectl certificate approve <CSR-name>
+
+## CSI-Vol is still being used
+
+Another problem can be a situation where you see an event message like 
+
+```
+Warning  FailedMount  5m6s (x208 over 9h)  kubelet  MountVolume.MountDevice failed for volume "pvc-xxxxxxxxxxxxxxxx" : rpc error: code = Internal desc = rbd image replicapool/csi-vol-xxxxxxxxxxxxxxxxxxx is still being used
+```
+
+This means a volume can not be bound to your pod because it is still used somewhere else. For example this can happen if a pod is still in terminating state holding the same pvc. But since Kubernetes 1.26 this kind of problem is normally handled very good by the kubelet - even if a release can take up to 15 minutes. 
+
+But another problem could be a hidden pod. I run into this situation after rebuilding my cluster. And I forget that there were sill worker nodes running even that the old master node was deleted. But this 'zombi-nodes' can still have running pods and holding a PVC. So make sure that a volume is not used by a POD in a different or old cluster environment!

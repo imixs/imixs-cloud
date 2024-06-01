@@ -3,6 +3,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: csi-rbdplugin-provisioner
+  # replace with non-default namespace name
   namespace: ceph-system
   labels:
     app: csi-metrics
@@ -20,6 +21,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: csi-rbdplugin-provisioner
+  # replace with non-default namespace name
   namespace: ceph-system
 spec:
   replicas: 3
@@ -44,89 +46,21 @@ spec:
       serviceAccountName: rbd-csi-provisioner
       priorityClassName: system-cluster-critical
       containers:
-        - name: csi-provisioner
-          image: k8s.gcr.io/sig-storage/csi-provisioner:v2.0.4
-          args:
-            - "--csi-address=$(ADDRESS)"
-            - "--v=5"
-            - "--timeout=150s"
-            - "--retry-interval-start=500ms"
-            - "--leader-election=true"
-            #  set it to true to use topology based provisioning
-            - "--feature-gates=Topology=false"
-            # if fstype is not specified in storageclass, ext4 is default
-            - "--default-fstype=ext4"
-            - "--extra-create-metadata=true"
-          env:
-            - name: ADDRESS
-              value: unix:///csi/csi-provisioner.sock
-          imagePullPolicy: "IfNotPresent"
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /csi
-        - name: csi-snapshotter
-          image: k8s.gcr.io/sig-storage/csi-snapshotter:v4.0.0
-          args:
-            - "--csi-address=$(ADDRESS)"
-            - "--v=5"
-            - "--timeout=150s"
-            - "--leader-election=true"
-          env:
-            - name: ADDRESS
-              value: unix:///csi/csi-provisioner.sock
-          imagePullPolicy: "IfNotPresent"
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /csi
-        - name: csi-attacher
-          image: k8s.gcr.io/sig-storage/csi-attacher:v3.0.2
-          args:
-            - "--v=5"
-            - "--csi-address=$(ADDRESS)"
-            - "--leader-election=true"
-            - "--retry-interval-start=500ms"
-          env:
-            - name: ADDRESS
-              value: /csi/csi-provisioner.sock
-          imagePullPolicy: "IfNotPresent"
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /csi
-        - name: csi-resizer
-          image: k8s.gcr.io/sig-storage/csi-resizer:v1.0.1
-          args:
-            - "--csi-address=$(ADDRESS)"
-            - "--v=5"
-            - "--timeout=150s"
-            - "--leader-election"
-            - "--retry-interval-start=500ms"
-            - "--handle-volume-inuse-error=false"
-          env:
-            - name: ADDRESS
-              value: unix:///csi/csi-provisioner.sock
-          imagePullPolicy: "IfNotPresent"
-          volumeMounts:
-            - name: socket-dir
-              mountPath: /csi
         - name: csi-rbdplugin
-          securityContext:
-            privileged: true
-            capabilities:
-              add: ["SYS_ADMIN"]
-          # for stable functionality replace canary with latest release version
-          image: quay.io/cephcsi/cephcsi:v3.3.1
+          image: quay.io/cephcsi/cephcsi:v3.11.0
           args:
             - "--nodeid=$(NODE_ID)"
             - "--type=rbd"
             - "--controllerserver=true"
             - "--endpoint=$(CSI_ENDPOINT)"
+            - "--csi-addons-endpoint=$(CSI_ADDONS_ENDPOINT)"
             - "--v=5"
             - "--drivername=rbd.csi.ceph.com"
             - "--pidlimit=-1"
             - "--rbdhardmaxclonedepth=8"
             - "--rbdsoftmaxclonedepth=4"
+            - "--enableprofiling=false"
+            - "--setmetadata=true"
           env:
             - name: POD_IP
               valueFrom:
@@ -136,14 +70,16 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            # - name: POD_NAMESPACE
-            #   valueFrom:
-            #     fieldRef:
-            #       fieldPath: spec.namespace
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             # - name: KMS_CONFIGMAP_NAME
             #   value: encryptionConfig
             - name: CSI_ENDPOINT
               value: unix:///csi/csi-provisioner.sock
+            - name: CSI_ADDONS_ENDPOINT
+              value: unix:///csi/csi-addons.sock
           imagePullPolicy: "IfNotPresent"
           volumeMounts:
             - name: socket-dir
@@ -161,18 +97,89 @@ spec:
               mountPath: /etc/ceph-csi-encryption-kms-config/
             - name: keys-tmp-dir
               mountPath: /tmp/csi/keys
+            - name: ceph-config
+              mountPath: /etc/ceph/
+            - name: oidc-token
+              mountPath: /run/secrets/tokens
+              readOnly: true
+        - name: csi-provisioner
+          image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=1"
+            - "--timeout=150s"
+            - "--retry-interval-start=500ms"
+            - "--leader-election=true"
+            #  set it to true to use topology based provisioning
+            - "--feature-gates=Topology=false"
+            - "--feature-gates=HonorPVReclaimPolicy=true"
+            - "--prevent-volume-mode-conversion=true"
+            # if fstype is not specified in storageclass, ext4 is default
+            - "--default-fstype=ext4"
+            - "--extra-create-metadata=true"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-snapshotter
+          image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.0
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=1"
+            - "--timeout=150s"
+            - "--leader-election=true"
+            - "--extra-create-metadata=true"
+            - "--enable-volume-group-snapshots=true"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-attacher
+          image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
+          args:
+            - "--v=1"
+            - "--csi-address=$(ADDRESS)"
+            - "--leader-election=true"
+            - "--retry-interval-start=500ms"
+            - "--default-fstype=ext4"
+          env:
+            - name: ADDRESS
+              value: /csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
+        - name: csi-resizer
+          image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+          args:
+            - "--csi-address=$(ADDRESS)"
+            - "--v=1"
+            - "--timeout=150s"
+            - "--leader-election"
+            - "--retry-interval-start=500ms"
+            - "--handle-volume-inuse-error=false"
+            - "--feature-gates=RecoverVolumeExpansionFailure=true"
+          env:
+            - name: ADDRESS
+              value: unix:///csi/csi-provisioner.sock
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - name: socket-dir
+              mountPath: /csi
         - name: csi-rbdplugin-controller
-          securityContext:
-            privileged: true
-            capabilities:
-              add: ["SYS_ADMIN"]
-          # for stable functionality replace canary with latest release version
-          image: quay.io/cephcsi/cephcsi:v3.3.1
+          image: quay.io/cephcsi/cephcsi:v3.11.0
           args:
             - "--type=controller"
             - "--v=5"
             - "--drivername=rbd.csi.ceph.com"
             - "--drivernamespace=$(DRIVER_NAMESPACE)"
+            - "--setmetadata=true"
           env:
             - name: DRIVER_NAMESPACE
               valueFrom:
@@ -184,8 +191,10 @@ spec:
               mountPath: /etc/ceph-csi-config/
             - name: keys-tmp-dir
               mountPath: /tmp/csi/keys
+            - name: ceph-config
+              mountPath: /etc/ceph/
         - name: liveness-prometheus
-          image: quay.io/cephcsi/cephcsi:v3.3.1
+          image: quay.io/cephcsi/cephcsi:v3.11.0
           args:
             - "--type=liveness"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -218,6 +227,9 @@ spec:
           emptyDir: {
             medium: "Memory"
           }
+        - name: ceph-config
+          configMap:
+            name: ceph-config
         - name: ceph-csi-config
           configMap:
             name: ceph-csi-config
@@ -228,3 +240,10 @@ spec:
           emptyDir: {
             medium: "Memory"
           }
+        - name: oidc-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: oidc-token
+                  expirationSeconds: 3600
+                  audience: ceph-csi-kms

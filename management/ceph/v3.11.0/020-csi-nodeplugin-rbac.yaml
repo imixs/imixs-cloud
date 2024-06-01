@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: rbd-csi-nodeplugin
+  # replace with non-default namespace name
   namespace: ceph-system
 ---
 kind: ClusterRole
@@ -20,6 +21,18 @@ rules:
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments"]
+    verbs: ["list", "get"]
+  - apiGroups: [""]
+    resources: ["serviceaccounts/token"]
+    verbs: ["create"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -28,6 +41,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: rbd-csi-nodeplugin
+    # replace with non-default namespace name
     namespace: ceph-system
 roleRef:
   kind: ClusterRole

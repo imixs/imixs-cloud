@@ -20,6 +20,23 @@ data:
       }
     ]
 
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-config
+  namespace: ceph-system  
+data:
+  ceph.conf: |
+    [global]
+    auth_cluster_required = cephx
+    auth_service_required = cephx
+    auth_client_required = cephx
+  # keyring is a required key and its value should be empty
+  keyring: |
+  
 ---
 apiVersion: v1
 kind: ConfigMap
