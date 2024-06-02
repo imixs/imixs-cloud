@@ -78,14 +78,14 @@ The complete infrastructure of a *Imixs-Cloud* environment is described in one c
 The imixs-cloud directory structure contains different sub-directories holding your applications, scripts and tools:
 
 	/-
-	 |+ management/
-	    |- monitoring/
-	    |- registry/
-	    |- nginx/
 	 |+ apps/
 	    |+ MY-APP/
 	       |  001-deployment.yaml
 	    .....
+	 |+ management/
+	    |- monitoring/
+	    |- registry/
+	    |- nginx/
 	 |+ scripts/
 	    |  apply.sh
 	    |  setup.sh
@@ -102,7 +102,6 @@ The imixs-cloud directory structure contains different sub-directories holding y
  - **tools/**  provides useful tools
 
 
-
 ### How to Create and Delete Objects
 
 You can define your own services within a sub directory of the /apps/ folder. Each application has its own sub-folder and consists at least of one configuration yaml file 
@@ -115,11 +114,7 @@ Using the `kubectl apply` command you can easily create or delete your services 
 
 	$ kubectl apply -f apps/MY-APP/
 
-For example to deploy the whoami sample service you just need to call:
-
-	$ kubectl apply -f app/whoami/
-	
-In Kubernetes all resources and services are typically described in separate files. Use a naming convention to create an implicit order in which way your objects should be created.
+In Kubernetes all resources and services are typically described in separate files. We recommend using a naming convention to create an implicit order in which way your objects should be created.
 
 	 |+ whoami/
 	    |- 010-deployment.yaml
@@ -139,17 +134,13 @@ You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/task
 # Quick Start Guide
 
 The architecture of a *Imixs-Cloud* consists of one Kubernetes master node and one or many Kubernetes worker nodes. This basic architecture can be extended in any dimension. 
+You will find a detailed installation guide in the [setup section](doc/SETUP.md).
 
-<img src="./doc/images/imixs-cloud-architecture.png" />
-
-For a quick setup you need at least a Debian 12 (Bookworm) server with a public Internet address and a user with sudo privileges.
-All configuration files and scripts are provided in this git repository. You can clone the repository or just copy what you need. 
-
-**Note:** You will find a detailed installation guide in the [setup section](doc/SETUP.md).
+If you can't wait, follow this quick-start-guide how to setup a cluster in 3 steps:
 
 ### 1. Install Kubernetes
 
-First clone this git repository on your master node. Therefore, you may need to install git:
+All configuration files and scripts are provided in this git repository. To start, first clone this git repository on your master node. Therefore, you may need to install git:
 
 	$ sudo apt install -y git 
 
@@ -162,11 +153,11 @@ now you can run the setup script on your master node to install Kubernetes toget
  
 	$ sudo ./scripts/setup_debian_bookworm.sh
 
-You can find details about how to create a cluster also on the [official Kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
+You need to run this script on each node!
  
 ### 2. Initialize Your Kubernetes Master Node
 
-We use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before if you want to change some of the default settings. You can find details about the uses of a `setup.yaml` in the [detailed setup guide](doc/SETUP.md).
+Next you can initialize your Kubernets Cluster. For this we use a config file to make your installation as pleasant and flexible as possible. You can edit the config file `scripts/setup.yaml` before. Find more details about the useage of a `setup.yaml` in the [detailed setup guide](doc/SETUP.md).
 
 To initialize the cluster on your master node run:
 
@@ -174,7 +165,7 @@ To initialize the cluster on your master node run:
 
 At the end the init command will give a install guide how to install the commandline tool `kubectl` on your host and how to setup worker nodes. 
 
-Now you can setup the [Calico](https://docs.projectcalico.org/) Network interface. The cluster network is needed for the internal communication between your cluster nodes. 
+Next you can setup the [Calico](https://docs.projectcalico.org/) Network interface. The cluster network is needed for the internal communication between your cluster nodes. 
 
 Download and deploy the calico.yaml file from [here](https://docs.projectcalico.org/manifests/calico.yaml). 
 
@@ -188,7 +179,7 @@ To build your cluster you can join now any worker node into your new kubernetes 
 
 	$ sudo kubeadm join xxx.xxx.xxx.xxx:6443 --token xxx.xxxxxxxxx  --discovery-token-ca-cert-hash xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
 
-If you do not know the join command any more, run the following command on your master node:
+If you do not know the join command any more, run the following command on your master node again:
 
 	$ kubeadm token create --print-join-command
  
@@ -199,12 +190,9 @@ After a new worker has joined the cluster you can check the status of your maste
 	 
 **That's it! Your kubernetes cluster is now up and running!**
 
-You will find a more detailed description about how to setup your Kubernetes cluster in the [setup section](doc/SETUP.md). If you have any probelm or questions just open a new [Issue](https://github.com/imixs/imixs-cloud/issues) on Github. 
-In the following sections you will find more information about the concepts of Imixs-Cloud.
-
 
  
-# Management Services
+# Tools & Management Services
 
 In the *Imixs-Cloud* project we configure some management services and tools that we find useful to manage Kubernetes and the applications running within. 
 

@@ -3,9 +3,11 @@
 The following section describes the setup procedure of *Imixs-Cloud* for small and medium organizations. 
 This setup guide shows how to install a kubernetes cluster into a productive environment consisting of several Internet nodes. Detailed help can be found on the [official Kubernetes documentation](https://kubernetes.io/docs/home/).
 
-This Setup Guide is currenty based on Debian 12 and Kubernetes 1.28.3. 
+This Setup Guide is currently based on Debian 12 and Kubernetes 1.29.5. 
 
 If you just want to upgrade your existing *Imixs-Cloud* environment jump to the [upgrade section](#upgrade) below. In the [Maintenance section](#maintenance) you will find useful information how to maintain a running *Imixs-Cloud* cluster environment. 
+
+You can find also more details about how to create a cluster also on the [official Kubernets documentation](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). 
 
 ## The Cluster Nodes
 
@@ -13,6 +15,8 @@ A *Imixs-Cloud* consists of a minimum of two nodes.
 
 * The master node is the kubernetes api server
 * The worker nodes are serving the applications (pods). 
+
+<img src="./images/imixs-cloud-architecture.png" />
 
 A node can be run on a virtual or on bare metal. All nodes are defined by unique fixed IP-addresses and DNS names. Only the manager-node need to be accessible through the Internet. So you also can connect your worker nodes with a private network if you like. 
 
