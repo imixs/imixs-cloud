@@ -5,18 +5,14 @@
 *Imixs-Cloud* provides an open concept for small and medium-sized organizations to run an independent, stable and easy to manage cloud infrastructure.
 This project is 100% open source and based on [Kubernetes](https://kubernetes.io/) - a cloud solution for automating deployment, scaling, and management of containerized applications. 
 
-You are sincerely invited to join this project on [Github](https://github.com/imixs/imixs-cloud).
+You are sincerely invited to join this project on [Github](https://github.com/imixs/imixs-cloud). If you have any questions just start a new [Discussion on Github](https://github.com/imixs/imixs-cloud/discussions). 
 
-You can setup your own *Imixs-Cloud* Kubernetes Cluster within a few hours. The flexible and sustainable concept allows you to run your cloud infrastructure without any vendor lock-in. Small and medium-sized cluster environments can be hosted on bare metal - which is recommended - or on virtual servers. 
-The project is open source and constantly under development. 
-If you have any questions just start a new [Discussion on Github](https://github.com/imixs/imixs-cloud/discussions). 
+The flexible and sustainable concept allows you to run your cloud infrastructure without any vendor lock-in. Small and medium-sized cluster environments can be hosted on bare metal or virtual servers. You can setup your own *Imixs-Cloud* Kubernetes Cluster within a few hours. 
 
-Now, let's get started...
 
 <p align="center"><img src="./doc/images/imxs-cloud-k8s-ceph-git.png" /></p>
 
-
-## Topics
+### Topics
 
  - [The Architecture](#the-architecture)
  - [Quick Start Guide](#quick-start-guide)
@@ -24,44 +20,55 @@ Now, let's get started...
  - [How to Contribute](#how-to-contribute)
 
 
-
 # The Architecture
 
-The *Imixs-Cloud* project supports the concept of *Infrastructure as Code* and you will find a quick setup guide for a Kubernetes cluster below. But before you get started we should talk about the core concept of cloud architecture. 
+Imixs-Cloud is based on a simple architectural idea. 
 
-In its core a Kubernetes cluster consists of the following components:
+- The separation of the Kubernetes cluster from an independent storage cluster  - *Separation of Concerns*
+- A fully declarative and versioned description of the target state in Git - *Infrastructure as Code*
+
+In the following sections you will find a detailed setup guide. 
+
+## Kubernetes
+
+In its core Imixs-Cloud runs one or many Kubernetes clusters. One cluster consists of the following components:
 
  * One master node, providing the central services.
- * One or many worker nodes runing your services and applications. 
+ * One or many worker nodes running your services and applications. 
  * A central Reverse-Proxy service to dispatch requests from the Internet to your applications.
  * A private registry to store custom docker images.
- * A distributed storage solution for stateful services. 
+ * A storage solution connecting the Cluster to a independent Ceph cluster.
  
+You will find a detailed installation guide in the [setup section](doc/SETUP.md).
+
+### The Network
+
+Network is of course the most important part of a cloud environment. There are a lot of concepts and tutorials about how to setup the network for a Kubernetes. Most tutorials recommend that you use a second private network for the internal communication of your cluster nodes. But note: this only makes sense if your private network is notedly faster than your public network. If you do not have a separate network adapter you can run your cluster also with one public or private network only. 
+
+<p align="center"><img src="./doc/images/firewall-01.png" /></p>
+
+In case of a public network you just need to take care about firewall rules. If your *node to node communication* is fast - 1GiBit or above - there's absolutely nothing wrong operating within a public network. In addition, a single network also reduces complexity, which is always an advantage. With a simple firewall script you can protect your cluster easily form being accessible from outside and allowing internal communication only. See also the section [Firewall](./doc/FIREWALL.md).
+
+ 
+ 
+
+## The Data Layer
 
 Of course, when you set up your own cloud infrastructure with [Kubernetes](https://kubernetes.io/), you need to take care of your servers and your data.
 Kubernetes offers a well designed idea how to run a cluster on different nodes, providing a stable runtime environment for your containerized applications. These concepts are well documented and you will find a lot of tutorials about that. But Kubernetes does not provide you with a data infrastructure. It provides a well designed API to abstract storage from your application layer, but it leaves open the question where and how you store your data. 
 
-## The Data Layer
-
 If you do not already have a data storage solution, you should set up a storage for your cluster environment which can be used by your applications. 
-There are various projects which can be seamlessly integrated into Kubernetes, for example the [Longhorn project](https://longhorn.io/) provides an quick an easy setup. 
-But within the *Imixs-Cloud* project, we believe a storage solution should be run independently from your Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of an outage within your Kubernetes Cluster. On the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution for Kubernetes.
+
+Within the *Imixs-Cloud* project, we believe a storage solution should be run independently from your Kubernetes Cluster. This has several advantages. On the one hand, the data layer is not affected in case of an outage within your Kubernetes Cluster. On the other hand, an independent storage solution can be connected from different clusters which increases the flexibility. Also if you need to change the data infrastructure, you usually do not need to make any major changes on your application side. In our view, a [Ceph cluster](https://ceph.io/) is the best way to provide a stable and scalable storage solution for Kubernetes.
 
 <p align="center"><img src="./doc/images/architecture-01.png" /></p>
 
-In this picture your application layer is decoupled from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect each to the same Ceph cluster.
+Imixs-Cloud decouples the application layer from your data layer. You can use your data layer in various ways independent from your Kubernetes cluster which gives you more flexibility managing your data. For example if you run more than one Kubernetes cluster you can connect each to the same Ceph cluster.
 In general, we do not recommend building a cluster that is too big, but rather several small clusters.  This allows you to migrate data and applications if your requirements grow or if you want to try something new. With the *Imixs-Cloud* project it is easy to setup and manage these kind of small cluster environments. 
 
 You will find a install guide in the section [Ceph Quick Install](doc/CEPH.md).
 
 
-## The Network
-
-Network is of course the most important part of a cloud environment. Similar to the Data layer there are a lot of concepts and tutorials about how to setup the network for a Kubernetes or a Ceph cluster. Most tutorials recommend that you use a second private network for the internal communication of your cluster nodes. But note: this only makes sense if your private network is notedly faster than your public network. If you do not have a separate network adapter you can run your cluster also with one public network only. You just need to take care about firewall rules. If your *node to node communication* is fast - 1GiBit or above - there's absolutely nothing wrong operating within a public network. In addition, a single network also reduces complexity, which is always an advantage. With a simple firewall script you can protect your cluster easily form being accessible from outside and allowing internal communication only. See also the section [Firewall](./doc/FIREWALL.md).
-
-<p align="center"><img src="./doc/images/firewall-01.png" /></p>
- 
- 
 ## Infrastructure as Code
  
 The complete infrastructure of a *Imixs-Cloud* environment is described in one central configuration directory. The *Configuration Directory* can be synchronized with a code repository like Git. This concept is also known as **Infrastructure as Code** or **GitOps** and makes it easy to role back changes if something went wrong. You can always start with a new environment by just [forking this Github repository](./doc/GIT.md). 
