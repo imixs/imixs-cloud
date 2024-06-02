@@ -50,7 +50,6 @@ Network is of course the most important part of a cloud environment. There are a
 In case of a public network you just need to take care about firewall rules. If your *node to node communication* is fast - 1GiBit or above - there's absolutely nothing wrong operating within a public network. In addition, a single network also reduces complexity, which is always an advantage. With a simple firewall script you can protect your cluster easily form being accessible from outside and allowing internal communication only. See also the section [Firewall](./doc/FIREWALL.md).
 
  
- 
 
 ## The Data Layer
 
@@ -124,9 +123,7 @@ In Kubernetes all resources and services are typically described in separate fil
 
 If you want to remove an already deployed service or object just use the `delete` command:
 
-```bash
-$ kubectl delete -f app/whoami/
-```
+	$ kubectl delete -f app/whoami/
 
 You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) to manage your configuraiton objects in a more flexible way. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
