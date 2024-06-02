@@ -2,7 +2,7 @@
 
 ### Build Your Own Kubernetes Cluster!
 
-*Imixs-Cloud* provides an open concept for small and medium-sized organizations to run an independent, stable and easy to manage cloud infrastructure.
+[*Imixs-Cloud*](https://github.com/imixs/imixs-cloud) provides an open concept for small and medium-sized organizations to run an independent, stable and easy to manage cloud infrastructure.
 This project is 100% open source and based on [Kubernetes](https://kubernetes.io/) - a cloud solution for automating deployment, scaling, and management of containerized applications. 
 
 You are sincerely invited to join this project on [Github](https://github.com/imixs/imixs-cloud). If you have any questions just start a new [Discussion on Github](https://github.com/imixs/imixs-cloud/discussions). 
