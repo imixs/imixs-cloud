@@ -13,11 +13,18 @@ If you have any questions just start a new [Discussion on Github](https://github
 
 Now, let's get started...
 
+<p align="center"><img src="./doc/images/imxs-cloud-k8s-ceph-git.png" /></p>
+
+
  <div style="display: flex;">
-  <div style="flex: 50%;">
-  <img src="./doc/images/kubernetes_logo_icon_168360.png" /></div>
-  <div style="flex: 50%;">
-  <img src="./doc/images/Ceph_Logo_Standard_RGB_120411_fa.png" /></div>
+
+
+  <div style="flex: 33%;">
+  <img style="width:300px;" src="./doc/images/kubernetes_logo_icon_168360.png" /></div>
+  <div style="flex: 33%;">
+  <img style="width:300px;margin-top:0px;" src="./doc/images/Ceph_Logo_Standard_RGB_120411_fa.png" /></div>
+    <div style="flex: 33%;">
+  <img style="width:150px;margin-top:40px;margin-left:30px;" src="./doc/images/Git-logo.svg.png" /></div>
 </div> 
 
 ## Topics
