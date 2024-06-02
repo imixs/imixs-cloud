@@ -7,14 +7,18 @@ This project is 100% open source and based on [Kubernetes](https://kubernetes.io
 
 You are sincerely invited to join this project on [Github](https://github.com/imixs/imixs-cloud).
 
-You can setup your own *Imixs-Cloud* Kubernetes Cluster within a few hours. The flexible and sustainable concept allows you to run your cloud infrastructure without any vendor lock-in. Small and medium-sized cluster environments can be hosted on virtual servers or bare metal. 
-The project is open source and constantly under development. We sincerely invite you to participate in it!
+You can setup your own *Imixs-Cloud* Kubernetes Cluster within a few hours. The flexible and sustainable concept allows you to run your cloud infrastructure without any vendor lock-in. Small and medium-sized cluster environments can be hosted on bare metal - which is recommended - or on virtual servers. 
+The project is open source and constantly under development. 
 If you have any questions just start a new [Discussion on Github](https://github.com/imixs/imixs-cloud/discussions). 
 
 Now, let's get started...
 
-<p align="center"><img src="./doc/images/docker-k8s-logo.png" /></p>
-
+ <div style="display: flex;">
+  <div style="flex: 50%;">
+  <img src="./doc/images/kubernetes_logo_icon_168360.png" /></div>
+  <div style="flex: 50%;">
+  <img src="./doc/images/Ceph_Logo_Standard_RGB_120411_fa.png" /></div>
+</div> 
 
 ## Topics
 
