@@ -124,8 +124,9 @@ In Kubernetes all resources and services are typically described in separate fil
 
 If you want to remove an already deployed service or object just use the `delete` command:
 
-	$ kubectl delete -f app/whoami/
-
+```bash
+$ kubectl delete -f app/whoami/
+```
 
 You can also use the Kubernetes tool [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) to manage your configuraiton objects in a more flexible way. Read the section [Kustomize Deployments](doc/KUSTOMIZE.md) for more details. 
 
