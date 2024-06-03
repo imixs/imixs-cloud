@@ -25,7 +25,7 @@ echo "#############################################"
 echo " adding k8s repositories ..."
 apt-get update
 # apt-transport-https may be a dummy package; if so, you can skip that package
-apt-get install -y apt-transport-https ca-certificates gnupg curl
+apt-get install -y apt-transport-https ca-certificates gnupg curl ufw
 
 # Add kubernetes repository 
 KUBERNETES_VERSION=v1.29

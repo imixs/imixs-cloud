@@ -22,8 +22,11 @@ As we want to allow communication only internally we need to restrict public acc
 	worker-2	ii.jj.kk.ll
 	worker-3	mm.nn.oo.pp
 
-you can do run the following script on each node to protect access from outside:
+you can do run the following `setup_ufw.sh` bash script on each node to protect access from outside:
 
+	$ ./setup_ufw.sh
+
+This is an example script with a rule set with a example rule set.  
 
 	ufw allow ssh comment 'allow ssh access form anywhere'
 	ufw allow 443 comment 'allow https only'
@@ -39,9 +42,9 @@ you can do run the following script on each node to protect access from outside:
 	ufw default deny incoming
 	ufw enable
 
-See also the `setup_ufw.sh` bash script in the /scripts directory.
+See the `setup_ufw.sh` bash script in the /scripts directory.
 
-After actiating your firewall, you can verify the status with:
+After activating your firewall, you can verify the status with:
 
 	$ sudo ufw status verbose
 
@@ -50,4 +53,17 @@ After actiating your firewall, you can verify the status with:
 To disable the firewall run:
 
 	$ sudo ufw disable
+
+## Changing Rule Set
+
+To change the rules (e.g. adding a new cluster node) you simply need to edit your `setup_ufw.sh` bash script and run the setup once again.
+
+**Note:** Adding a new role can be done easily with the `ufw allow` command. But to remove all old rules you need to run `ufw reset` first and than add all rules once again. The `setup_ufw.sh` bash script does this automatically.
+
+	# Remove all existing rules
+	$ sudo ufw reset
+	# Rebuild all rules
+	$ ./setup_ufw.sh
+	# Verify rules
+	$ sudo ufw status verbose
 

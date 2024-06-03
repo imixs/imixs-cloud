@@ -17,6 +17,10 @@ if [ "$EUID" -ne 0 ]
     exit 1
 fi
 
+echo "=====> reset existing rules..."
+ufw reset
+
+echo "=====> rebuild new rule set..."
 ufw allow ssh comment 'allow ssh access form anywhere'
 # the https rule is only needed on master node
 ufw allow 443 comment 'allow https only'
@@ -32,8 +36,9 @@ ufw allow from 10.0.0.0/8
 ufw default allow outgoing
 ufw default deny incoming
 ufw enable
-
 ufw reload
 
+echo "=====> New rule set:"
+ufw status verbose
 # setup finished
 #############################################################
