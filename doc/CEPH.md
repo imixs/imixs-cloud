@@ -362,37 +362,37 @@ Now, if you only redeploy your POD in Kubernetes, your POD will still see the ol
 apiVersion: batch/v1
 kind: Job
 metadata:
-	name: ext4-resize2fs
+    name: ext4-resize2fs
 spec:
-	template:
-	spec:
-		containers:
-		- name: debian
-			image: debian
+    template:
+    spec:
+        containers:
+        - name: debian
+            image: debian
 
-			command: ["/bin/sh"]
-			args:
-			- -c
-			- >-
-				echo '******** start resizeing block device  ********' &&
-				echo ...find rbd mounts to be resized.... &&
-				df | grep /rbd &&
-				DEVICE=`df | grep /rbd | awk '{print $1}'` &&
-				echo ...resizing device $DEVICE ... &&
-				resize2fs $DEVICE &&
-				echo '******** resize block device completed ********'
+            command: ["/bin/sh"]
+            args:
+            - -c
+            - >-
+                echo '******** start resizeing block device  ********' &&
+                echo ...find rbd mounts to be resized.... &&
+                df | grep /rbd &&
+                DEVICE=`df | grep /rbd | awk '{print $1}'` &&
+                echo ...resizing device $DEVICE ... &&
+                resize2fs $DEVICE &&
+                echo '******** resize block device completed ********'
 
-			volumeMounts:
-			- name: volume-to-resize
-				mountPath: /tmp/mount2resize
-			securityContext:
-			privileged: true
-		volumes:
-		- name: volume-to-resize
-			persistentVolumeClaim:
-			claimName: my-pg-claim-name
-		restartPolicy: Never
-	backoffLimit: 1
+            volumeMounts:
+            - name: volume-to-resize
+                mountPath: /tmp/mount2resize
+            securityContext:
+            privileged: true
+        volumes:
+        - name: volume-to-resize
+            persistentVolumeClaim:
+            claimName: my-pg-claim-name
+        restartPolicy: Never
+    backoffLimit: 1
 ```
 
 7. Deploy the volume, and the job only!
