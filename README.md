@@ -127,7 +127,7 @@ kubectl rollout restart apps/MY-APP/
 To start all Pods in an explizit namespace you use the option `-n` :
 
 ```
-kubectl rollout restart deployment -n <namespace>
+kubectl rollout restart deployment/<YOUR_DEPLOYMENT> -n <NAMESPACE>
 ```
 
 #### Delete a Deployment
@@ -193,8 +193,6 @@ After a new worker has joined the cluster you can check the status of your maste
 
     $ kubectl get nodes
 
-
-
 **That's it! Your kubernetes cluster is now up and running!**
 
 # Tools & Management Services
@@ -252,8 +250,7 @@ You can find a detailed description how to install and setup the registry in the
 
 The _Imixs-Cloud_ monitoring is based on [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to monitor your Kubernetes cluster but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
 
-<img src="./doc/images/monitoring-001.png" />  
-
+<img src="./doc/images/monitoring-001.png" />
 
 # How to Contribute
 
