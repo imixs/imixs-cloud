@@ -15,7 +15,7 @@ The flexible and sustainable concept allows you to run your cloud infrastructure
 
 - [The Architecture](#the-architecture)
 - [Quick Start Guide](#quick-start-guide)
-- [Management Services](#management-services)
+- [Tools & Management Services](#tools--management-services)
 - [How to Contribute](#how-to-contribute)
 
 # The Architecture
@@ -248,7 +248,14 @@ You can find a detailed description how to install and setup the registry in the
 
 ## Monitoring
 
-The _Imixs-Cloud_ monitoring is based on [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) which is an open-source systems monitoring and alerting toolkit. You can use this monitoring service not only to monitor your Kubernetes cluster but also to monitor specific application data. Read more about the monitoring feature [here](doc/MONITORING.md).
+The recommended monitoring solution for _Imixs-Cloud_ is [Coroot](https://coroot.com) - an open-source observability platform based on eBPF technology. Coroot automatically
+collects metrics, logs, traces, and profiles without any code changes to your applications. See the [Coroot Setup Guide](management/coroot/README.md) for installation instructions.
+
+<img src="./doc/images/coroot-001.webp" />
+
+### Grafana Monitoring
+
+If you prefer a more traditional monitoring stack based [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) see the section [Metrics Monitoring](doc/MONITORING.md).
 
 <img src="./doc/images/monitoring-001.png" />
 

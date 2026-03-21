@@ -1,0 +1,28 @@
+metricsRefreshInterval: 15s
+
+storage:
+  size: 10Gi
+  className: <YOUR_STORAGE_CLASS>
+
+prometheus:
+  storage:
+    size: 10Gi
+    className: <YOUR_STORAGE_CLASS>
+
+clickhouse:
+  shards: 1
+  replicas: 1
+  storage:
+    size: 20Gi
+    className: <YOUR_STORAGE_CLASS>
+  keeper:
+    storage:
+      size: 5Gi
+      className: <YOUR_STORAGE_CLASS>
+
+ingress:
+  className: nginx
+  host: <YOUR_MONITORING_HOST>
+  path: /
+  tls:
+    secretName: tls-coroot
